@@ -1,7 +1,5 @@
 from kivy.app import App
-from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.widget import Widget
 
 
 class RemoteLogin(BoxLayout):
