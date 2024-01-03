@@ -3,7 +3,6 @@ from kivy.uix.boxlayout import BoxLayout
 
 
 class RemoteLogin(BoxLayout):
-    orientation = 'vertical'
 
     def connect_to_server(self):
         ...
