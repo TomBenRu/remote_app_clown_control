@@ -1,0 +1,61 @@
+<RemoteLogin>
+    txt_username: txt_username
+    txt_password: txt_password
+    btn_connect: btn_connect
+    txt_message: txt_message
+    btn_send: btn_send
+    GridLayout:
+        rows: 1
+        cols: 2
+        padding: 10
+        spacing: 10
+        height: 125
+        size_hint: (1, None)
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                height: 50
+                text: 'Username'
+            TextInput:
+                height: 50
+                id: txt_username
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                height: 50
+                text: 'Password'
+            TextInput:
+                height: 50
+                id: txt_password
+    Button:
+        id: btn_connect
+        height: 80
+        size_hint: (1, None)
+        text: 'Connect'
+        on_press: root.connect_to_server()
+    Label:
+        height: 50
+        size_hint: (1, None)
+        text: 'Chat History'
+    TextInput:
+        id: txt_chat
+        height: 300
+        size_hint: (1, None)
+        multiline: True
+        readonly: True
+        disabled: True
+    Label:
+        height: 50
+        size_hint: (1, None)
+        text: 'Your Message'
+    TextInput:
+        height: 50
+        size_hint: (1, None)
+        id: txt_message
+    Button:
+        id: btn_send
+        height: 80
+        size_hint: (1, None)
+        text: 'Send Message'
+        on_press: root.send_message()
+        disabled: True
