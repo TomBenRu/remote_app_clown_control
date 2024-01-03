@@ -16,30 +16,41 @@
             orientation: 'vertical'
             Label:
                 height: 50
+                font_size: 42
+                size_hint: (1, None)
                 text: 'Username'
             TextInput:
-                height: 50
+                height: 60
+                font_size: 42
+                size_hint: (1, None)
                 id: txt_username
         BoxLayout:
             orientation: 'vertical'
             Label:
                 height: 50
+                font_size: 42
+                size_hint: (1, None)
                 text: 'Password'
             TextInput:
-                height: 50
+                height: 60
+                font_size: 42
+                size_hint: (1, None)
                 id: txt_password
     Button:
         id: btn_connect
-        height: 80
+        height: 120
+        font_size: 42
         size_hint: (1, None)
         text: 'Connect'
         on_press: root.connect_to_server()
     Label:
         height: 50
+        font_size: 42
         size_hint: (1, None)
         text: 'Chat History'
     TextInput:
         id: txt_chat
+        font_size: 42
         height: 300
         size_hint: (1, 1)
         multiline: True
@@ -47,15 +58,18 @@
         disabled: True
     Label:
         height: 50
+        font_size: 42
         size_hint: (1, None)
         text: 'Your Message'
     TextInput:
-        height: 50
+        # height: 50
+        font_size: 42
         size_hint: (1, None)
         id: txt_message
     Button:
         id: btn_send
-        height: 80
+        height: 120
+        font_size: 42
         size_hint: (1, None)
         text: 'Send Message'
         on_press: root.send_message()
