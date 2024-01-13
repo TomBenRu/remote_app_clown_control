@@ -15,16 +15,7 @@ kivy.require('1.0.9')
 class ClientApp(App):
 
     def build(self):
-        self.ws = websocket.WebSocketApp("ws://localhost:8000/ws/notifications/",
-                                         on_message=self.on_message,
-                                         on_error=self.on_error,
-                                         on_close=self.on_close,
-                                         header=['Cookie: ws-cookie=clown-team-token'])
-        self.ws.on_open = self.on_open
-
         websocket.enableTrace(True)
-
-        threading.Thread(target=self.ws.run_forever, kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}}).start()
 
         self.layout = BoxLayout(orientation='vertical')
 
@@ -47,10 +38,20 @@ class ClientApp(App):
         self.close_button.bind(on_press=self.close_connection)
         self.layout.add_widget(self.close_button)
 
+        # if local: "ws://localhost:8000/ws/", else render: "wss://clinic-clown-control.onrender.com/ws/"
+        self.ws = websocket.WebSocketApp("wss://clinic-clown-control.onrender.com/ws/",
+                                         on_message=self.on_message,
+                                         on_error=self.on_error,
+                                         on_close=self.on_close,
+                                         header=['Cookie: ws-cookie=clown-team-token'])
+        self.ws.on_open = self.on_open
+
+        threading.Thread(target=self.ws.run_forever, kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}}).start()
+
         return self.layout
 
     def on_message(self, ws, message):
-        self.output.text += f"Received: {message}\n"
+        self.output.text += f"{message}\n"
 
     def on_error(self, ws, error):
         self.output.text += f"Error: {error}\n"
@@ -63,7 +64,7 @@ class ClientApp(App):
 
     def send_message(self, instance):
         user_input = self.input.text
-        data = {"message": user_input}
+        data = {"chat-message": user_input}
         json_data = json.dumps(data)
         self.ws.send(json_data)
         self.input.text = ''
