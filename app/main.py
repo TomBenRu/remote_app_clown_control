@@ -1,3 +1,5 @@
+import time
+
 import kivy
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -5,6 +7,8 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 import websocket
+from websocket import WebSocketApp, WebSocket
+from websocket._exceptions import WebSocketConnectionClosedException
 import ssl
 import json
 import threading
@@ -46,14 +50,15 @@ class ClientApp(App):
                                          header=['Cookie: ws-cookie=clown-team-token'])
         self.ws.on_open = self.on_open
 
-        threading.Thread(target=self.ws.run_forever, kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}}).start()
+        threading.Thread(target=self.ws.run_forever,
+                         kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
 
         return self.layout
 
     def on_message(self, ws, message):
         self.output.text += f"{message}\n"
 
-    def on_error(self, ws, error):
+    def on_error(self, ws: WebSocket, error):
         self.output.text += f"Error: {error}\n"
 
     def on_close(self, ws, close_status_code, close_msg):
@@ -66,7 +71,11 @@ class ClientApp(App):
         user_input = self.input.text
         data = {"chat-message": user_input}
         json_data = json.dumps(data)
-        self.ws.send(json_data)
+        try:
+            self.ws.send(json_data)
+        except Exception as e:
+            self.output.text += f'Problem beim Senden: {e}\n'
+            return
         self.input.text = ''
 
     def close_connection(self, instance):
