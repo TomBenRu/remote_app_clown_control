@@ -58,7 +58,7 @@ class ClientApp(App):
         self.layout.add_widget(self.close_button)
 
         # if local: "ws://localhost:8000/ws/", else render: "wss://clinic-clown-control.onrender.com/ws/"
-        self.local = True
+        self.local = False
         if self.local:
             self.backend_url = "http://localhost:8000/"
             self.ws_url = "ws://localhost:8000/ws/"
