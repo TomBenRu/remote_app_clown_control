@@ -24,8 +24,6 @@ class ClientApp(App):
 
         self.ws = None
 
-        self.session = requests.Session()
-
         self.layout = BoxLayout(orientation='vertical')
 
         self.login_layout = BoxLayout(orientation='horizontal', size_hint_y=0.1)
@@ -72,6 +70,7 @@ class ClientApp(App):
         self.output.text += f"{message}\n"
 
     def on_error(self, ws: WebSocket, error):
+        print(f'{error=}')
         self.output.text += f"Error: {error}\n"
 
     def on_close(self, ws, close_status_code, close_msg):
@@ -96,7 +95,7 @@ class ClientApp(App):
         password = self.input_password.text
         data = {"username": username, "password": password}
         try:
-            response = self.session.post(f'{self.backend_url}token/', data, timeout=10)
+            response = requests.post(f'{self.backend_url}token/', data, timeout=10)
         except requests.exceptions.Timeout:
             self.output.text += "Login failed: Timeout\n"
             return
@@ -105,6 +104,7 @@ class ClientApp(App):
             print(f'{response.status_code}: {response.json()}')
             print('success:', response.json())
             self.output.text += "Login successful\n"
+            print('token:', response.json()['access_token'])
             self.open_connection(response.json()['access_token'])
         else:
             print(f'failed: {response.json()}')
@@ -116,7 +116,7 @@ class ClientApp(App):
                                              on_message=self.on_message,
                                              on_error=self.on_error,
                                              on_close=self.on_close,
-                                             header=[f'Cookie: clown-call-auth={token}'])
+                                             header=[f'Token: {token}'])
             self.ws.on_open = self.on_open
             threading.Thread(target=self.ws.run_forever,
                              kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
