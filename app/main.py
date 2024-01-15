@@ -1,6 +1,7 @@
 import time
 
 import kivy
+import requests
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
@@ -21,7 +22,21 @@ class ClientApp(App):
     def build(self):
         websocket.enableTrace(True)
 
+        self.ws = None
+
+        self.session = requests.Session()
+
         self.layout = BoxLayout(orientation='vertical')
+
+        self.login_layout = BoxLayout(orientation='horizontal', size_hint_y=0.1)
+        self.input_username = TextInput(multiline=False)
+        self.input_password = TextInput(multiline=False, password=True)
+        self.login_layout.add_widget(self.input_username)
+        self.login_layout.add_widget(self.input_password)
+        self.login_button = Button(text="Login")
+        self.login_button.bind(on_press=self.login)
+        self.login_layout.add_widget(self.login_button)
+        self.layout.add_widget(self.login_layout)
 
         self.output = Label(size_hint_y=0.8)
         self.layout.add_widget(self.output)
@@ -43,15 +58,13 @@ class ClientApp(App):
         self.layout.add_widget(self.close_button)
 
         # if local: "ws://localhost:8000/ws/", else render: "wss://clinic-clown-control.onrender.com/ws/"
-        self.ws = websocket.WebSocketApp("wss://clinic-clown-control.onrender.com/ws/",
-                                         on_message=self.on_message,
-                                         on_error=self.on_error,
-                                         on_close=self.on_close,
-                                         header=['Cookie: ws-cookie=clown-team-token'])
-        self.ws.on_open = self.on_open
-
-        threading.Thread(target=self.ws.run_forever,
-                         kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
+        self.local = True
+        if self.local:
+            self.backend_url = "http://localhost:8000/"
+            self.ws_url = "ws://localhost:8000/ws/"
+        else:
+            self.backend_url = "https://clinic-clown-control.onrender.com/"
+            self.ws_url = "wss://clinic-clown-control.onrender.com/ws/"
 
         return self.layout
 
@@ -78,9 +91,35 @@ class ClientApp(App):
             return
         self.input.text = ''
 
+    def login(self, instance):
+        username = self.input_username.text
+        password = self.input_password.text
+        data = {"username": username, "password": password}
+        response = self.session.post(f'{self.backend_url}token/', data)
+        if response.status_code == 200 and response.json().get('status_code') != 409:
+            print(f'{response.status_code}: {response.json()}')
+            print('success:', response.json())
+            self.output.text += "Login successful\n"
+            self.open_connection(response.json()['access_token'])
+        else:
+            print(f'failed: {response.json()}')
+            self.output.text += f"Login failed with status code {response.status_code}\n"
+
+    def open_connection(self, token: str):
+        if not self.ws or not self.ws.sock or not self.ws.sock.connected:
+            self.ws = websocket.WebSocketApp(self.ws_url,
+                                             on_message=self.on_message,
+                                             on_error=self.on_error,
+                                             on_close=self.on_close,
+                                             header=[f'Cookie: clown-call-auth={token}'])
+            self.ws.on_open = self.on_open
+            threading.Thread(target=self.ws.run_forever,
+                             kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
+
     def close_connection(self, instance):
         if self.ws.sock and self.ws.sock.connected:
             self.ws.close()
+
 
 if __name__ == '__main__':
     ClientApp().run()
