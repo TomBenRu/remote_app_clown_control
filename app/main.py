@@ -91,6 +91,9 @@ class ClientApp(App):
         self.input.text = ''
 
     def login(self, instance):
+        if self.ws and self.ws.sock and self.ws.sock.connected:
+            self.output.text += "Already connected\n"
+            return
         username = self.input_username.text
         password = self.input_password.text
         data = {"username": username, "password": password}
@@ -111,15 +114,14 @@ class ClientApp(App):
             self.output.text += f"Login failed with status code {response.status_code}\n"
 
     def open_connection(self, token: str):
-        if not self.ws or not self.ws.sock or not self.ws.sock.connected:
-            self.ws = websocket.WebSocketApp(self.ws_url,
-                                             on_message=self.on_message,
-                                             on_error=self.on_error,
-                                             on_close=self.on_close,
-                                             cookie=f'clown-call-auth={token}')
-            self.ws.on_open = self.on_open
-            threading.Thread(target=self.ws.run_forever,
-                             kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
+        self.ws = websocket.WebSocketApp(self.ws_url,
+                                         on_message=self.on_message,
+                                         on_error=self.on_error,
+                                         on_close=self.on_close,
+                                         cookie=f'clown-call-auth={token}')
+        self.ws.on_open = self.on_open
+        threading.Thread(target=self.ws.run_forever,
+                         kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
 
     def close_connection(self, instance):
         if self.ws.sock and self.ws.sock.connected:
