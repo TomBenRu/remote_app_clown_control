@@ -95,7 +95,12 @@ class ClientApp(App):
         username = self.input_username.text
         password = self.input_password.text
         data = {"username": username, "password": password}
-        response = self.session.post(f'{self.backend_url}token/', data)
+        try:
+            response = self.session.post(f'{self.backend_url}token/', data, timeout=10)
+        except requests.exceptions.Timeout:
+            self.output.text += "Login failed: Timeout\n"
+            return
+
         if response.status_code == 200 and response.json().get('status_code') != 409:
             print(f'{response.status_code}: {response.json()}')
             print('success:', response.json())
