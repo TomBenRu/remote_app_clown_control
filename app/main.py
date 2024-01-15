@@ -116,7 +116,7 @@ class ClientApp(App):
                                              on_message=self.on_message,
                                              on_error=self.on_error,
                                              on_close=self.on_close,
-                                             header=[f'Token: {token}'])
+                                             cookie=f'clown-call-auth={token}')
             self.ws.on_open = self.on_open
             threading.Thread(target=self.ws.run_forever,
                              kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
