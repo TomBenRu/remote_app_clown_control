@@ -8,8 +8,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 import websocket
-from websocket import WebSocketApp, WebSocket
-from websocket._exceptions import WebSocketConnectionClosedException
+from websocket import WebSocket
 import ssl
 import json
 import threading
