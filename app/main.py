@@ -3,6 +3,7 @@ import time
 import kivy
 import requests
 from kivy.app import App
+from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
@@ -15,6 +16,7 @@ import threading
 
 kivy.require('1.0.9')
 
+Window.softinput_mode = "below_target"
 
 class ClientApp(App):
 
@@ -55,7 +57,7 @@ class ClientApp(App):
         self.layout.add_widget(self.close_button)
 
         # if local: "ws://localhost:8000/ws/", else render: "wss://clinic-clown-control.onrender.com/ws/"
-        self.local = True
+        self.local = False
         if self.local:
             self.backend_url = "http://localhost:8000/"
             self.ws_url = "ws://localhost:8000/ws/"
