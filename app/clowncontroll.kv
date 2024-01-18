@@ -1,0 +1,78 @@
+<MyLabel@Label>:
+    font_size: 20
+    height: 25
+    background_color: 0, 0, 0, 0
+    background_normal: ""
+    canvas.before:
+        Color:
+            rgba: 0, 1, 0, 0.5
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [20]  #---- This rounds the corners --- #
+
+<MyButton@Button>:
+    font_size: 20
+    background_color: 0, 0, 0, 0
+    background_normal: ""
+    canvas.before:
+        Color:
+            rgba: 0, 1, 0, 0.5
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [20]  #---- This rounds the corners --- #
+
+
+<LoginScreen>
+    password: password
+    username: username
+    login_error: login_error
+    GridLayout:
+        cols: 1
+        size_hint: 0.8, 0.4
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        GridLayout:
+            cols: 2
+            spacing: 20
+            size_hint: 1, None
+            height: '100dp'
+            Label:
+                text: 'username'
+                font_size: 20
+                size_hint: 0.5, None
+                height: '36dp'
+            TextInput:
+                id: username
+                multiline: False
+                hint_text: 'username'
+                hint_text_color: 0.5, 0.5, 0.5, 1
+                size_hint: 1, None
+                height: '36dp'
+            Label:
+                text: 'password'
+                font_size: 20
+                size_hint: 0.5, None
+                height: '36dp'
+                background: (0, 0, 1, 1)
+            TextInput:
+                id: password
+                multiline: False
+                hint_text: 'password'
+                hint_text_color: 0.5, 0.5, 0.5, 1
+                size_hint: 1, None
+                height: '36dp'
+        Button:
+            text: 'login'
+            size_hint: 1, None
+            height: '48dp'
+            on_release: root.validate_user()
+            background_normal: ""
+            background_color: (0, 0, 0.7, 1)
+        Label:
+            text: ''
+            color: 1, 0, 0, 1
+            size_hint: 1, None
+            height: '48dp'
+            id: login_error
+            

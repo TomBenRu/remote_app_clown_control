@@ -1,5 +1,3 @@
-import time
-
 import kivy
 import requests
 from kivy.app import App

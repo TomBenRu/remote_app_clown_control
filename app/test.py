@@ -1,80 +1,56 @@
-'''Example shows the recommended way of how to run Kivy with the Python built
-in asyncio event loop as just another async coroutine.
-'''
-import asyncio
-import json
-
-import websockets
-from kivy.app import async_runTouchApp
-from kivy.lang.builder import Builder
-
-kv = '''
-BoxLayout:
-    orientation: 'vertical'
-    Button:
-        id: btn
-        text: 'Press me'
-    BoxLayout:
-        Label:
-            id: label
-            text: 'Button is "{}"'.format(btn.state)
-'''
+import requests
+from kivy.app import App
+from kivy.core.window import Window
+from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from kivy.uix.label import Label
 
 
-uri = "ws://localhost:8000/ws/notifications/"
-cookie = 'ws-cookie=clown-team-token'
+class Values:
+    def __init__(self):
+        self.token: str | None = None
+
+    def set_token(self, token: str):
+        self.token = token
 
 
-async def connect_to_server_async():
-    # try:
-    async with websockets.connect(uri, extra_headers={'Cookie': cookie}) as ws:
-        while True:
-            msg = input('Message: ')
-            await ws.send(json.dumps({'message': msg}))
-            print(await ws.recv())
-
-    # except Exception as e:
-    #     print(f"Error connecting to server: {e}")
+values = Values()
 
 
-async def run_app_happily(root, other_task):
-    '''This method, which runs Kivy, is run by the asyncio loop as one of the
-    coroutines.
-    '''
-    # we don't actually need to set asyncio as the lib because it is the
-    # default, but it doesn't hurt to be explicit
-    await async_runTouchApp(root, async_lib='asyncio')
-    # run Kivy
-    print('App done')
-    # now cancel all the other tasks that may be running
-    other_task.cancel()
+class LoginScreen(Screen):
+
+    def validate_user(self):
+        backend_url = "http://localhost:8000/"
+        data = {'username': self.username.text, 'password': self.password.text}
+        try:
+            response = requests.post(f'{backend_url}token/', data, timeout=10)
+            if response.status_code == 200 and response.json().get('status_code', 200) == 200:
+                print(response.json())
+                values.set_token(response.json().get('access_token'))
+                self.login_error.text = ''
+                self.manager.transition = SlideTransition(direction="left")
+                self.manager.current = 'second'
+            else:
+                self.login_error.text = 'Username oder Passwort ungültig!'
+        except requests.exceptions.RequestException as e:
+            self.layout.add_widget(Label(text=str(e)))
 
 
-async def waste_time_freely():
-    '''This method is also run by the asyncio loop and periodically prints
-    something.
-    '''
+class CreateTeam(Screen):
+    pass
 
-    try:
-        await connect_to_server_async()
-        # while True:
-        #     print('Sitting on the beach')
-        #     await asyncio.sleep(2)
-    except asyncio.CancelledError as e:
-        print('Wasting time was canceled', e)
-    finally:
-        # when canceled, print that it finished
-        print('Done wasting time')
+
+class ClownControllApp(App):
+    def build(self):
+        Window.clearcolor = (0.2, 0.2, 0.2, 1)
+        sm = ScreenManager()
+        sm.add_widget(LoginScreen(name='login'))
+        sm.add_widget(CreateTeam(name='second'))
+        return sm
+
 
 if __name__ == '__main__':
-    def root_func():
-        '''This will run both methods asynchronously and then block until they
-        are finished
-        '''
-        root = Builder.load_string(kv)  # root widget
-        other_task = asyncio.ensure_future(waste_time_freely())
-        return asyncio.gather(run_app_happily(root, other_task), other_task)
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(root_func())
-    loop.close()
+    ClownControllApp().run()
