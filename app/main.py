@@ -55,7 +55,7 @@ class ClientApp(App):
         self.layout.add_widget(self.close_button)
 
         # if local: "ws://localhost:8000/ws/", else render: "wss://clinic-clown-control.onrender.com/ws/"
-        self.local = False
+        self.local = True
         if self.local:
             self.backend_url = "http://localhost:8000/"
             self.ws_url = "ws://localhost:8000/ws/"
@@ -71,6 +71,7 @@ class ClientApp(App):
     def on_error(self, ws: WebSocket, error):
         print(f'{error=}')
         self.output.text += f"Error: {error}\n"
+        self.close_connection()
 
     def on_close(self, ws, close_status_code, close_msg):
         self.output.text += f"Connection closed with status code: {close_status_code} and message: {close_msg}\n"
@@ -109,7 +110,7 @@ class ClientApp(App):
             print('token:', response.json()['access_token'])
             self.open_connection(response.json()['access_token'])
         else:
-            print(f'failed: {response.json()}')
+            print(f'failed: {response}')
             self.output.text += f"Login failed with status code {response.status_code}\n"
 
     def open_connection(self, token: str):
@@ -123,8 +124,10 @@ class ClientApp(App):
                          kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
 
     def close_connection(self, instance):
-        if self.ws.sock and self.ws.sock.connected:
+        if self.ws and self.ws.sock and self.ws.sock.connected:
             self.ws.close()
+        else:
+            self.output.text += "Not connected\n"
 
 
 if __name__ == '__main__':
