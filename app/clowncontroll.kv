@@ -36,34 +36,37 @@
             cols: 2
             spacing: 20
             size_hint: 1, None
-            height: '100dp'
+            height: '150dp'
             Label:
                 text: 'username'
-                font_size: 20
+                font_size: 36
                 size_hint: 0.5, None
-                height: '36dp'
+                height: '48dp'
             TextInput:
                 id: username
+                font_size: 36
                 multiline: False
                 hint_text: 'username'
                 hint_text_color: 0.5, 0.5, 0.5, 1
                 size_hint: 1, None
-                height: '36dp'
+                height: '48dp'
             Label:
                 text: 'password'
-                font_size: 20
+                font_size: 36
                 size_hint: 0.5, None
-                height: '36dp'
+                height: '48dp'
                 background: (0, 0, 1, 1)
             TextInput:
                 id: password
+                font_size: 36
                 multiline: False
                 hint_text: 'password'
                 hint_text_color: 0.5, 0.5, 0.5, 1
                 size_hint: 1, None
-                height: '36dp'
+                height: '48dp'
         Button:
-            text: 'login'
+            text: 'Login'
+            font_size: 36
             size_hint: 1, None
             height: '48dp'
             on_release: root.validate_user()
