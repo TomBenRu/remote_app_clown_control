@@ -92,32 +92,38 @@
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             Button:
                 text: 'Logout'
+                font_size: 36
                 size_hint: 1, None
                 height: '48dp'
                 on_release: root.logout()
             Button:
                 text: 'Back'
+                font_size: 36
                 size_hint: 1, None
                 height: '48dp'
                 on_release: root.back()
             Button:
                 text: 'Departments'
+                font_size: 36
                 size_hint: 1, None
                 height: '48dp'
                 on_release: root.departments()
         Button:
             text: 'Open Chat'
+            font_size: 36
             size_hint: 1, None
             height: '48dp'
             on_release: root.open_connection()
         TextInput:
             id: output
+            font_size: 36
             multiline: True
         GridLayout:
             cols: 2
             size_hint: 1, None
             TextInput:
                 id: input
+                font_size: 36
                 multiline: False
                 hint_text: 'Type your message here'
                 hint_text_color: 0.5, 0.5, 0.5, 1
@@ -125,6 +131,7 @@
                 height: '48dp'
             Button:
                 text: 'Send'
+                font_size: 36
                 size_hint: 1, None
                 height: '48dp'
                 on_release: root.send_message()

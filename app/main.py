@@ -63,11 +63,11 @@ class CreateTeamScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.layout = GridLayout(cols=2, size_hint_y=None, row_force_default=True, row_default_height=64)
+        self.layout = GridLayout(cols=2, size_hint_y=None, row_force_default=True, row_default_height=98)
         self.layout.bind(minimum_height=self.layout.setter('height'))
         self.users = []
         self.checkboxes = []
-        self.confirm_button = Button(text='Confirm Selection', font_size=36)
+        self.confirm_button = Button(text='Confirm Selection', font_size=48)
         self.confirm_button.bind(on_release=self.confirm_selection)
         scrollview = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
         scrollview.add_widget(self.layout)
@@ -78,12 +78,12 @@ class CreateTeamScreen(Screen):
         for user in self.users:
             checkbox = CheckBox()
             self.checkboxes.append(checkbox)
-            self.layout.add_widget(Label(text=f'{user["f_name"]} {user["l_name"]}', font_size=36))
+            self.layout.add_widget(Label(text=f'{user["f_name"]} {user["l_name"]}', font_size=48))
             self.layout.add_widget(checkbox)
         self.locations = self.get_locations()
         self.location_spinner = Spinner(
             text='Select a Location',
-            values=[f"{i+1}.: {l['name']}" for i, l in enumerate(self.locations)], font_size=36)
+            values=[f"{i+1}.: {l['name']}" for i, l in enumerate(self.locations)], font_size=48)
         self.layout.add_widget(self.location_spinner)
         self.layout.add_widget(self.confirm_button)
         print(self.users)
