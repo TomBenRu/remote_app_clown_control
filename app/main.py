@@ -17,10 +17,7 @@ from kivy.uix.spinner import Spinner
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-from pydantic import BaseModel
 from websocket import WebSocket
-
-from app import schemas
 
 
 class Values:
@@ -31,13 +28,13 @@ class Values:
         # self.ws_url = "ws://localhost:8000/ws/"
         self.backend_url = "https://clinic-clown-control.onrender.com/"
         self.ws_url = "wss://clinic-clown-control.onrender.com/ws/"
-        self.team_of_actors: schemas.TeamOfActorsShow | None = None
+        self.team_of_actors = {}
 
     def set_session_token(self, token: str):
         self.token = token
         self.session.headers.update({'Authorization': f'Bearer {token}'})
 
-    def set_team_of_actors(self, team_of_actors: schemas.TeamOfActors):
+    def set_team_of_actors(self, team_of_actors: dict):
         self.team_of_actors = team_of_actors
 
 
@@ -110,13 +107,12 @@ class CreateTeamScreen(Screen):
         selected_users = [user['id'] for checkbox, user in zip(self.checkboxes, self.users) if checkbox.active]
         try:
             location_id = self.locations[int(self.location_spinner.text.split('.:')[0]) - 1]['id']
-            location = json.loads(schemas.TeamOfActorsCreate(location_id=location_id, actor_ids=selected_users).model_dump_json())
             response = values.session.post(f'{values.backend_url}actors/new-team',
-                                           json=location, timeout=10)
+                                           json={'location_id': location_id, 'actor_ids': selected_users}, timeout=10)
             if response.status_code == 200:
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'third'
-                values.set_team_of_actors(schemas.TeamOfActors.model_validate(response.json()))
+                values.set_team_of_actors(response.json())
             else:
                 self.layout.add_widget(Label(text='Fehler bei der Teamerstellung!'))
         except requests.exceptions.RequestException as e:
@@ -134,7 +130,7 @@ class ChatScreen(Screen):
                                          on_error=self.on_error,
                                          on_close=self.on_close,
                                          cookie=f'clown-call-auth={values.token}',
-                                         header={'team_of_actors_id': str(values.team_of_actors.id)})
+                                         header={'team_of_actors_id': values.team_of_actors['id']})
         self.ws.on_open = self.on_open
         threading.Thread(target=self.ws.run_forever,
                          kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
@@ -179,7 +175,7 @@ class ChatScreen(Screen):
 
     def logout(self):
         values.session.post(f'{values.backend_url}actors/delete-team',
-                            params={'team_of_actor_id': str(values.team_of_actors.id)}, timeout=10)
+                            params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         self.close_connection(None)
 
 
