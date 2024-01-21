@@ -25,10 +25,10 @@ class Values:
         self.token: str = ''
         self.user_id: str = ''
         self.session = requests.Session()
-        self.backend_url = "http://localhost:8000/"
-        self.ws_url = "ws://localhost:8000/ws/"
-        # self.backend_url = "https://clinic-clown-control.onrender.com/"
-        # self.ws_url = "wss://clinic-clown-control.onrender.com/ws/"
+        # self.backend_url = "http://localhost:8000/"
+        # self.ws_url = "ws://localhost:8000/ws/"
+        self.backend_url = "https://clinic-clown-control.onrender.com/"
+        self.ws_url = "wss://clinic-clown-control.onrender.com/ws/"
         self.team_of_actors = {}
 
     def set_session_token(self, token: str):
