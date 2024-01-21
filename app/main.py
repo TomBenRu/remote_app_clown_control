@@ -2,6 +2,7 @@ import json
 import ssl
 import threading
 
+import jwt
 import requests
 import websocket
 from kivy.app import App
@@ -22,6 +23,7 @@ Window.softinput_mode = "below_target"
 class Values:
     def __init__(self):
         self.token: str = ''
+        self.user_id: str = ''
         self.session = requests.Session()
         self.backend_url = "http://localhost:8000/"
         self.ws_url = "ws://localhost:8000/ws/"
@@ -32,6 +34,9 @@ class Values:
     def set_session_token(self, token: str):
         self.token = token
         self.session.headers.update({'Authorization': f'Bearer {token}'})
+
+    def set_user_id(self, user_id: int):
+        self.user_id = user_id
 
     def set_team_of_actors(self, team_of_actors: dict):
         self.team_of_actors = team_of_actors
@@ -47,8 +52,9 @@ class LoginScreen(Screen):
         try:
             response = requests.post(f'{values.backend_url}token/', data, timeout=10)
             if response.status_code == 200 and response.json().get('status_code', 200) == 200:
-                print(response.json())
                 values.set_session_token(response.json().get('access_token'))
+                values.set_user_id(jwt.decode(jwt=response.json().get('access_token'),
+                                              options={"verify_signature": False}).get('user_id'))
                 self.login_error.text = ''
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'team'
@@ -72,10 +78,15 @@ class CreateTeamScreen(Screen):
         scrollview.add_widget(self.layout)
         self.add_widget(scrollview)
 
+        self.location_id = None
+
     def on_enter(self, *args):
         self.users = self.get_users()
         for user in self.users:
             checkbox = CheckBox()
+            if user['id'] == values.user_id:
+                checkbox.active = True
+                checkbox.disabled = True
             self.checkboxes.append(checkbox)
             self.layout.add_widget(Label(text=f'{user["f_name"]} {user["l_name"]}', font_size=48))
             self.layout.add_widget(checkbox)
@@ -83,6 +94,7 @@ class CreateTeamScreen(Screen):
         self.location_spinner = Spinner(
             text='Select a Location',
             values=[f"{i+1}.: {l['name']}" for i, l in enumerate(self.locations)], font_size=48)
+        self.location_spinner.bind(text=self.on_location_spinner_text)
         self.layout.add_widget(self.location_spinner)
         self.layout.add_widget(self.confirm_button)
 
@@ -90,6 +102,9 @@ class CreateTeamScreen(Screen):
         self.layout.clear_widgets()
         self.users = []
         self.checkboxes = []
+
+    def on_location_spinner_text(self, instance, value):
+        self.location_id = self.locations[int(self.location_spinner.text.split('.:')[0]) - 1]['id']
 
     def get_users(self):
         try:
@@ -106,12 +121,13 @@ class CreateTeamScreen(Screen):
             return []
 
     def confirm_selection(self, instance):
+        if not self.location_id:
+            return
         selected_users = [user['id'] for checkbox, user in zip(self.checkboxes, self.users) if checkbox.active]
-        print(selected_users)
         try:
-            location_id = self.locations[int(self.location_spinner.text.split('.:')[0]) - 1]['id']
             response = values.session.post(f'{values.backend_url}actors/new-team',
-                                           json={'location_id': location_id, 'actor_ids': selected_users}, timeout=10)
+                                           json={'location_id': self.location_id,
+                                                 'actor_ids': selected_users}, timeout=10)
             if response.status_code == 200:
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'chat'
