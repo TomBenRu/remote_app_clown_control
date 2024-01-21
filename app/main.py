@@ -14,8 +14,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.spinner import Spinner
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-from websocket import WebSocket
-
+from websocket import WebSocket, WebSocketApp
 
 Window.softinput_mode = "below_target"
 
@@ -24,10 +23,10 @@ class Values:
     def __init__(self):
         self.token: str = ''
         self.session = requests.Session()
-        # self.backend_url = "http://localhost:8000/"
-        # self.ws_url = "ws://localhost:8000/ws/"
-        self.backend_url = "https://clinic-clown-control.onrender.com/"
-        self.ws_url = "wss://clinic-clown-control.onrender.com/ws/"
+        self.backend_url = "http://localhost:8000/"
+        self.ws_url = "ws://localhost:8000/ws/"
+        # self.backend_url = "https://clinic-clown-control.onrender.com/"
+        # self.ws_url = "wss://clinic-clown-control.onrender.com/ws/"
         self.team_of_actors = {}
 
     def set_session_token(self, token: str):
@@ -52,7 +51,7 @@ class LoginScreen(Screen):
                 values.set_session_token(response.json().get('access_token'))
                 self.login_error.text = ''
                 self.manager.transition = SlideTransition(direction="left")
-                self.manager.current = 'second'
+                self.manager.current = 'team'
             else:
                 self.login_error.text = 'Username oder Passwort ungültig!'
         except requests.exceptions.RequestException as e:
@@ -86,8 +85,11 @@ class CreateTeamScreen(Screen):
             values=[f"{i+1}.: {l['name']}" for i, l in enumerate(self.locations)], font_size=48)
         self.layout.add_widget(self.location_spinner)
         self.layout.add_widget(self.confirm_button)
-        print(self.users)
-        print(self.locations)
+
+    def on_leave(self, *args):
+        self.layout.clear_widgets()
+        self.users = []
+        self.checkboxes = []
 
     def get_users(self):
         try:
@@ -105,14 +107,17 @@ class CreateTeamScreen(Screen):
 
     def confirm_selection(self, instance):
         selected_users = [user['id'] for checkbox, user in zip(self.checkboxes, self.users) if checkbox.active]
+        print(selected_users)
         try:
             location_id = self.locations[int(self.location_spinner.text.split('.:')[0]) - 1]['id']
             response = values.session.post(f'{values.backend_url}actors/new-team',
                                            json={'location_id': location_id, 'actor_ids': selected_users}, timeout=10)
             if response.status_code == 200:
                 self.manager.transition = SlideTransition(direction="left")
-                self.manager.current = 'third'
+                self.manager.current = 'chat'
+                print([a['artist_name'] for a in response.json()['actors']])
                 values.set_team_of_actors(response.json())
+                print([a['artist_name'] for a in values.team_of_actors['actors']])
             else:
                 self.layout.add_widget(Label(text='Fehler bei der Teamerstellung!'))
         except requests.exceptions.RequestException as e:
@@ -122,9 +127,13 @@ class CreateTeamScreen(Screen):
 class ChatScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.ws: WebSocketApp | None = None
         self.layout = GridLayout(cols=2, size_hint_y=None)
 
     def open_connection(self):
+        if self.ws:
+            self.output.text += f"Connection already open!\n"
+            return
         self.ws = websocket.WebSocketApp(values.ws_url,
                                          on_message=self.on_message,
                                          on_error=self.on_error,
@@ -170,6 +179,7 @@ class ChatScreen(Screen):
     def close_connection(self, instance):
         if self.ws and self.ws.sock and self.ws.sock.connected:
             self.ws.close()
+            self.ws = None
         else:
             self.output.text += "Not connected\n"
 
@@ -177,6 +187,9 @@ class ChatScreen(Screen):
         values.session.post(f'{values.backend_url}actors/delete-team',
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         self.close_connection(None)
+        self.manager.transition = SlideTransition(direction="right")
+        self.manager.current = 'login'
+        print(f'{threading.active_count()=}')
 
 
 class ClownControllApp(App):
@@ -184,8 +197,8 @@ class ClownControllApp(App):
         Window.clearcolor = (0.2, 0.2, 0.2, 1)
         sm = ScreenManager()
         sm.add_widget(LoginScreen(name='login'))
-        sm.add_widget(CreateTeamScreen(name='second'))
-        sm.add_widget(ChatScreen(name='third'))
+        sm.add_widget(CreateTeamScreen(name='team'))
+        sm.add_widget(ChatScreen(name='chat'))
         return sm
 
 
