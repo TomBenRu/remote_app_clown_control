@@ -204,6 +204,11 @@ class ChatScreen(Screen):
             self.output.text += "Not connected\n"
 
     def logout(self):
+        try:
+            self.ws.send(f'{values.token}: closing')
+        except Exception as e:
+            self.output.text += f'Problem beim Senden: {e}\n'
+            return
         values.session.post(f'{values.backend_url}actors/delete-team',
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         self.close_connection(None)
