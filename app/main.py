@@ -205,8 +205,10 @@ class ChatScreen(Screen):
 
     def logout(self):
         try:
-            self.ws.send(f'{values.token}: closing')
+            self.ws.send(json.dumps({"chat-message": f'{values.token}: closing'}))
+            print('Closing message sent')
         except Exception as e:
+            print('Fehler beim Senden: ', e)
             self.output.text += f'Problem beim Senden: {e}\n'
             return
         values.session.post(f'{values.backend_url}actors/delete-team',
