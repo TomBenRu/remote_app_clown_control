@@ -38,8 +38,7 @@ class Values:
     def set_user_id(self, user_id: int):
         self.user_id = user_id
 
-    def del_session_token_and_user_id(self):
-        self.token = ''
+    def del_user_id(self):
         self.user_id = ''
 
     def set_team_of_actors(self, team_of_actors: dict):
@@ -106,7 +105,7 @@ class CreateTeamScreen(Screen):
         self.layout.clear_widgets()
         self.users = []
         self.checkboxes = []
-        values.del_session_token_and_user_id()
+        values.del_user_id()
 
     def on_location_spinner_text(self, instance, value):
         self.location_id = self.locations[int(self.location_spinner.text.split('.:')[0]) - 1]['id']
