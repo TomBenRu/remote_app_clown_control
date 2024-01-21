@@ -147,6 +147,9 @@ class ChatScreen(Screen):
         self.ws: WebSocketApp | None = None
         self.layout = GridLayout(cols=2, size_hint_y=None)
 
+    def on_leave(self, *args):
+        self.output.text = ''
+
     def open_connection(self):
         if self.ws:
             self.output.text += f"Connection already open!\n"
