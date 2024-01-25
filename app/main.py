@@ -89,7 +89,7 @@ class CreateTeamScreen(Screen):
         self.users = self.get_users()
         for user in self.users:
             layout = MDBoxLayout(orientation='horizontal')
-            checkbox = MDCheckbox(size_hint=(None, None), size=(48, 48))
+            checkbox = MDCheckbox(size_hint=(None, None), size=(50, 50))
             if user['id'] == values.user_id:
                 checkbox.active = True
                 # checkbox.disabled = True
