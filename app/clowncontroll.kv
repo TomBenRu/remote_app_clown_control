@@ -25,59 +25,59 @@
 
 
 <LoginScreen>
-    password: password
-    username: username
-    login_error: login_error
-    GridLayout:
-        cols: 1
-        size_hint: 0.8, 0.4
-        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-        GridLayout:
-            cols: 2
-            spacing: 20
+    MDCard:
+        size_hint: None, None
+        size: 800, 700
+        pos_hint: {'center_x':.5, 'center_y':.5}
+        elevation: 10
+        padding: 20, 20, 20, 20
+        spacing: 20
+        orientation: "vertical"
+
+        MDLabel:
+            text: "Anmeldung"
+            font_size: "35sp"
+            halign: "center"
             size_hint: 1, None
-            height: '150dp'
-            Label:
-                text: 'username'
-                font_size: 36
-                size_hint: 0.5, None
-                height: '48dp'
-            TextInput:
-                id: username
-                font_size: 36
-                multiline: False
-                hint_text: 'username'
-                hint_text_color: 0.5, 0.5, 0.5, 1
-                size_hint: 1, None
-                height: '48dp'
-            Label:
-                text: 'password'
-                font_size: 36
-                size_hint: 0.5, None
-                height: '48dp'
-                background: (0, 0, 1, 1)
-            TextInput:
-                id: password
-                font_size: 36
-                multiline: False
-                hint_text: 'password'
-                hint_text_color: 0.5, 0.5, 0.5, 1
-                size_hint: 1, None
-                height: '48dp'
-        Button:
-            text: 'Login'
-            font_size: 36
-            size_hint: 1, None
-            height: '48dp'
-            on_release: root.validate_user()
-            background_normal: ""
-            background_color: (0, 0, 0.7, 1)
-        Label:
-            text: ''
-            color: 1, 0, 0, 1
-            size_hint: 1, None
-            height: '48dp'
-            id: login_error
+            height: self.texture_size[1]
+            padding_y: 10
+
+        MDTextField:
+            id: username
+            hint_text: "Username"
+            icon_right: "account"
+            size_hint: 0.8, None
+            width: 600
+            font_size: "15sp"
+            pos_hint: {'center_x':.5}
+
+        MDTextField:
+            id: password
+            hint_text: "Password"
+            icon_right: "lock"
+            size_hint: 0.8, None
+            width: 600
+            font_size: "15sp"
+            pos_hint: {'center_x':.5}
+            password: True
+
+        MDRoundFlatButton:
+            text: "Login"
+            font_size: "15sp"
+            size_hint: 0.8, None
+            width: 400
+            pos_hint: {'center_x':.5}
+            on_press: root.validate_user()
+
+        MDLabel
+            id: error_label
+            text: "Please Login"
+            font_size: "15sp"
+            valign: "top"
+            halign: "center"
+            size_hint: 0.8, None
+            height: self.texture_size[1]
+            pos_hint: {'center_x':.5}
 
 <ChatScreen>
     input: input

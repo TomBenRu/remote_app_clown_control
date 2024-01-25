@@ -15,6 +15,14 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.spinner import Spinner
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.metrics import sp
+from kivymd.app import MDApp
+from kivymd.uix.button import MDRoundFlatButton
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.screenmanager import ScreenManager
+from kivymd.uix.gridlayout import MDGridLayout
+from kivymd.uix.selectioncontrol import MDSwitch
+from kivymd.uix.dropdownitem import MDDropDownItem
 from websocket import WebSocket, WebSocketApp
 
 Window.softinput_mode = "below_target"
@@ -48,18 +56,18 @@ values = Values()
 class LoginScreen(Screen):
 
     def validate_user(self):
-        data = {'username': self.username.text, 'password': self.password.text}
+        data = {'username': self.ids.username.text, 'password': self.ids.password.text}
         try:
             response = requests.post(f'{values.backend_url}token/', data, timeout=10)
             if response.status_code == 200 and response.json().get('status_code', 200) == 200:
                 values.set_session_token(response.json().get('access_token'))
                 values.set_user_id(jwt.decode(jwt=response.json().get('access_token'),
                                               options={"verify_signature": False}).get('user_id'))
-                self.login_error.text = ''
+                self.ids.error_label.text = ''
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'team'
             else:
-                self.login_error.text = 'Username oder Passwort ungültig!'
+                self.ids.error_label.text = 'Username oder Passwort ungültig!'
         except requests.exceptions.RequestException as e:
             self.layout.add_widget(Label(text=str(e)))
 
@@ -68,40 +76,63 @@ class CreateTeamScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.layout = GridLayout(cols=2, size_hint_y=None, row_force_default=True, row_default_height=98)
+        self.layout = MDGridLayout(cols=2, size_hint_y=None, row_force_default=True, row_default_height=98)
         self.layout.bind(minimum_height=self.layout.setter('height'))
         self.users = []
-        self.checkboxes = []
-        self.confirm_button = Button(text='Confirm Selection', font_size=48)
+        self.switches = []
+        self.confirm_button = MDRoundFlatButton(text='Confirm Selection', font_size=48)
         self.confirm_button.bind(on_release=self.confirm_selection)
         scrollview = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
         scrollview.add_widget(self.layout)
         self.add_widget(scrollview)
+        self.locations = []
+        self.locations_menu_items = []
 
         self.location_id = None
 
     def on_enter(self, *args):
         self.users = self.get_users()
         for user in self.users:
-            checkbox = CheckBox()
+            switch = MDSwitch()
             if user['id'] == values.user_id:
-                checkbox.active = True
-                checkbox.disabled = True
-            self.checkboxes.append(checkbox)
+                switch.active = True
+                switch.disabled = True
+            self.switches.append(switch)
             self.layout.add_widget(Label(text=f'{user["f_name"]} {user["l_name"]}', font_size=48))
-            self.layout.add_widget(checkbox)
+            self.layout.add_widget(switch)
         self.locations = self.get_locations()
-        self.location_spinner = Spinner(
-            text='Select a Location',
-            values=[f"{i+1}.: {l['name']}" for i, l in enumerate(self.locations)], font_size=48)
-        self.location_spinner.bind(text=self.on_location_spinner_text)
-        self.layout.add_widget(self.location_spinner)
+        self.locations_menu_items = [
+            {
+                'viewclass': 'OneLineListItem',
+                'text': location['name'],
+                'font_style': 'H5',
+                'on_release': (lambda loc_id=location['id'], loc_name=location['name']:
+                               self.set_location_id(loc_id, loc_name))
+            }
+            for location in self.locations
+        ]
+        self.location_drop_down_item = MDDropDownItem(
+            pos_hint={'center_x': .5, 'center_y': .5}, font_size=48,
+            on_release=self.open_location_menu
+        )
+        self.location_drop_down_item.text = 'Select Location'
+        self.layout.add_widget(self.location_drop_down_item)
         self.layout.add_widget(self.confirm_button)
 
+    def open_location_menu(self, item):
+        width = min(max(len(loc['name']) for loc in self.locations) * sp(15), Window.width * 0.8)
+        print(width)
+        self.location_menu = MDDropdownMenu(caller=item, items=self.locations_menu_items, width=width, width_mult=4)
+        self.location_menu.open()
+
+    def set_location_id(self, location_id, location_name):
+        self.location_id = location_id
+        self.location_drop_down_item.text = location_name
+        self.location_menu.dismiss()
     def on_leave(self, *args):
         self.layout.clear_widgets()
         self.users = []
-        self.checkboxes = []
+        self.switches = []
         self.location_id = None
 
     def on_location_spinner_text(self, instance, value):
@@ -124,7 +155,7 @@ class CreateTeamScreen(Screen):
     def confirm_selection(self, instance):
         if not self.location_id:
             return
-        selected_users = [user['id'] for checkbox, user in zip(self.checkboxes, self.users) if checkbox.active]
+        selected_users = [user['id'] for switch, user in zip(self.switches, self.users) if switch.active]
         try:
             response = values.session.post(f'{values.backend_url}actors/new-team',
                                            json={'location_id': self.location_id,
@@ -219,9 +250,10 @@ class ChatScreen(Screen):
         print(f'{threading.active_count()=}')
 
 
-class ClownControllApp(App):
+class ClownControllApp(MDApp):
     def build(self):
-        Window.clearcolor = (0.2, 0.2, 0.2, 1)
+        self.theme_cls.theme_style = 'Dark'
+        self.theme_cls.primary_palette = 'BlueGray'
         sm = ScreenManager()
         sm.add_widget(LoginScreen(name='login'))
         sm.add_widget(CreateTeamScreen(name='team'))
