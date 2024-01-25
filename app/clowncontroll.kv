@@ -79,6 +79,39 @@
             height: self.texture_size[1]
             pos_hint: {'center_x':.5}
 
+<CreateTeamScreen>
+    MDBoxLayout:
+        id: layout_create_team
+        orientation: "vertical"
+        size_hint: 0.8, 0.8
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        MDScrollView:
+            do_scroll_x: False
+            MDGridLayout:
+                id: layout_clowns_select
+                cols: 1
+                size_hint: 1, 1
+                padding: 0, 10, 0, 10
+                spacing: 10
+                row_force_default: True
+                row_default_height: 50
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        MDDropDownItem:
+            id: dropdown_locations
+            text: "Select Location"
+            font_size: "36sp"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            on_release: root.open_location_menu(self)
+        MDRoundFlatButton:
+            text: "Create Team"
+            font_size: "36sp"
+            size_hint: 0.8, None
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            on_press: root.create_team()
+
+
+
+
 <ChatScreen>
     input: input
     output: output

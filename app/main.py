@@ -8,6 +8,7 @@ import websocket
 from kivy.app import App
 from kivy.clock import mainthread
 from kivy.core.window import Window
+from kivy.properties import ColorProperty
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.uix.gridlayout import GridLayout
@@ -17,11 +18,12 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.metrics import sp
 from kivymd.app import MDApp
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDRoundFlatButton
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screenmanager import ScreenManager
 from kivymd.uix.gridlayout import MDGridLayout
-from kivymd.uix.selectioncontrol import MDSwitch
+from kivymd.uix.selectioncontrol import MDSwitch, MDCheckbox
 from kivymd.uix.dropdownitem import MDDropDownItem
 from websocket import WebSocket, WebSocketApp
 
@@ -76,15 +78,8 @@ class CreateTeamScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.layout = MDGridLayout(cols=2, size_hint_y=None, row_force_default=True, row_default_height=98)
-        self.layout.bind(minimum_height=self.layout.setter('height'))
         self.users = []
-        self.switches = []
-        self.confirm_button = MDRoundFlatButton(text='Confirm Selection', font_size=48)
-        self.confirm_button.bind(on_release=self.confirm_selection)
-        scrollview = ScrollView(size_hint=(1, None), size=(Window.width, Window.height))
-        scrollview.add_widget(self.layout)
-        self.add_widget(scrollview)
+        self.checkboxes = []
         self.locations = []
         self.locations_menu_items = []
 
@@ -93,13 +88,16 @@ class CreateTeamScreen(Screen):
     def on_enter(self, *args):
         self.users = self.get_users()
         for user in self.users:
-            switch = MDSwitch()
+            layout = MDBoxLayout(orientation='horizontal')
+            checkbox = MDCheckbox(size_hint=(None, None), size=(48, 48))
             if user['id'] == values.user_id:
-                switch.active = True
-                switch.disabled = True
-            self.switches.append(switch)
-            self.layout.add_widget(Label(text=f'{user["f_name"]} {user["l_name"]}', font_size=48))
-            self.layout.add_widget(switch)
+                checkbox.active = True
+                # checkbox.disabled = True
+            self.checkboxes.append(checkbox)
+            label = Label(text=f'{user["f_name"]} {user["l_name"]}', font_size=48)
+            layout.add_widget(label)
+            layout.add_widget(checkbox)
+            self.ids.layout_clowns_select.add_widget(layout)
         self.locations = self.get_locations()
         self.locations_menu_items = [
             {
@@ -111,13 +109,6 @@ class CreateTeamScreen(Screen):
             }
             for location in self.locations
         ]
-        self.location_drop_down_item = MDDropDownItem(
-            pos_hint={'center_x': .5, 'center_y': .5}, font_size=48,
-            on_release=self.open_location_menu
-        )
-        self.location_drop_down_item.text = 'Select Location'
-        self.layout.add_widget(self.location_drop_down_item)
-        self.layout.add_widget(self.confirm_button)
 
     def open_location_menu(self, item):
         width = min(max(len(loc['name']) for loc in self.locations) * sp(15), Window.width * 0.8)
@@ -127,16 +118,14 @@ class CreateTeamScreen(Screen):
 
     def set_location_id(self, location_id, location_name):
         self.location_id = location_id
-        self.location_drop_down_item.text = location_name
+        self.ids.dropdown_locations.text = location_name
         self.location_menu.dismiss()
     def on_leave(self, *args):
-        self.layout.clear_widgets()
+        self.ids.layout_clowns_select.clear_widgets()
+        self.ids.dropdown_locations.text = 'Select Location'
         self.users = []
-        self.switches = []
+        self.checkboxes = []
         self.location_id = None
-
-    def on_location_spinner_text(self, instance, value):
-        self.location_id = self.locations[int(self.location_spinner.text.split('.:')[0]) - 1]['id']
 
     def get_users(self):
         try:
@@ -152,10 +141,10 @@ class CreateTeamScreen(Screen):
         except requests.exceptions.RequestException as e:
             return []
 
-    def confirm_selection(self, instance):
+    def create_team(self):
         if not self.location_id:
             return
-        selected_users = [user['id'] for switch, user in zip(self.switches, self.users) if switch.active]
+        selected_users = [user['id'] for switch, user in zip(self.checkboxes, self.users) if switch.active]
         try:
             response = values.session.post(f'{values.backend_url}actors/new-team',
                                            json={'location_id': self.location_id,
@@ -167,9 +156,9 @@ class CreateTeamScreen(Screen):
                 values.set_team_of_actors(response.json())
                 print([a['artist_name'] for a in values.team_of_actors['actors']])
             else:
-                self.layout.add_widget(Label(text='Fehler bei der Teamerstellung!'))
+                self.layout_clown_select.add_widget(Label(text='Fehler bei der Teamerstellung!'))
         except requests.exceptions.RequestException as e:
-            self.layout.add_widget(Label(text=str(e)))
+            self.layout_clown_select.add_widget(Label(text=str(e)))
 
 
 class ChatScreen(Screen):
@@ -253,7 +242,7 @@ class ChatScreen(Screen):
 class ClownControllApp(MDApp):
     def build(self):
         self.theme_cls.theme_style = 'Dark'
-        self.theme_cls.primary_palette = 'BlueGray'
+        self.theme_cls.primary_palette = 'Orange'
         sm = ScreenManager()
         sm.add_widget(LoginScreen(name='login'))
         sm.add_widget(CreateTeamScreen(name='team'))
