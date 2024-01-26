@@ -20,6 +20,7 @@ from kivy.metrics import sp
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDRoundFlatButton
+from kivymd.uix.label import MDLabel
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screenmanager import ScreenManager
 from kivymd.uix.gridlayout import MDGridLayout
@@ -89,12 +90,12 @@ class CreateTeamScreen(Screen):
         self.users = self.get_users()
         for user in self.users:
             layout = MDBoxLayout(orientation='horizontal')
-            checkbox = MDCheckbox(size_hint=(None, None), size=(50, 50))
+            checkbox = MDCheckbox(size_hint=(None, None), size=(60, 50))
             if user['id'] == values.user_id:
                 checkbox.active = True
                 # checkbox.disabled = True
             self.checkboxes.append(checkbox)
-            label = Label(text=f'{user["f_name"]} {user["l_name"]}', font_size=48)
+            label = MDLabel(text=f'{user["f_name"]} {user["l_name"]}', font_style='H6')
             layout.add_widget(label)
             layout.add_widget(checkbox)
             self.ids.layout_clowns_select.add_widget(layout)
@@ -103,7 +104,7 @@ class CreateTeamScreen(Screen):
             {
                 'viewclass': 'OneLineListItem',
                 'text': location['name'],
-                'font_style': 'H5',
+                'font_style': 'H6',
                 'on_release': (lambda loc_id=location['id'], loc_name=location['name']:
                                self.set_location_id(loc_id, loc_name))
             }
