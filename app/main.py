@@ -5,27 +5,19 @@ import threading
 import jwt
 import requests
 import websocket
-from kivy.app import App
 from kivy.clock import mainthread
 from kivy.core.window import Window
-from kivy.properties import ColorProperty
-from kivy.uix.checkbox import CheckBox
-from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
+from kivy.uix.screenmanager import Screen, SlideTransition
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.scrollview import ScrollView
-from kivy.uix.spinner import Spinner
-from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.metrics import sp
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDRoundFlatButton
 from kivymd.uix.label import MDLabel
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screenmanager import ScreenManager
-from kivymd.uix.gridlayout import MDGridLayout
-from kivymd.uix.selectioncontrol import MDSwitch, MDCheckbox
-from kivymd.uix.dropdownitem import MDDropDownItem
+from kivymd.uix.selectioncontrol import MDCheckbox
+from kivy.storage.jsonstore import JsonStore
 from websocket import WebSocket, WebSocketApp
 
 Window.softinput_mode = "below_target"
@@ -62,6 +54,12 @@ values = Values()
 
 
 class LoginScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.store = JsonStore('racc.json')
+        if self.store.exists('login_data'):
+            self.ids.username.text = self.store.get('login_data')['username']
+            self.ids.password.text = self.store.get('login_data')['password']
 
     def validate_user(self):
         data = {'username': self.ids.username.text, 'password': self.ids.password.text}
@@ -71,6 +69,7 @@ class LoginScreen(Screen):
                 values.set_session_token(response.json().get('access_token'))
                 values.set_user_id(jwt.decode(jwt=response.json().get('access_token'),
                                               options={"verify_signature": False}).get('user_id'))
+                self.store.put('login_data', username=self.ids.username.text, password=self.ids.password.text)
                 self.ids.error_label.text = ''
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'team'
