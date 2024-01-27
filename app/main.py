@@ -36,11 +36,12 @@ class Values:
         self.token: str = ''
         self.user_id: str = ''
         self.session = requests.Session()
-        # self.backend_url = "http://localhost:8000/"
-        # self.ws_url = "ws://localhost:8000/ws/"
-        self.backend_url = "https://clinic-clown-control.onrender.com/"
-        self.ws_url = "wss://clinic-clown-control.onrender.com/ws/"
+        self.backend_url = "http://localhost:8000/"
+        self.ws_url = "ws://localhost:8000/ws/"
+        # self.backend_url = "https://clinic-clown-control.onrender.com/"
+        # self.ws_url = "wss://clinic-clown-control.onrender.com/ws/"
         self.team_of_actors = {}
+        self.departments_of_location = {}
 
     def set_session_token(self, token: str):
         self.token = token
@@ -51,6 +52,10 @@ class Values:
 
     def set_team_of_actors(self, team_of_actors: dict):
         self.team_of_actors = team_of_actors
+
+    def set_departments_of_location(self, departments_of_location: list[dict]):
+        self.departments_of_location = {d['id']: d for d in departments_of_location}
+        print(self.departments_of_location)
 
 
 values = Values()
@@ -151,6 +156,15 @@ class CreateTeamScreen(Screen):
                                            json={'location_id': self.location_id,
                                                  'actor_ids': selected_users}, timeout=10)
             if response.status_code == 200:
+                response_departments = values.session.get(f'{values.backend_url}actors/departments_of_location',
+                                                          params={'location_id': self.location_id}, timeout=10)
+                print(f'{response_departments.json()=}')
+                if response_departments.status_code == 200:
+                    values.set_departments_of_location(response_departments.json())
+                else:
+                    values.session.post(f'{values.backend_url}actors/delete-team',
+                                        params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
+                    self.layout_clown_select.add_widget(Label(text='Fehler beim Abruf der Abteilungen!'))
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'chat'
                 print([a['artist_name'] for a in response.json()['actors']])
@@ -187,7 +201,22 @@ class ChatScreen(Screen):
 
     @mainthread
     def on_message(self, ws, message):
-        self.output.text += f"{message}\n"
+        print(f'{message=}')
+        # self.output.text += f"{message}\n"
+        message_dict = json.loads(message)
+        send_confirmation, department_id, message, joined, left = (message_dict.get('send_confirmation'),
+                                                                   message_dict.get('sender_id'),
+                                                                   message_dict.get('message'),
+                                                                   message_dict.get('joined'),
+                                                                   message_dict.get('left'))
+        if send_confirmation:
+            self.output.text += f"Gesendet: {send_confirmation}\n"
+        elif message:
+            self.output.text += f"{values.departments_of_location[department_id]['name']}: {message}\n"
+        elif joined:
+            self.output.text += f"{values.departments_of_location[department_id]['name']} hat den Chat betreten.\n"
+        elif left:
+            self.output.text += f"{values.departments_of_location[department_id]['name']} hat den Chat verlassen.\n"
 
     @mainthread
     def on_error(self, ws: WebSocket, error):
@@ -226,7 +255,8 @@ class ChatScreen(Screen):
 
     def logout(self):
         try:
-            self.ws.send(json.dumps({"chat-message": f'{values.token}: closing'}))
+            self.ws.send(json.dumps({"chat-message": 'Wir verabschieden uns für heute. Danke für die Unterstützung!',
+                                     'closing': True}))
             print('Closing message sent')
         except Exception as e:
             print('Fehler beim Senden: ', e)

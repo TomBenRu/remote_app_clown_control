@@ -104,6 +104,9 @@
             font_style: "H5"
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             on_release: root.open_location_menu(self)
+        Widget:
+            size_hint: 1, None
+            height: 10
         MDRoundFlatButton:
             text: "Create Team"
             # font_size: "36sp"
@@ -111,8 +114,6 @@
             size_hint: 0.8, None
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             on_press: root.create_team()
-
-
 
 
 <ChatScreen>
