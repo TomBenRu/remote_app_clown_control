@@ -1,0 +1,14 @@
+MDBoxLayout:
+    orientation: "vertical"
+    MDTopAppBar:
+        title: "Example Tabs"
+        MDTabs:
+            id: tabs
+            on_tab_switch: app.on_tab_switch(*args)
+
+<Tab>
+    MDIconButton:
+        id: icon
+        icon: root.icon
+        user_font_size: "48sp"
+        pos_hint: {"center_x":.5, "center_y":.5}
