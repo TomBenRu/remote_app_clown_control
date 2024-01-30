@@ -1,5 +1,7 @@
 from kivy.lang import Builder
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.gridlayout import GridLayout
 
 from kivymd.app import MDApp
 from kivymd.uix.tab import MDTabsBase, MDTabsLabel, MDTabs
@@ -22,6 +24,8 @@ BoxLayout:
     MDLabel:
         id: tab_label
         user_font_size: "48sp"
+        size_hint: None, None
+        size: 200, 200
         pos_hint: {"center_x": .5, "center_y": .5}
 '''
 

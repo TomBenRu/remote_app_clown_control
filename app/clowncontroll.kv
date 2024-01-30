@@ -117,15 +117,14 @@
 
 
 <ChatScreen>
-    input: input
-    output: output
     GridLayout:
         cols: 1
         size_hint: 0.8, 0.8
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         GridLayout:
             cols: 3
-            size_hint: 1, 1
+            size_hint: 1, None
+            height: '48dp'
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             Button:
                 text: 'Logout'
@@ -151,6 +150,19 @@
             size_hint: 1, None
             height: '48dp'
             on_release: root.open_connection()
+        MDTabs:
+            id: chat_tabs
+            anchor_y: "bottom"
+            on_tab_switch: root.on_tab_switch(*args)
+
+
+<ChatTab>
+    input: input
+    output: output
+    GridLayout:
+        cols: 1
+        size_hint: 0.8, 0.8
+        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         TextInput:
             id: output
             font_size: 36

@@ -7,6 +7,7 @@ import requests
 import websocket
 from kivy.clock import mainthread
 from kivy.core.window import Window
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen, SlideTransition
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
@@ -18,6 +19,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screenmanager import ScreenManager
 from kivymd.uix.selectioncontrol import MDCheckbox
 from kivy.storage.jsonstore import JsonStore
+from kivymd.uix.tab import MDTabsBase
 from websocket import WebSocket, WebSocketApp
 
 Window.softinput_mode = "below_target"
@@ -175,14 +177,39 @@ class CreateTeamScreen(Screen):
             self.layout_clown_select.add_widget(Label(text=str(e)))
 
 
-class ChatScreen(Screen):
-    def __init__(self, **kwargs):
+class ChatTab(FloatLayout, MDTabsBase):
+    def __init__(self, websocket: WebSocketApp, tab_pos: int, department_id=None, **kwargs):
         super().__init__(**kwargs)
-        self.ws: WebSocketApp | None = None
+        self.tab_pos = tab_pos
+        self.department_id = department_id
+        self.ws = websocket
         self.layout = GridLayout(cols=2, size_hint_y=None)
 
     def on_leave(self, *args):
         self.output.text = ''
+
+    @mainthread
+    def send_message(self):
+        user_input = self.input.text
+        data = {"chat-message": user_input, "receiver_id": self.department_id}
+        print(f'{self.department_id=}')
+        json_data = json.dumps(data)
+        try:
+            self.ws.send(json_data)
+        except Exception as e:
+            self.output.text += f'Problem beim Senden: {e}\n'
+            return
+        self.input.text = ''
+
+
+class ChatScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.ws: WebSocketApp | None = None
+        self.chat_tabs: dict[str, ChatTab] = {}
+
+    def on_tab_switch(self, *args):
+        print(args)
 
     def open_connection(self):
         if self.ws:
@@ -197,52 +224,59 @@ class ChatScreen(Screen):
         self.ws.on_open = self.on_open
         threading.Thread(target=self.ws.run_forever,
                          kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
+        new_chat_tab = ChatTab(tab_label_text='Chat', websocket=self.ws, tab_pos=0)
+        self.chat_tabs['common_chat'] = new_chat_tab
+        self.ids.chat_tabs.add_widget(new_chat_tab)
 
     @mainthread
     def on_message(self, ws, message):
-        print(f'{message=}')
-        # self.output.text += f"{message}\n"
         message_dict = json.loads(message)
-        send_confirmation, department_id, message, joined, left = (message_dict.get('send_confirmation'),
-                                                                   message_dict.get('sender_id'),
-                                                                   message_dict.get('message'),
-                                                                   message_dict.get('joined'),
-                                                                   message_dict.get('left'))
+        send_confirmation, receiver_id, department_id, message, joined, left = (message_dict.get('send_confirmation'),
+                                                                                message_dict.get('receiver_id'),
+                                                                                message_dict.get('sender_id'),
+                                                                                message_dict.get('message'),
+                                                                                message_dict.get('joined'),
+                                                                                message_dict.get('left'))
+        print(f'{message_dict=}')
+        print(f'{send_confirmation=}, {receiver_id=}, {department_id=}, {message=}, {joined=}, {left=}')
         if send_confirmation:
-            self.output.text += f"Gesendet: {send_confirmation}\n"
+            if not receiver_id:
+                for chat_tab in self.chat_tabs.values():
+                    chat_tab.ids.output.text += f"Gesendet: {send_confirmation}\n"
+            else:
+                print(f'{self.chat_tabs=}')
+                self.chat_tabs[receiver_id].ids.output.text += f"Gesendet: {send_confirmation}\n"
+                self.chat_tabs['common_chat'].ids.output.text += f"Gesendet an {values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
         elif message:
-            self.output.text += f"{values.departments_of_location[department_id]['name']}: {message}\n"
+            self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}:"
+                                                              f" {message}\n")
         elif joined:
-            self.output.text += f"{values.departments_of_location[department_id]['name']} hat den Chat betreten.\n"
+            self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
+                                                              f" hat den Chat betreten.\n")
+            new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
+                                   department_id=department_id, tab_pos=len(self.chat_tabs), websocket=self.ws)
+            self.chat_tabs[department_id] = new_chat_tab
+            self.ids.chat_tabs.add_widget(new_chat_tab)
         elif left:
-            self.output.text += f"{values.departments_of_location[department_id]['name']} hat den Chat verlassen.\n"
+            self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
+                                                              f" hat den Chat verlassen.\n")
 
     @mainthread
     def on_error(self, ws: WebSocket, error):
         print(f'{error=}')
-        self.output.text += f"Error: {error}\n"
+        # self.output.text += f"Error: {error}\n"
         self.close_connection(None)
 
     @mainthread
     def on_close(self, ws, close_status_code, close_msg):
-        self.output.text += f"Connection closed with status code: {close_status_code} and message: {close_msg}\n"
+        print(f"Connection closed with status code: {close_status_code} and message: {close_msg}")
+        # self.output.text += f"Connection closed with status code: {close_status_code} and message: {close_msg}\n"
 
     @mainthread
     def on_open(self, ws):
         print("Websocket connection opened")
-        self.output.text += "Connection opened\n"
+        # self.output.text += "Connection opened\n"
 
-    @mainthread
-    def send_message(self):
-        user_input = self.input.text
-        data = {"chat-message": user_input}
-        json_data = json.dumps(data)
-        try:
-            self.ws.send(json_data)
-        except Exception as e:
-            self.output.text += f'Problem beim Senden: {e}\n'
-            return
-        self.input.text = ''
 
     @mainthread
     def close_connection(self, instance):
@@ -250,7 +284,8 @@ class ChatScreen(Screen):
             self.ws.close()
             self.ws = None
         else:
-            self.output.text += "Not connected\n"
+            print('Not connected')
+            # self.output.text += "Not connected\n"
 
     def logout(self):
         try:
@@ -259,11 +294,16 @@ class ChatScreen(Screen):
             print('Closing message sent')
         except Exception as e:
             print('Fehler beim Senden: ', e)
-            self.output.text += f'Problem beim Senden: {e}\n'
+            # self.output.text += f'Problem beim Senden: {e}\n'
             return
         values.session.post(f'{values.backend_url}actors/delete-team',
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         self.close_connection(None)
+
+        for tab in self.ids.chat_tabs.get_tab_list():
+            print(f'{tab=}')
+            self.ids.chat_tabs.remove_widget(tab)
+
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = 'login'
         print(f'{threading.active_count()=}')
