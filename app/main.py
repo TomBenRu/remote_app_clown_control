@@ -185,21 +185,17 @@ class ChatTab(FloatLayout, MDTabsBase):
         self.ws = websocket
         self.layout = GridLayout(cols=2, size_hint_y=None)
 
-    def on_leave(self, *args):
-        self.output.text = ''
-
     @mainthread
     def send_message(self):
-        user_input = self.input.text
+        user_input = self.ids.input.text
         data = {"chat-message": user_input, "receiver_id": self.department_id}
-        print(f'{self.department_id=}')
         json_data = json.dumps(data)
         try:
             self.ws.send(json_data)
         except Exception as e:
-            self.output.text += f'Problem beim Senden: {e}\n'
+            self.ids.output.text += f'Problem beim Senden: {e}\n'
             return
-        self.input.text = ''
+        self.ids.input.text = ''
 
 
 class ChatScreen(Screen):
@@ -213,7 +209,7 @@ class ChatScreen(Screen):
 
     def open_connection(self):
         if self.ws:
-            self.output.text += f"Connection already open!\n"
+            self.chat_tabs['common_chat'].ids.output.text += f"Connection already open!\n"
             return
         self.ws = websocket.WebSocketApp(values.ws_url,
                                          on_message=self.on_message,
@@ -231,35 +227,45 @@ class ChatScreen(Screen):
     @mainthread
     def on_message(self, ws, message):
         message_dict = json.loads(message)
-        send_confirmation, receiver_id, department_id, message, joined, left = (message_dict.get('send_confirmation'),
-                                                                                message_dict.get('receiver_id'),
-                                                                                message_dict.get('sender_id'),
-                                                                                message_dict.get('message'),
-                                                                                message_dict.get('joined'),
-                                                                                message_dict.get('left'))
-        print(f'{message_dict=}')
-        print(f'{send_confirmation=}, {receiver_id=}, {department_id=}, {message=}, {joined=}, {left=}')
+        send_confirmation = message_dict.get('send_confirmation')
+        receiver_id = message_dict.get('receiver_id')
+        department_id = message_dict.get('department_id')
+        clowns_team_id = message_dict.get('clowns_team_id')
+        message = message_dict.get('message')
+        joined = message_dict.get('joined')
+        left = message_dict.get('left')
+
         if send_confirmation:
             if not receiver_id:
                 for chat_tab in self.chat_tabs.values():
                     chat_tab.ids.output.text += f"Gesendet: {send_confirmation}\n"
             else:
-                print(f'{self.chat_tabs=}')
                 self.chat_tabs[receiver_id].ids.output.text += f"Gesendet: {send_confirmation}\n"
                 self.chat_tabs['common_chat'].ids.output.text += f"Gesendet an {values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
         elif message:
-            self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}:"
-                                                              f" {message}\n")
+            if department_id:
+                self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}:"
+                                                                  f" {message}\n")
+                self.chat_tabs[department_id].ids.output.text += f"Empfangen: {message}\n"
+            else:
+                ...
         elif joined:
-            self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
-                                                              f" hat den Chat betreten.\n")
-            new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
-                                   department_id=department_id, tab_pos=len(self.chat_tabs), websocket=self.ws)
-            self.chat_tabs[department_id] = new_chat_tab
-            self.ids.chat_tabs.add_widget(new_chat_tab)
+            if department_id:
+                self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
+                                                                  f" hat den Chat betreten.\n")
+                new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
+                                       department_id=department_id, tab_pos=len(self.chat_tabs), websocket=self.ws)
+                self.chat_tabs[department_id] = new_chat_tab
+                self.ids.chat_tabs.add_widget(new_chat_tab)
+            else:
+                ...
         elif left:
-            self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
-                                                              f" hat den Chat verlassen.\n")
+            if department_id:
+                self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
+                                                                  f" hat den Chat verlassen.\n")
+                self.ids.chat_tabs.remove_widget(self.ids.chat_tabs.get_tab_list()[self.chat_tabs[department_id].tab_pos])
+            else:
+                ...
 
     @mainthread
     def on_error(self, ws: WebSocket, error):
