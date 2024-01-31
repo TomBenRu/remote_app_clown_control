@@ -310,6 +310,8 @@ class ChatScreen(Screen):
             print(f'{tab=}')
             self.ids.chat_tabs.remove_widget(tab)
 
+        self.chat_tabs = {}
+
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = 'login'
         print(f'{threading.active_count()=}')
