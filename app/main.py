@@ -58,7 +58,7 @@ values = Values()
 class LoginScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.store = JsonStore('racc.json')
+        self.store = JsonStore('../racc.json')
         if self.store.exists('login_data'):
             self.ids.username.text = self.store.get('login_data')['username']
             self.ids.password.text = self.store.get('login_data')['password']
