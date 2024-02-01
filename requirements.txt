@@ -3,3 +3,4 @@ websocket-client~=1.7.0
 requests~=2.31.0
 PyJWT~=2.8.0
 kivymd~=1.2.0
+plyer~=2.1.0

@@ -3,6 +3,7 @@ import ssl
 import threading
 
 import jwt
+import plyer
 import requests
 import websocket
 from kivy.clock import mainthread
@@ -224,6 +225,14 @@ class ChatScreen(Screen):
         self.chat_tabs['common_chat'] = new_chat_tab
         self.ids.chat_tabs.add_widget(new_chat_tab)
 
+    def notify_event(self):
+        plyer.notification.notify(
+            title='Ihr Ereignis-Titel',
+            message='Ihr Ereignis-Nachricht',
+            app_name='Ihr App-Name',
+            timeout=10
+        )
+
     @mainthread
     def on_message(self, ws, message):
         message_dict = json.loads(message)
@@ -243,6 +252,7 @@ class ChatScreen(Screen):
                 self.chat_tabs[receiver_id].ids.output.text += f"Gesendet: {send_confirmation}\n"
                 self.chat_tabs['common_chat'].ids.output.text += f"Gesendet an {values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
         elif message:
+            self.notify_event()
             if department_id:
                 self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}:"
                                                                   f" {message}\n")
