@@ -1,29 +1,3 @@
-<MyLabel@Label>:
-    font_size: 20
-    height: 25
-    background_color: 0, 0, 0, 0
-    background_normal: ""
-    canvas.before:
-        Color:
-            rgba: 0, 1, 0, 0.5
-        RoundedRectangle:
-            size: self.size
-            pos: self.pos
-            radius: [20]  #---- This rounds the corners --- #
-
-<MyButton@Button>:
-    font_size: 20
-    background_color: 0, 0, 0, 0
-    background_normal: ""
-    canvas.before:
-        Color:
-            rgba: 0, 1, 0, 0.5
-        RoundedRectangle:
-            size: self.size
-            pos: self.pos
-            radius: [20]  #---- This rounds the corners --- #
-
-
 <LoginScreen>
     MDCard:
         size_hint: None, None
@@ -123,16 +97,18 @@
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         GridLayout:
             cols: 2
+            padding: 10, 10, 10, 10
+            spacing: 10
             size_hint: 1, None
             height: '48dp'
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-            Button:
+            MDRoundFlatButton:
                 text: 'Open Chat'
                 font_size: 36
                 size_hint: 0.5, None
                 height: '48dp'
                 on_release: root.open_connection()
-            Button:
+            MDRoundFlatButton:
                 text: 'Logout'
                 font_size: 36
                 size_hint: 0.5, None
@@ -149,25 +125,24 @@
         cols: 1
         size_hint: 1, 1
         pos_hint: {'center_x': 0.5, 'top': 1}
-        TextInput:
+        MDTextFieldRect:
             id: output
+            readonly: True
             font_size: 36
             multiline: True
         GridLayout:
             cols: 2
             size_hint: 1, None
-            TextInput:
+            MDTextField:
                 id: input
                 font_size: 36
                 multiline: False
                 hint_text: 'Type your message here'
-                hint_text_color: 0.5, 0.5, 0.5, 1
-                size_hint: 1, None
+                # size_hint: 1, None
                 height: '48dp'
-            Button:
-                text: 'Send'
-                font_size: 36
-                size_hint: 1, None
+            MDIconButton:
+                icon: 'send'
+                # size_hint: 1, None
                 height: '48dp'
                 on_release: root.send_message()
         Widget:
