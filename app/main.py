@@ -252,7 +252,7 @@ class ChatScreen(Screen):
                 self.chat_tabs[receiver_id].ids.output.text += f"Gesendet: {send_confirmation}\n"
                 self.chat_tabs['common_chat'].ids.output.text += f"Gesendet an {values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
         elif message:
-            self.notify_event()
+            # self.notify_event()
             if department_id:
                 self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}:"
                                                                   f" {message}\n")
