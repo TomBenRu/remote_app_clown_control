@@ -136,7 +136,7 @@ class CreateTeamScreen(Screen):
 
     def get_users(self):
         try:
-            response = values.session.get(f'{values.backend_url}actors/all_actors', timeout=10)
+            response = values.session.get(f'{values.backend_url}actors/all_available_actors', timeout=10)
             return response.json() if response.status_code == 200 else []
         except requests.exceptions.RequestException as e:
             return []
