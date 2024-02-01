@@ -125,7 +125,6 @@
         cols: 1
         size_hint: 1, 1
         pos_hint: {'center_x': 0.5, 'top': 1}
-        padding: 0, 0, 0, 96
         MDTextFieldRect:
             id: output
             readonly: True
@@ -146,6 +145,9 @@
                 # size_hint: 1, None
                 height: '48dp'
                 on_release: root.send_message()
+        Widget:
+            size_hint: 1, None
+            height: 72
 
 
 
