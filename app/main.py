@@ -248,7 +248,7 @@ class ChatScreen(Screen):
         if send_confirmation:
             if not receiver_id:
                 for chat_tab in self.chat_tabs.values():
-                    chat_tab.ids.output.text += f"Gesendet: {send_confirmation}\n"
+                    chat_tab.ids.output.text += f">>> {send_confirmation}\n"
             else:
                 self.chat_tabs[receiver_id].ids.output.text += f">>> {send_confirmation}\n"
                 self.chat_tabs['common_chat'].ids.output.text += f">>> {values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
