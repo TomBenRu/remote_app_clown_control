@@ -250,7 +250,7 @@ class ChatScreen(Screen):
                 for chat_tab in self.chat_tabs.values():
                     chat_tab.ids.output.text += f"Gesendet: {send_confirmation}\n"
             else:
-                self.chat_tabs[receiver_id].ids.output.text += f"Gesendet: {send_confirmation}\n"
+                self.chat_tabs[receiver_id].ids.output.text += f"► {send_confirmation}\n"
                 self.chat_tabs['common_chat'].ids.output.text += f"Gesendet an {values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
         elif message:
             # self.notify_event()
@@ -261,7 +261,7 @@ class ChatScreen(Screen):
             if department_id:
                 self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}:"
                                                                   f" {message}\n")
-                self.chat_tabs[department_id].ids.output.text += f"Empfangen: {message}\n"
+                self.chat_tabs[department_id].ids.output.text += f"◄ {message}\n"
             else:
                 ...
         elif joined:
