@@ -27,7 +27,7 @@ from websocket import WebSocket, WebSocketApp
 
 Window.softinput_mode = "below_target"
 
-service = autoclass('org.kivy.android.PythonService').mService
+# service = autoclass('org.kivy.android.PythonService').mService
 
 
 class Values:
@@ -225,14 +225,14 @@ class ChatScreen(Screen):
         self.ws.on_open = self.on_open
         threading.Thread(target=self.ws.run_forever,
                          kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
-        # new_chat_tab = ChatTab(tab_label_text='Chat', websocket=self.ws, tab_pos=0)
-        # self.chat_tabs['common_chat'] = new_chat_tab
-        # self.ids.chat_tabs.add_widget(new_chat_tab)
+        new_chat_tab = ChatTab(tab_label_text='Chat', websocket=self.ws, tab_pos=0)
+        self.chat_tabs['common_chat'] = new_chat_tab
+        self.ids.chat_tabs.add_widget(new_chat_tab)
 
     def create_connection_service(self):
-        # self.open_connection()
-        service.onCreate()
-        service.start(self.open_connection)
+        self.open_connection()
+        # service.onCreate()
+        # service.start(self.open_connection)
 
     def notify_event(self):
         plyer.notification.notify(
