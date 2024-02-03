@@ -230,8 +230,9 @@ class ChatScreen(Screen):
         self.ids.chat_tabs.add_widget(new_chat_tab)
 
     def create_connection_service(self):
-        service.onCreate()
-        service.start(self.open_connection)
+        self.open_connection()
+        # service.onCreate()
+        # service.start(self.open_connection)
 
     def notify_event(self):
         plyer.notification.notify(
