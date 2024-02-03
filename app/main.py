@@ -27,7 +27,11 @@ from websocket import WebSocket, WebSocketApp
 
 Window.softinput_mode = "below_target"
 
-# service = autoclass('org.kivy.android.PythonService').mService
+
+package_name = 'remote_clown_control'
+package_domain = 'org.hcc'
+service_name = 'Websocket'
+SERVICE_NAME = f'{package_domain}.{package_name}.Service{service_name}'
 
 
 class Values:
@@ -208,6 +212,7 @@ class ChatScreen(Screen):
         super().__init__(**kwargs)
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
+        self.service = None
 
     def on_tab_switch(self, *args):
         print(args)
@@ -231,8 +236,12 @@ class ChatScreen(Screen):
 
     def create_connection_service(self):
         self.open_connection()
-        # service.onCreate()
-        # service.start(self.open_connection)
+        if platform == 'android':
+            service = autoclass(SERVICE_NAME)
+            self.mActivity = autoclass('org.kivy.android.PythonActivity')
+            argument = ''
+            service.start(self.mActivity, argument)
+            self.service = service
 
     def notify_event(self):
         plyer.notification.notify(
@@ -328,6 +337,8 @@ class ChatScreen(Screen):
         values.session.post(f'{values.backend_url}actors/delete-team',
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         self.close_connection(None)
+        if platform == 'android' and self.service:
+            self.service.stop(self.mActivity)
 
         for tab in self.ids.chat_tabs.get_tab_list():
             print(f'{tab=}')

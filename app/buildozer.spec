@@ -7,7 +7,7 @@ title = Remote Clown Control
 package.name = remote_clown_control
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.hcc
+package.domain = org.kivy
 
 # (str) Source code where the main.py live
 source.dir = .
@@ -55,6 +55,7 @@ orientation = portrait
 
 # (list) List of service to declare
 #services = NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY
+services = Websocket:service.py
 
 #
 # OSX Specific
