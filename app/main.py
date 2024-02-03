@@ -23,6 +23,7 @@ from kivymd.uix.screenmanager import ScreenManager
 from kivymd.uix.selectioncontrol import MDCheckbox
 from kivy.storage.jsonstore import JsonStore
 from kivymd.uix.tab import MDTabsBase
+from oscpy.server import OSCThreadServer
 from websocket import WebSocket, WebSocketApp
 
 Window.softinput_mode = "below_target"
@@ -213,6 +214,13 @@ class ChatScreen(Screen):
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
         self.service = None
+        self.server = server = OSCThreadServer()
+        server.listen(
+            address=b'localhost',
+            port=3002,
+            default=True,
+        )
+        server.bind(b'/message', self.display_message)
 
     def on_tab_switch(self, *args):
         print(args)
@@ -243,13 +251,8 @@ class ChatScreen(Screen):
             service.start(self.mActivity, argument)
             self.service = service
 
-    def notify_event(self):
-        plyer.notification.notify(
-            title='Ihr Ereignis-Titel',
-            message='Ihr Ereignis-Nachricht',
-            app_name='Ihr App-Name',
-            timeout=10
-        )
+    def display_message(self, message):
+        self.chat_tabs['common_chat'].ids.output.text += f"{message}\n"
 
     @mainthread
     def on_message(self, ws, message):
