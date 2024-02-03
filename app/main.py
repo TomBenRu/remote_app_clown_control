@@ -6,6 +6,7 @@ import jwt
 import plyer
 import requests
 import websocket
+from jnius import autoclass
 from kivy import platform
 from kivy.clock import mainthread
 from kivy.core.window import Window
@@ -25,6 +26,8 @@ from kivymd.uix.tab import MDTabsBase
 from websocket import WebSocket, WebSocketApp
 
 Window.softinput_mode = "below_target"
+
+service = autoclass('org.kivy.android.PythonService').mService
 
 
 class Values:
@@ -225,6 +228,10 @@ class ChatScreen(Screen):
         new_chat_tab = ChatTab(tab_label_text='Chat', websocket=self.ws, tab_pos=0)
         self.chat_tabs['common_chat'] = new_chat_tab
         self.ids.chat_tabs.add_widget(new_chat_tab)
+
+    def create_connection_service(self):
+        service.onCreate()
+        service.start(self.open_connection)
 
     def notify_event(self):
         plyer.notification.notify(
