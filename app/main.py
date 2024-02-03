@@ -238,7 +238,7 @@ class ChatScreen(Screen):
         self.open_connection()
         if platform == 'android':
             service = autoclass(SERVICE_NAME)
-            self.mActivity = autoclass('org.kivy.android.PythonActivity')
+            self.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
             argument = ''
             service.start(self.mActivity, argument)
             self.service = service
