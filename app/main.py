@@ -215,7 +215,13 @@ class ChatScreen(Screen):
         super().__init__(**kwargs)
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
-        self.server = None
+        self.server = server = OSCThreadServer()
+        server.listen(
+            address=b'localhost',
+            port=3002,
+            default=True,
+        )
+        server.bind(b'/message', self.display_message)
 
     def on_tab_switch(self, *args):
         print(args)
@@ -238,28 +244,7 @@ class ChatScreen(Screen):
         self.ids.chat_tabs.add_widget(new_chat_tab)
 
     def create_connection_service(self):
-        try:
-            self.open_connection()
-        except Exception as e:
-            print(f'------------------Fehler in open_connection(): {e}---------------------------')
-            raise Exception('Was ist da passiert?') from e
-        if platform == 'android':
-            self.start_service()
-
-    @mainthread
-    def start_service(self):
-        service = autoclass(SERVICE_NAME)
-        argument = ''
-        service.start(values.mActivity, argument)
-        values.service = service
-
-        self.server = server = OSCThreadServer()
-        server.listen(
-            address=b'localhost',
-            port=3002,
-            default=True,
-        )
-        server.bind(b'/message', self.display_message)
+        self.open_connection()
 
     @mainthread
     def display_message(self, message):
@@ -356,18 +341,17 @@ class ChatScreen(Screen):
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         self.close_connection(None)
         if platform == 'android' and values.service:
-            print('--------------Stopping service----------------')
             values.service.stop(values.mActivity)
 
         for tab in self.ids.chat_tabs.get_tab_list():
+            print(f'{tab=}')
             self.ids.chat_tabs.remove_widget(tab)
-            print(f'------------Removing tab {tab}----------------')
 
         self.chat_tabs = {}
 
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = 'login'
-        print(f'-----------------------------{threading.active_count()=}')
+        print(f'{threading.active_count()=}')
 
 
 class ClownControlApp(MDApp):
@@ -380,8 +364,17 @@ class ClownControlApp(MDApp):
         sm.add_widget(ChatScreen(name='chat'))
         return sm
 
-    def on_start(self):
+    @mainthread
+    def start_service(self):
+        service = autoclass(SERVICE_NAME)
         values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+        argument = ''
+        service.start(values.mActivity, argument)
+        values.service = service
+
+    def on_start(self):
+        if platform == 'android':
+            self.start_service()
 
 
 if __name__ == '__main__':
