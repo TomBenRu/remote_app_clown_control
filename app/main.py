@@ -253,6 +253,7 @@ class ChatScreen(Screen):
         #     self.service = service
 
     def display_message(self, message):
+        print(f'------------------{message=}------------------------------------')
         self.chat_tabs['common_chat'].ids.output.text += f"{message}\n"
 
     @mainthread
