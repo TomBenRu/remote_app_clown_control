@@ -242,6 +242,7 @@ class ChatScreen(Screen):
             self.open_connection()
         except Exception as e:
             print(f'------------------Fehler in open_connection(): {e}---------------------------')
+            raise Exception('Was ist da passiert?') from e
         if platform == 'android':
             self.start_service()
 
