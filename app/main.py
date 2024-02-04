@@ -337,10 +337,13 @@ class ChatScreen(Screen):
                 title='Logout', text='Soll das Team wirklich gelöscht werden?',
                 buttons=[
                     MDFlatButton(text='Ja', on_release=self.logout),
-                    MDFlatButton(text='Nein', on_release=lambda i: i.dismiss(force=True))
+                    MDFlatButton(text='Nein', on_release=self.close_dialog_exit)
                 ]
             )
         self.dialog_exit.open()
+
+    def close_dialog_exit(self, instance):
+        self.dialog_exit.dismiss(force=True)
 
 
     def logout(self, instance):
