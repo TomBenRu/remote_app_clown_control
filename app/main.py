@@ -355,7 +355,7 @@ class ChatScreen(Screen):
         print(f'{threading.active_count()=}')
 
 
-class ClownControllApp(MDApp):
+class ClownControlApp(MDApp):
     def build(self):
         self.theme_cls.theme_style = 'Dark'
         self.theme_cls.primary_palette = 'Orange'
@@ -380,4 +380,4 @@ class ClownControllApp(MDApp):
 
 
 if __name__ == '__main__':
-    ClownControllApp().run()
+    ClownControlApp().run()
