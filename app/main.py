@@ -378,6 +378,5 @@ class ClownControlApp(MDApp):
             self.start_service()
 
 
-
 if __name__ == '__main__':
     ClownControlApp().run()
