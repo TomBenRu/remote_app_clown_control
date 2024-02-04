@@ -1,7 +1,11 @@
 import time
 
+from jnius import autoclass
 from oscpy.client import OSCClient
 
+
+PythonService = autoclass('org.kivy.android.PythonService')
+PythonService.mService.setAutoRestartService(True)
 
 CLIENT = OSCClient('localhost', 3002)
 
