@@ -374,6 +374,7 @@ class ClownControlApp(MDApp):
         values.service = service
 
     def on_start(self):
+        return
         if platform == 'android':
             self.start_service()
 

@@ -8,6 +8,7 @@ import time
 # PythonService.mService.setAutoRestartService(True)
 
 # CLIENT = OSCClient('localhost', 3002)
+print('---------------------------Hallo from PythonService.py---------------------------')
 
 if __name__ == '__main__':
     t = 0
