@@ -7,7 +7,7 @@ from oscpy.client import OSCClient
 # PythonService = autoclass('org.kivy.android.PythonService')
 # PythonService.mService.setAutoRestartService(True)
 
-CLIENT = OSCClient('localhost', 3002)
+CLIENT = OSCClient(b'localhost', 3002)
 
 if __name__ == '__main__':
 

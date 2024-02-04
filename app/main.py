@@ -217,11 +217,11 @@ class ChatScreen(Screen):
         self.chat_tabs: dict[str, ChatTab] = {}
         self.server = server = OSCThreadServer()
         server.listen(
-            address='localhost',
+            address=b'localhost',
             port=3002,
             default=True,
         )
-        server.bind('/message', self.display_message)
+        server.bind(b'/message', self.display_message)
 
     def on_tab_switch(self, *args):
         print(args)
