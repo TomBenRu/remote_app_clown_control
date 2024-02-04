@@ -8,13 +8,12 @@ import time
 # PythonService.mService.setAutoRestartService(True)
 
 # CLIENT = OSCClient('localhost', 3002)
-print('---------------------------Hallo from PythonService.py---------------------------')
 
-if __name__ == '__main__':
-    t = 0
-    while True:
-        time.sleep(1)
-        t += 1
-        print(f'{t=}')
-    #     CLIENT.send_message('/message', [f'message {t}'])
+
+t = 0
+while True:
+    time.sleep(1)
+    t += 1
+    print(f'{t=}')
+#     CLIENT.send_message('/message', [f'message {t}'])
 
