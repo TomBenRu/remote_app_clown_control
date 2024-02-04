@@ -46,6 +46,8 @@ class Values:
         self.ws_url = "wss://clinic-clown-control.onrender.com/ws/"
         self.team_of_actors = {}
         self.departments_of_location = {}
+        self.mActivity = None
+        self.service = None
 
     def set_session_token(self, token: str):
         self.token = token
@@ -213,7 +215,6 @@ class ChatScreen(Screen):
         super().__init__(**kwargs)
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
-        self.service = None
         self.server = server = OSCThreadServer()
         server.listen(
             address='localhost',
@@ -244,12 +245,12 @@ class ChatScreen(Screen):
 
     def create_connection_service(self):
         self.open_connection()
-        if platform == 'android':
-            service = autoclass(SERVICE_NAME)
-            self.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
-            argument = ''
-            service.start(self.mActivity, argument)
-            self.service = service
+        # if platform == 'android':
+        #     service = autoclass(SERVICE_NAME)
+        #     self.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+        #     argument = ''
+        #     service.start(self.mActivity, argument)
+        #     self.service = service
 
     def display_message(self, message):
         self.chat_tabs['common_chat'].ids.output.text += f"{message}\n"
@@ -340,8 +341,8 @@ class ChatScreen(Screen):
         values.session.post(f'{values.backend_url}actors/delete-team',
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         self.close_connection(None)
-        if platform == 'android' and self.service:
-            self.service.stop(self.mActivity)
+        if platform == 'android' and values.service:
+            values.service.stop(values.mActivity)
 
         for tab in self.ids.chat_tabs.get_tab_list():
             print(f'{tab=}')
@@ -363,6 +364,14 @@ class ClownControllApp(MDApp):
         sm.add_widget(CreateTeamScreen(name='team'))
         sm.add_widget(ChatScreen(name='chat'))
         return sm
+
+    def on_start(self):
+        if platform == 'android':
+            service = autoclass(SERVICE_NAME)
+            values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+            argument = ''
+            service.start(values.mActivity, argument)
+            values.service = service
 
 
 if __name__ == '__main__':
