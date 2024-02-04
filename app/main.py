@@ -215,13 +215,7 @@ class ChatScreen(Screen):
         super().__init__(**kwargs)
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
-        self.server = server = OSCThreadServer()
-        server.listen(
-            address=b'localhost',
-            port=3002,
-            default=True,
-        )
-        server.bind(b'/message', self.display_message)
+        self.server = None
 
     def on_tab_switch(self, *args):
         print(args)
@@ -245,12 +239,24 @@ class ChatScreen(Screen):
 
     def create_connection_service(self):
         self.open_connection()
-        # if platform == 'android':
-        #     service = autoclass(SERVICE_NAME)
-        #     self.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
-        #     argument = ''
-        #     service.start(self.mActivity, argument)
-        #     self.service = service
+        if platform == 'android':
+            self.start_service()
+
+    @mainthread
+    def start_service(self):
+        service = autoclass(SERVICE_NAME)
+        values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+        argument = ''
+        service.start(values.mActivity, argument)
+        values.service = service
+
+        self.server = server = OSCThreadServer()
+        server.listen(
+            address=b'localhost',
+            port=3002,
+            default=True,
+        )
+        server.bind(b'/message', self.display_message)
 
     @mainthread
     def display_message(self, message):
@@ -369,19 +375,6 @@ class ClownControlApp(MDApp):
         sm.add_widget(CreateTeamScreen(name='team'))
         sm.add_widget(ChatScreen(name='chat'))
         return sm
-
-    @mainthread
-    def start_service(self):
-        service = autoclass(SERVICE_NAME)
-        values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
-        argument = ''
-        service.start(values.mActivity, argument)
-        values.service = service
-
-    def on_start(self):
-        if platform == 'android':
-            self.start_service()
-
 
 
 if __name__ == '__main__':
