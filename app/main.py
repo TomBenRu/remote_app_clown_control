@@ -249,7 +249,6 @@ class ChatScreen(Screen):
     @mainthread
     def start_service(self):
         service = autoclass(SERVICE_NAME)
-        values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
         argument = ''
         service.start(values.mActivity, argument)
         values.service = service
@@ -380,6 +379,9 @@ class ClownControlApp(MDApp):
         sm.add_widget(CreateTeamScreen(name='team'))
         sm.add_widget(ChatScreen(name='chat'))
         return sm
+
+    def on_start(self):
+        values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
 
 
 if __name__ == '__main__':
