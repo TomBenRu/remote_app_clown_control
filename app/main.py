@@ -238,7 +238,10 @@ class ChatScreen(Screen):
         self.ids.chat_tabs.add_widget(new_chat_tab)
 
     def create_connection_service(self):
-        self.open_connection()
+        try:
+            self.open_connection()
+        except Exception as e:
+            print(f'------------------Fehler in open_connection(): {e}---------------------------')
         if platform == 'android':
             self.start_service()
 
