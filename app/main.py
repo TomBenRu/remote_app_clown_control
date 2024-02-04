@@ -334,7 +334,7 @@ class ChatScreen(Screen):
     def ask_for_logout(self):
         if not self.dialog_exit:
             self.dialog_exit = MDDialog(
-                title='Logout', text='Soll das Team wirklich gelöscht werden?',
+                title='Logout', text='Wollen Sie sich wirklich ausloggen\nund die Anwendung beenden?',
                 buttons=[
                     MDFlatButton(text='Ja', on_release=self.logout),
                     MDFlatButton(text='Nein', on_release=self.close_dialog_exit)
