@@ -365,13 +365,18 @@ class ClownControllApp(MDApp):
         sm.add_widget(ChatScreen(name='chat'))
         return sm
 
+    @mainthread
+    def start_service(self):
+        service = autoclass(SERVICE_NAME)
+        values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+        argument = ''
+        service.start(values.mActivity, argument)
+        values.service = service
+
     def on_start(self):
         if platform == 'android':
-            service = autoclass(SERVICE_NAME)
-            values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
-            argument = ''
-            service.start(values.mActivity, argument)
-            values.service = service
+            self.start_service()
+
 
 
 if __name__ == '__main__':
