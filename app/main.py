@@ -256,7 +256,7 @@ class ChatScreen(Screen):
     def display_message(self, message):
         print(f'------------------{message=}------------------------------------')
         try:
-            self.chat_tabs['common_chat'].ids.output.text += f"{message}\n"
+            self.chat_tabs['common_chat'].ids.output.text += f"{message.decode('utf-8')}\n"
         except Exception as e:
             print(f'Fehler in display_message: {e}')
 
