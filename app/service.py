@@ -16,5 +16,6 @@ if __name__ == '__main__':
         time.sleep(1)
         t += 1
         print(f'{t=}')
-        CLIENT.send_message('/message', [f'message {t}'])
+        message = f'message {t}'.encode('utf-8')
+        CLIENT.send_message('/message', [message])
 
