@@ -18,7 +18,7 @@ if __name__ == '__main__':
         print(f'{t=}')
         message = f'message {t}'.encode('utf-8')
         try:
-            CLIENT.send_message('/message', [message])
+            CLIENT.send_message(b'/message', [message])
         except Exception as e:
             print(f'------------------Fehler: {e}---------------------------')
 
