@@ -357,17 +357,18 @@ class ChatScreen(Screen):
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         self.close_connection(None)
         if platform == 'android' and values.service:
+            print('--------------Stopping service----------------')
             values.service.stop(values.mActivity)
 
         for tab in self.ids.chat_tabs.get_tab_list():
-            print(f'{tab=}')
             self.ids.chat_tabs.remove_widget(tab)
+            print(f'------------Removing tab {tab}----------------')
 
         self.chat_tabs = {}
 
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = 'login'
-        print(f'{threading.active_count()=}')
+        print(f'-----------------------------{threading.active_count()=}')
 
 
 class ClownControlApp(MDApp):
