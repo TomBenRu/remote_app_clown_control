@@ -252,6 +252,7 @@ class ChatScreen(Screen):
         #     service.start(self.mActivity, argument)
         #     self.service = service
 
+    @mainthread
     def display_message(self, message):
         print(f'------------------{message=}------------------------------------')
         try:
