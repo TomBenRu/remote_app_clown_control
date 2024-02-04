@@ -254,7 +254,10 @@ class ChatScreen(Screen):
 
     def display_message(self, message):
         print(f'------------------{message=}------------------------------------')
-        self.chat_tabs['common_chat'].ids.output.text += f"{message}\n"
+        try:
+            self.chat_tabs['common_chat'].ids.output.text += f"{message}\n"
+        except Exception as e:
+            print(f'Fehler in display_message: {e}')
 
     @mainthread
     def on_message(self, ws, message):
