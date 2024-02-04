@@ -113,7 +113,7 @@
                 font_size: 36
                 size_hint: 0.5, None
                 height: '48dp'
-                on_release: (root.logout(), app.stop())
+                on_release: root.ask_for_logout()
         MDTabs:
             id: chat_tabs
             anchor_y: "bottom"

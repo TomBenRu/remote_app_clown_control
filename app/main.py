@@ -17,6 +17,8 @@ from kivy.uix.label import Label
 from kivy.metrics import sp
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.label import MDLabel
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screenmanager import ScreenManager
@@ -213,6 +215,7 @@ class ChatTab(FloatLayout, MDTabsBase):
 class ChatScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.dialog_exit = None
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
         self.server = server = OSCThreadServer()
@@ -328,6 +331,18 @@ class ChatScreen(Screen):
             print('Not connected')
             # self.output.text += "Not connected\n"
 
+    def ask_for_logout(self):
+        if not self.dialog_exit:
+            self.dialog_exit = MDDialog(
+                title='Logout', text='Soll das Team wirklich gelöscht werden?',
+                buttons=[
+                    MDFlatButton(text='Ja', on_release=self.logout),
+                    MDFlatButton(text='Nein', on_release=lambda: print('Kein Logout'))
+                ]
+            )
+        self.dialog_exit.open()
+
+
     def logout(self):
         try:
             self.ws.send(json.dumps({"chat-message": 'Wir verabschieden uns für heute. Danke für die Unterstützung!',
@@ -352,6 +367,7 @@ class ChatScreen(Screen):
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = 'login'
         print(f'{threading.active_count()=}')
+        MDApp.get_running_app().stop()
 
 
 class ClownControlApp(MDApp):
