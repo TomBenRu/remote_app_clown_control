@@ -25,11 +25,12 @@ from kivymd.uix.screenmanager import ScreenManager
 from kivymd.uix.selectioncontrol import MDCheckbox
 from kivy.storage.jsonstore import JsonStore
 from kivymd.uix.tab import MDTabsBase
+from oscpy.client import OSCClient
 from oscpy.server import OSCThreadServer
 from websocket import WebSocket, WebSocketApp
 
-Window.softinput_mode = "below_target"
 
+Window.softinput_mode = "below_target"
 
 package_name = 'remote_clown_control'
 package_domain = 'org.hcc'
@@ -197,10 +198,12 @@ class ChatTab(FloatLayout, MDTabsBase):
         self.tab_pos = tab_pos
         self.department_id = department_id
         self.ws = websocket
+        self.client = OSCClient(b'localhost', 3000)
         self.layout = GridLayout(cols=2, size_hint_y=None)
 
     @mainthread
     def send_message(self):
+        self.client.send_message(b'/call', [self.ids.input.text.encode('utf-8')])
         user_input = self.ids.input.text
         data = {"chat-message": user_input, "receiver_id": self.department_id}
         json_data = json.dumps(data)
