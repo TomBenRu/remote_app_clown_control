@@ -1,3 +1,4 @@
+import json
 import time
 
 # from jnius import autoclass
@@ -12,7 +13,8 @@ SERVER = OSCThreadServer()
 
 
 def handle_call(call):
-    print(f'>>>>>>>>>>>> call: {call}')
+    call = json.loads(call.decode('utf-8'))
+    print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> call: {call}')
 
 
 if __name__ == '__main__':

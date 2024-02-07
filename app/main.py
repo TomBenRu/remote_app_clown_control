@@ -203,10 +203,10 @@ class ChatTab(FloatLayout, MDTabsBase):
 
     @mainthread
     def send_message(self):
-        self.client.send_message(b'/call', [self.ids.input.text.encode('utf-8')])
         user_input = self.ids.input.text
         data = {"chat-message": user_input, "receiver_id": self.department_id}
         json_data = json.dumps(data)
+        self.client.send_message(b'/call', [json_data.encode('utf-8')])
         try:
             self.ws.send(json_data)
         except Exception as e:
