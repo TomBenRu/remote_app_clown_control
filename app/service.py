@@ -12,7 +12,7 @@ SERVER = OSCThreadServer()
 
 
 def handle_call(call):
-    print(f'call: {call}')
+    print(f'>>>>>>>>>>>> call: {call}')
 
 
 if __name__ == '__main__':
