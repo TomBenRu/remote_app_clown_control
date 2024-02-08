@@ -44,6 +44,7 @@ class OscHandler:
         self.client.send_message(b'/ws_error', [error.encode('utf-8'),])
 
     def handle_ws_open(self, ws):
+        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws opened {ws=}')
         ws_pickled = pickle.dumps(ws)
         self.client.send_message(b'/ws_opened', [ws_pickled])
 
@@ -78,14 +79,14 @@ if __name__ == '__main__':
     SERVER.bind(b'/call', handle_call)
     osc_handler = OscHandler()
 
-    t = 0
-    while True:
-        time.sleep(10)
-        t += 1
-        print(f'{t=}')
-        message = f'message {t}'.encode('utf-8')
-        try:
-            CLIENT.send_message(b'/message', [message,],)
-        except Exception as e:
-            print(f'------------------Fehler: {e}---------------------------')
+    # t = 0
+    # while True:
+    #     time.sleep(10)
+    #     t += 1
+    #     print(f'{t=}')
+    #     message = f'message {t}'.encode('utf-8')
+    #     try:
+    #         CLIENT.send_message(b'/message', [message,],)
+    #     except Exception as e:
+    #         print(f'------------------Fehler: {e}---------------------------')
 

@@ -243,21 +243,21 @@ class ChatScreen(Screen):
                                  [values.ws_url.encode('utf-8'),
                                         values.token.encode('utf-8'),
                                         values.team_of_actors['id'].encode('utf-8')])
-        if self.ws:
-            self.chat_tabs['common_chat'].ids.output.text += f"Connection already open!\n"
-            return
-        self.ws = websocket.WebSocketApp(values.ws_url,
-                                         on_message=self.on_message,
-                                         on_error=self.on_error,
-                                         on_close=self.on_close,
-                                         cookie=f'clown-call-auth={values.token}',
-                                         header={'team_of_actors_id': values.team_of_actors['id']})
-        self.ws.on_open = self.on_open
-        threading.Thread(target=self.ws.run_forever,
-                         kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
-        new_chat_tab = ChatTab(tab_label_text='Chat', websocket=self.ws, osc_client=self.client, tab_pos=0)
-        self.chat_tabs['common_chat'] = new_chat_tab
-        self.ids.chat_tabs.add_widget(new_chat_tab)
+        # if self.ws:
+        #     self.chat_tabs['common_chat'].ids.output.text += f"Connection already open!\n"
+        #     return
+        # self.ws = websocket.WebSocketApp(values.ws_url,
+        #                                  on_message=self.on_message,
+        #                                  on_error=self.on_error,
+        #                                  on_close=self.on_close,
+        #                                  cookie=f'clown-call-auth={values.token}',
+        #                                  header={'team_of_actors_id': values.team_of_actors['id']})
+        # self.ws.on_open = self.on_open
+        # threading.Thread(target=self.ws.run_forever,
+        #                  kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
+        # new_chat_tab = ChatTab(tab_label_text='Chat', websocket=self.ws, osc_client=self.client, tab_pos=0)
+        # self.chat_tabs['common_chat'] = new_chat_tab
+        # self.ids.chat_tabs.add_widget(new_chat_tab)
 
     def create_connection_service(self):
         self.open_connection()
