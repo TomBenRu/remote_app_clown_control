@@ -5,13 +5,13 @@ import time
 
 import plyer
 import websocket
-# from jnius import autoclass
+from jnius import autoclass
 from oscpy.client import OSCClient
 from oscpy.server import OSCThreadServer
 from websocket import WebSocketApp
 
-# PythonService = autoclass('org.kivy.android.PythonService')
-# PythonService.mService.setAutoRestartService(True)
+PythonService = autoclass('org.kivy.android.PythonService')
+PythonService.mService.setAutoRestartService(True)
 
 CLIENT = OSCClient(b'localhost', 3002)
 SERVER = OSCThreadServer()
