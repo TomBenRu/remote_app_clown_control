@@ -206,7 +206,8 @@ class ChatTab(FloatLayout, MDTabsBase):
         user_input = self.ids.input.text
         data = {"chat-message": user_input, "receiver_id": self.department_id}
         json_data = json.dumps(data)
-        self.client.send_message(b'/call', [user_input.encode('utf-8'), self.department_id.encode('utf-8')])
+        self.client.send_message(b'/call', [user_input.encode('utf-8'),
+                                            self.department_id.encode('utf-8') if self.department_id else 'none'.encode('utf-8')])
         try:
             self.ws.send(json_data)
         except Exception as e:
