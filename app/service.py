@@ -17,6 +17,29 @@ CLIENT = OSCClient(b'localhost', 3002)
 SERVER = OSCThreadServer()
 
 
+class NotificationAndroid:
+    def __init__(self, title: str, message: str):
+        self.title = title
+        self.message = message
+
+    def notify(self):
+        ''' Displays a native Android notification '''
+        from jnius import autoclass
+        AndroidString = autoclass('java.lang.String')
+        PythonActivity = autoclass('org.renpy.android.PythonActivity')
+        NotificationBuilder = autoclass('android.app.Notification$Builder')
+        Drawable = autoclass('net.clusterbleep.notificationdemo.R$drawable')
+        icon = Drawable.icon
+        noti = NotificationBuilder(PythonActivity.mActivity)
+        #noti.setDefaults(Notification.DEFAULT_ALL)
+        noti.setContentTitle(AndroidString(self.title.encode('utf-8')))
+        noti.setContentText(AndroidString(self.message.encode('utf-8')))
+        noti.setSmallIcon(icon)
+        noti.setAutoCancel(True)
+        nm = PythonActivity.mActivity.getSystemService(PythonActivity.NOTIFICATION_SERVICE)
+        nm.notify(0, noti.build())
+
+
 class OscHandler:
     def __init__(self):
         self.client = CLIENT
@@ -39,7 +62,11 @@ class OscHandler:
 
     def handle_ws_message(self, ws, message):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws message {message=}')
-        if json.loads(message).get('message'):
+        if message := json.loads(message).get('message'):
+            try:
+                NotificationAndroid('Message from server', message).notify()
+            except Exception as e:
+                print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> notification failed {e=}')
             print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> VIBRATE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
             try:
                 self.vibrate()

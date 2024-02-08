@@ -262,7 +262,7 @@ class ChatScreen(Screen):
             # self.notify_event()
             # eine Vibration wird ausgelöst, wenn die App auf Android läuft
             if platform == 'android':
-                plyer.vibrator.vibrate(time=4)
+                # plyer.vibrator.vibrate(time=4)
                 plyer.vibrator.pattern(pattern=[0, 0.5, 0.5, 1, 0.5, 0.5, 0.5, 1])
             if department_id:
                 self.chat_tabs['common_chat'].ids.output.text += (f"<<< {values.departments_of_location[department_id]['name']}:"
