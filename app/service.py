@@ -53,10 +53,10 @@ class OscHandler:
     def handle_already_open_ws_connection(self):
         self.client.send_message(b'/ws_already_open', [1,])
 
-    def handle_connect(self, values):
-        self.open_ws_connection(values[0].decode('utf-8'),
-                                values[1].decode('utf-8'),
-                                values[2].decode('utf-8'))
+    def handle_connect(self, ws_url, token, team_of_actors_id):
+        self.open_ws_connection(ws_url.decode('utf-8'),
+                                token.decode('utf-8'),
+                                team_of_actors_id.decode('utf-8'))
 
     def open_ws_connection(self, ws_url: str, token: str, team_of_actors_id: str):
         if self.ws:
@@ -76,6 +76,7 @@ class OscHandler:
 if __name__ == '__main__':
     SERVER.listen(b'localhost', port=3000, default=True)
     SERVER.bind(b'/call', handle_call)
+    osc_handler = OscHandler()
 
     t = 0
     while True:

@@ -193,12 +193,12 @@ class CreateTeamScreen(Screen):
 
 
 class ChatTab(FloatLayout, MDTabsBase):
-    def __init__(self, websocket: WebSocketApp, tab_pos: int, department_id=None, **kwargs):
+    def __init__(self, websocket: WebSocketApp, osc_client: OSCClient, tab_pos: int, department_id=None, **kwargs):
         super().__init__(**kwargs)
         self.tab_pos = tab_pos
         self.department_id = department_id
         self.ws = websocket
-        self.client = OSCClient(b'localhost', 3000)
+        self.client = osc_client
         self.layout = GridLayout(cols=2, size_hint_y=None)
 
     @mainthread
@@ -222,6 +222,7 @@ class ChatScreen(Screen):
         self.dialog_exit = None
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
+        self.client = OSCClient(b'localhost', 3000)
         self.server = server = OSCThreadServer()
         server.listen(
             address=b'localhost',
@@ -229,11 +230,19 @@ class ChatScreen(Screen):
             default=True,
         )
         server.bind(b'/message', self.display_message)
+        server.bind(b'/ws_opened', self.display_call)
+
+    def opened(self, pickled_ws: bytes):
+        print(f'{pickled_ws.decode("utf-8")=}')
 
     def on_tab_switch(self, *args):
         print(args)
 
     def open_connection(self):
+        self.client.send_message(b'/connect',
+                                 [values.ws_url.encode('utf-8'),
+                                        values.token.encode('utf-8'),
+                                        values.team_of_actors['id'].encode('utf-8')])
         if self.ws:
             self.chat_tabs['common_chat'].ids.output.text += f"Connection already open!\n"
             return
@@ -246,7 +255,7 @@ class ChatScreen(Screen):
         self.ws.on_open = self.on_open
         threading.Thread(target=self.ws.run_forever,
                          kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
-        new_chat_tab = ChatTab(tab_label_text='Chat', websocket=self.ws, tab_pos=0)
+        new_chat_tab = ChatTab(tab_label_text='Chat', websocket=self.ws, osc_client=self.client, tab_pos=0)
         self.chat_tabs['common_chat'] = new_chat_tab
         self.ids.chat_tabs.add_widget(new_chat_tab)
 
