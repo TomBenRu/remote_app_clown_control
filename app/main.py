@@ -205,7 +205,7 @@ class ChatTab(FloatLayout, MDTabsBase):
         user_input = self.ids.input.text
         data = {"chat-message": user_input, "receiver_id": self.department_id}
         self.client.send_message(b'/call', [user_input.encode('utf-8'),
-                                            self.department_id.encode('utf-8') if self.department_id else 'none'.encode('utf-8')])
+                                            self.department_id.encode('utf-8') if self.department_id else '-1'.encode('utf-8')])
         self.ids.input.text = ''
 
 
@@ -222,7 +222,7 @@ class ChatScreen(Screen):
             port=3002,
             default=True,
         )
-        server.bind(b'/message', self.display_message)
+        server.bind(b'/message', self.on_message)
         server.bind(b'/ws_opened', self.ws_opened)
 
     @mainthread
@@ -260,16 +260,8 @@ class ChatScreen(Screen):
         self.open_connection()
 
     @mainthread
-    def display_message(self, message):
-        print(f'------------------{message=}------------------------------------')
-        try:
-            self.chat_tabs['common_chat'].ids.output.text += f"{message.decode('utf-8')}\n"
-        except Exception as e:
-            print(f'Fehler in display_message: {e}')
-
-    @mainthread
     def on_message(self, ws, message):
-        message_dict = json.loads(message)
+        message_dict = json.loads(message.decode('utf-8'))
         send_confirmation = message_dict.get('send_confirmation')
         receiver_id = message_dict.get('receiver_id')
         department_id = message_dict.get('department_id')

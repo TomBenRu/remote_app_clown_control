@@ -33,10 +33,15 @@ class OscHandler:
         self.server.bind(b'/connect', self.handle_connect)
 
         self.ws: WebSocketApp | None = None
-        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> osc handler init')
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> osc handler init')
 
-    def handle_call(self, call):
-        ...
+    def handle_call(self, message, department_id):
+        message = message.decode('utf-8')
+        department_id = department_id.decode('utf-8')
+        if department_id == '-1':
+            department_id = None
+        self.ws.send(json.dumps({'message': message, 'department_id': department_id}))
+
 
     def handle_ws_message(self, ws, message):
         self.client.send_message(b'/ws_message', [message.encode('utf-8'),])
