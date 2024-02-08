@@ -1,5 +1,4 @@
 import json
-import pickle
 import ssl
 import threading
 import time
@@ -42,7 +41,10 @@ class OscHandler:
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws message {message=}')
         if json.loads(message).get('message'):
             print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> VIBRATE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-            # self.vibrate()
+            try:
+                self.vibrate()
+            except Exception as e:
+                print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> vibrate failed {e=}')
         self.client.send_message(b'/ws_message', [message.encode('utf-8'),])
 
     def handle_ws_error(self, ws, error):
