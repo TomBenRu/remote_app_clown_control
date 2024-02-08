@@ -76,8 +76,8 @@ class OscHandler:
 
 
 if __name__ == '__main__':
-    SERVER.listen(b'localhost', port=3000, default=True)
-    SERVER.bind(b'/call', handle_call)
+    # SERVER.listen(b'localhost', port=3000, default=True)
+    # SERVER.bind(b'/call', handle_call)
     osc_handler = OscHandler()
 
     # t = 0
