@@ -90,7 +90,7 @@ class OscHandler:
             self.client.send_message(b'/ws_already_closed', [])
 
     def vibrate(self):
-        plyer.vibrator.vibrate(time=4)
+        # plyer.vibrator.vibrate(time=4)
         plyer.vibrator.pattern(pattern=[0, 0.5, 0.5, 1, 0.5, 0.5, 0.5, 1])
 
 
