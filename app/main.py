@@ -203,9 +203,9 @@ class ChatTab(FloatLayout, MDTabsBase):
     @mainthread
     def send_message(self):
         user_input = self.ids.input.text
-        data = {"chat-message": user_input, "receiver_id": self.department_id}
-        self.client.send_message(b'/call', [user_input.encode('utf-8'),
-                                            self.department_id.encode('utf-8') if self.department_id else '-1'.encode('utf-8')])
+        self.client.send_message(b'/call',
+                                 [user_input.encode('utf-8'),
+                                  self.department_id.encode('utf-8') if self.department_id else '-1'.encode('utf-8')])
         self.ids.input.text = ''
 
 
@@ -333,18 +333,21 @@ class ChatScreen(Screen):
     def close_dialog_exit(self, instance):
         self.dialog_exit.dismiss(force=True)
 
-
     def logout(self, instance):
-        try:
-            self.ws.send(json.dumps({"chat-message": 'Wir verabschieden uns für heute. Danke für die Unterstützung!',
-                                     'closing': True}))
-            print('Closing message sent')
-        except Exception as e:
-            print('Fehler beim Senden: ', e)
-            # self.output.text += f'Problem beim Senden: {e}\n'
-            return
+        self.client.send_message(b'/call',
+                                 ['Wir verabschieden uns für heute. Danke für die Unterstützung!'.encode('utf-8'),
+                                  '-1'.encode('utf-8')])
+        # try:
+        #     self.ws.send(json.dumps({"chat-message": 'Wir verabschieden uns für heute. Danke für die Unterstützung!',
+        #                              'closing': True}))
+        #     print('Closing message sent')
+        # except Exception as e:
+        #     print('Fehler beim Senden: ', e)
+        #     # self.output.text += f'Problem beim Senden: {e}\n'
+        #     return
         values.session.post(f'{values.backend_url}actors/delete-team',
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
+        self.client.send_message(b'/close_connection', [])
         self.close_connection(None)
         if platform == 'android' and values.service:
             values.service.stop(values.mActivity)

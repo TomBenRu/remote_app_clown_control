@@ -17,12 +17,6 @@ CLIENT = OSCClient(b'localhost', 3002)
 SERVER = OSCThreadServer()
 
 
-def handle_call(chat_message, department_id):
-    chat_message = chat_message.decode('utf-8')
-    department_id = department_id.decode('utf-8')
-    print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> call: {chat_message=}, {department_id=}')
-
-
 class OscHandler:
     def __init__(self):
         self.client = CLIENT
@@ -31,6 +25,7 @@ class OscHandler:
 
         self.server.bind(b'/call', self.handle_call)
         self.server.bind(b'/connect', self.handle_connect)
+        self.server.bind(b'/close_connection', self.close_connection)
 
         self.ws: WebSocketApp | None = None
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> osc handler init')
@@ -79,6 +74,14 @@ class OscHandler:
         self.ws.on_open = self.handle_ws_open
         threading.Thread(target=self.ws.run_forever,
                          kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
+
+    def close_connection(self):
+        if self.ws and self.ws.sock and self.ws.sock.connected:
+            self.ws.close()
+            self.ws = None
+
+        else:
+            self.client.send_message(b'/ws_already_closed', [])
 
 
 if __name__ == '__main__':
