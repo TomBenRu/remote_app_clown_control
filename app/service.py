@@ -47,6 +47,7 @@ class OscHandler:
         self.client.send_message(b'/ws_message', [message.encode('utf-8'),])
 
     def handle_ws_error(self, ws, error):
+        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws error {error=}')
         self.client.send_message(b'/ws_error', [error.encode('utf-8'),])
 
     def handle_ws_open(self, ws):
