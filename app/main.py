@@ -230,6 +230,7 @@ class ChatScreen(Screen):
         print(f'{department_id=}')
         new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client, tab_pos=0)
         self.chat_tabs['common_chat'] = new_chat_tab
+        self.ids.chat_tabs.add_widget(new_chat_tab)
 
     def on_tab_switch(self, *args):
         print(args)
