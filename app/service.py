@@ -18,6 +18,7 @@ SERVER = OSCThreadServer()
 
 
 def handle_call(chat_message, department_id):
+    department_id = department_id or 'none'
     chat_message = chat_message.decode('utf-8')
     department_id = department_id.decode('utf-8')
     print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> call: {chat_message=}, {department_id=}')
