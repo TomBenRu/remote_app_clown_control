@@ -56,6 +56,7 @@ class OscHandler:
         self.client.send_message(b'/ws_already_open', [1,])
 
     def handle_connect(self, ws_url, token, team_of_actors_id):
+        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> connect: {ws_url=}, {token=}, {team_of_actors_id=}')
         self.open_ws_connection(ws_url.decode('utf-8'),
                                 token.decode('utf-8'),
                                 team_of_actors_id.decode('utf-8'))
