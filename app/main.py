@@ -222,7 +222,7 @@ class ChatScreen(Screen):
             port=3002,
             default=True,
         )
-        server.bind(b'/message', self.on_message)
+        server.bind(b'/ws_message', self.on_message)
         server.bind(b'/ws_opened', self.ws_opened)
 
     @mainthread
