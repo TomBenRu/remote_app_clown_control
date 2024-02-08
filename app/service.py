@@ -40,7 +40,7 @@ class OscHandler:
         department_id = department_id.decode('utf-8')
         if department_id == '-1':
             department_id = None
-        self.ws.send(json.dumps({'message': message, 'department_id': department_id}))
+        self.ws.send(json.dumps({'chat-message': message, 'receiver_id': department_id}))
 
     def handle_ws_message(self, ws, message):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws message {message=}')
