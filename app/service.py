@@ -17,10 +17,9 @@ CLIENT = OSCClient(b'localhost', 3002)
 SERVER = OSCThreadServer()
 
 
-def handle_call(call):
-    chat_message = call.arguments[0].decode('utf-8')
-    department_id = call.arguments[1].decode('utf-8')
-    call = json.loads(call.decode('utf-8'))
+def handle_call(chat_message, department_id):
+    chat_message = chat_message.decode('utf-8')
+    department_id = department_id.decode('utf-8')
     print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> call: {chat_message=}, {department_id=}')
 
 
