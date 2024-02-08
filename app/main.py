@@ -230,7 +230,7 @@ class ChatScreen(Screen):
             default=True,
         )
         server.bind(b'/message', self.display_message)
-        server.bind(b'/ws_opened', self.display_call)
+        server.bind(b'/ws_opened', self.opened)
 
     def opened(self, pickled_ws: bytes):
         print(f'{pickled_ws.decode("utf-8")=}')
