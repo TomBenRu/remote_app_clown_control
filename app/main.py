@@ -262,6 +262,7 @@ class ChatScreen(Screen):
     @mainthread
     def on_message(self, ws, message):
         message_dict = json.loads(message.decode('utf-8'))
+        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>> {message_dict=}')
         send_confirmation = message_dict.get('send_confirmation')
         receiver_id = message_dict.get('receiver_id')
         department_id = message_dict.get('department_id')
