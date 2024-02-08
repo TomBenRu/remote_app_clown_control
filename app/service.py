@@ -42,7 +42,7 @@ class OscHandler:
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws message {message=}')
         if json.loads(message).get('message'):
             print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> VIBRATE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-            self.vibrate()
+            # self.vibrate()
         self.client.send_message(b'/ws_message', [message.encode('utf-8'),])
 
     def handle_ws_error(self, ws, error):
