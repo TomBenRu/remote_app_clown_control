@@ -225,6 +225,7 @@ class ChatScreen(Screen):
         server.bind(b'/message', self.display_message)
         server.bind(b'/ws_opened', self.ws_opened)
 
+    @mainthread
     def ws_opened(self, department_id):
         print(f'{department_id=}')
         new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client, tab_pos=0)
