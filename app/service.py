@@ -33,6 +33,7 @@ class OscHandler:
         self.server.bind(b'/connect', self.handle_connect)
 
         self.ws: WebSocketApp | None = None
+        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> osc handler init')
 
     def handle_call(self, call):
         ...
