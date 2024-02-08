@@ -193,11 +193,10 @@ class CreateTeamScreen(Screen):
 
 
 class ChatTab(FloatLayout, MDTabsBase):
-    def __init__(self, websocket: WebSocketApp, osc_client: OSCClient, tab_pos: int, department_id=None, **kwargs):
+    def __init__(self, osc_client: OSCClient, tab_pos: int, department_id=None, **kwargs):
         super().__init__(**kwargs)
         self.tab_pos = tab_pos
         self.department_id = department_id
-        self.ws = websocket
         self.client = osc_client
         self.layout = GridLayout(cols=2, size_hint_y=None)
 
@@ -205,14 +204,8 @@ class ChatTab(FloatLayout, MDTabsBase):
     def send_message(self):
         user_input = self.ids.input.text
         data = {"chat-message": user_input, "receiver_id": self.department_id}
-        json_data = json.dumps(data)
         self.client.send_message(b'/call', [user_input.encode('utf-8'),
                                             self.department_id.encode('utf-8') if self.department_id else 'none'.encode('utf-8')])
-        try:
-            self.ws.send(json_data)
-        except Exception as e:
-            self.ids.output.text += f'Problem beim Senden: {e}\n'
-            return
         self.ids.input.text = ''
 
 
@@ -230,10 +223,12 @@ class ChatScreen(Screen):
             default=True,
         )
         server.bind(b'/message', self.display_message)
-        server.bind(b'/ws_opened', self.opened)
+        server.bind(b'/ws_opened', self.ws_opened)
 
-    def opened(self, pickled_ws: bytes):
-        print(f'{pickled_ws.decode("utf-8")=}')
+    def ws_opened(self, department_id):
+        print(f'{department_id.decode("utf-8")=}')
+        new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client, tab_pos=0)
+        self.chat_tabs['common_chat'] = new_chat_tab
 
     def on_tab_switch(self, *args):
         print(args)
@@ -305,8 +300,7 @@ class ChatScreen(Screen):
                 self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
                                                                   f" hat den Chat betreten.\n")
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
-                                       department_id=department_id, osc_client=self.client, tab_pos=len(self.chat_tabs),
-                                       websocket=self.ws)
+                                       department_id=department_id, osc_client=self.client, tab_pos=len(self.chat_tabs))
                 self.chat_tabs[department_id] = new_chat_tab
                 self.ids.chat_tabs.add_widget(new_chat_tab)
             else:

@@ -46,8 +46,7 @@ class OscHandler:
 
     def handle_ws_open(self, ws):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws opened {ws=}')
-        ws_pickled = pickle.dumps(ws)
-        self.client.send_message(b'/ws_opened', [ws_pickled])
+        self.client.send_message(b'/ws_opened', ['-1'.encode('utf-8'),])
 
     def handle_ws_close(self, ws, close_status_code, close_msg):
         self.client.send_message(b'/ws_closed', [close_status_code.encode('utf-8'), close_msg.encode('utf-8'),])
