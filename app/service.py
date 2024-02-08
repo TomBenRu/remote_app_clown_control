@@ -42,8 +42,8 @@ class OscHandler:
             department_id = None
         self.ws.send(json.dumps({'message': message, 'department_id': department_id}))
 
-
     def handle_ws_message(self, ws, message):
+        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws message {message=}')
         self.client.send_message(b'/ws_message', [message.encode('utf-8'),])
 
     def handle_ws_error(self, ws, error):

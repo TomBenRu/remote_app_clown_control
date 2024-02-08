@@ -260,7 +260,7 @@ class ChatScreen(Screen):
         self.open_connection()
 
     @mainthread
-    def on_message(self, ws, message):
+    def on_message(self, message):
         message_dict = json.loads(message.decode('utf-8'))
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>> {message_dict=}')
         send_confirmation = message_dict.get('send_confirmation')
