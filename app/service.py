@@ -4,6 +4,7 @@ import ssl
 import threading
 import time
 
+import plyer
 import websocket
 # from jnius import autoclass
 from oscpy.client import OSCClient
@@ -39,6 +40,8 @@ class OscHandler:
 
     def handle_ws_message(self, ws, message):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws message {message=}')
+        if json.loads(message)['message'] == 'close':
+            self.vibrate()
         self.client.send_message(b'/ws_message', [message.encode('utf-8'),])
 
     def handle_ws_error(self, ws, error):
@@ -82,6 +85,10 @@ class OscHandler:
 
         else:
             self.client.send_message(b'/ws_already_closed', [])
+
+    def vibrate(self):
+        plyer.vibrator.vibrate(time=4)
+        plyer.vibrator.pattern(pattern=[0, 0.5, 0.5, 1, 0.5, 0.5, 0.5, 1])
 
 
 if __name__ == '__main__':

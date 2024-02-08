@@ -1,11 +1,9 @@
 import json
-import ssl
 import threading
 
 import jwt
 import plyer
 import requests
-import websocket
 from jnius import autoclass
 from kivy import platform
 from kivy.clock import mainthread
@@ -235,14 +233,11 @@ class ChatScreen(Screen):
     def on_tab_switch(self, *args):
         print(args)
 
-    def open_connection(self):
+    def create_connection_service(self):
         self.client.send_message(b'/connect',
                                  [values.ws_url.encode('utf-8'),
                                         values.token.encode('utf-8'),
                                         values.team_of_actors['id'].encode('utf-8')])
-
-    def create_connection_service(self):
-        self.open_connection()
 
     @mainthread
     def on_message(self, message):
@@ -266,9 +261,9 @@ class ChatScreen(Screen):
         elif message:
             # self.notify_event()
             # eine Vibration wird ausgelöst, wenn die App auf Android läuft
-            if platform == 'android':
-                plyer.vibrator.vibrate(time=4)
-                plyer.vibrator.pattern(pattern=[0, 0.5, 0.5, 1, 0.5, 0.5, 0.5, 1])
+            # if platform == 'android':
+            #     plyer.vibrator.vibrate(time=4)
+            #     plyer.vibrator.pattern(pattern=[0, 0.5, 0.5, 1, 0.5, 0.5, 0.5, 1])
             if department_id:
                 self.chat_tabs['common_chat'].ids.output.text += (f"<<< {values.departments_of_location[department_id]['name']}:"
                                                                   f" {message}\n")
@@ -296,8 +291,6 @@ class ChatScreen(Screen):
     @mainthread
     def on_error(self, ws: WebSocket, error):
         print(f'{error=}')
-        # self.output.text += f"Error: {error}\n"
-        self.close_connection(None)
 
     @mainthread
     def on_close(self, ws, close_status_code, close_msg):
@@ -308,16 +301,6 @@ class ChatScreen(Screen):
     def on_open(self, ws):
         print("Websocket connection opened")
         # self.output.text += "Connection opened\n"
-
-
-    @mainthread
-    def close_connection(self, instance):
-        if self.ws and self.ws.sock and self.ws.sock.connected:
-            self.ws.close()
-            self.ws = None
-        else:
-            print('Not connected')
-            # self.output.text += "Not connected\n"
 
     def ask_for_logout(self):
         if not self.dialog_exit:
@@ -337,18 +320,9 @@ class ChatScreen(Screen):
         self.client.send_message(b'/call',
                                  ['Wir verabschieden uns für heute. Danke für die Unterstützung!'.encode('utf-8'),
                                   '-1'.encode('utf-8')])
-        # try:
-        #     self.ws.send(json.dumps({"chat-message": 'Wir verabschieden uns für heute. Danke für die Unterstützung!',
-        #                              'closing': True}))
-        #     print('Closing message sent')
-        # except Exception as e:
-        #     print('Fehler beim Senden: ', e)
-        #     # self.output.text += f'Problem beim Senden: {e}\n'
-        #     return
         values.session.post(f'{values.backend_url}actors/delete-team',
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         self.client.send_message(b'/close_connection', [])
-        self.close_connection(None)
         if platform == 'android' and values.service:
             values.service.stop(values.mActivity)
 
