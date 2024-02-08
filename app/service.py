@@ -48,7 +48,7 @@ class OscHandler:
 
     def handle_ws_error(self, ws, error):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws error {error=}')
-        self.client.send_message(b'/ws_error', [error.encode('utf-8'),])
+        self.client.send_message(b'/ws_error', ['Fehler im Websocket ist aufgetreten'.encode('utf-8'),])
 
     def handle_ws_open(self, ws):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws opened {ws=}')
