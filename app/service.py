@@ -5,39 +5,12 @@ import time
 
 import plyer
 import websocket
-from jnius import autoclass
 from oscpy.client import OSCClient
 from oscpy.server import OSCThreadServer
 from websocket import WebSocketApp
 
-# PythonService = autoclass('org.kivy.android.PythonService')
-# PythonService.mService.setAutoRestartService(True)
-
 CLIENT = OSCClient(b'localhost', 3002)
 SERVER = OSCThreadServer()
-
-
-class NotificationAndroid:
-    def __init__(self, title: str, message: str):
-        self.title = title
-        self.message = message
-
-    def notify(self):
-        ''' Displays a native Android notification '''
-        from jnius import autoclass
-        AndroidString = autoclass('java.lang.String')
-        PythonActivity = autoclass('org.renpy.android.PythonActivity')
-        NotificationBuilder = autoclass('android.app.Notification$Builder')
-        Drawable = autoclass('net.clusterbleep.notificationdemo.R$drawable')
-        icon = Drawable.icon
-        noti = NotificationBuilder(PythonActivity.mActivity)
-        #noti.setDefaults(Notification.DEFAULT_ALL)
-        noti.setContentTitle(AndroidString(self.title.encode('utf-8')))
-        noti.setContentText(AndroidString(self.message.encode('utf-8')))
-        noti.setSmallIcon(icon)
-        noti.setAutoCancel(True)
-        nm = PythonActivity.mActivity.getSystemService(PythonActivity.NOTIFICATION_SERVICE)
-        nm.notify(0, noti.build())
 
 
 class OscHandler:
