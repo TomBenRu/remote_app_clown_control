@@ -128,8 +128,8 @@ if __name__ == '__main__':
 
     t = 0
     while True:
-        time.sleep(10)
-        t += 1
+        time.sleep(5)
+        t += 5
         print(f'>>>>>>>>>>>>>>>>>>>> {t=}')
         # message = f'message {t}'.encode('utf-8')
         # try:
