@@ -353,7 +353,7 @@ class ClownControlApp(MDApp):
         service = autoclass(SERVICE_NAME)
         values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
         argument = ''
-        service.start(values.mActivity, argument)
+        service.startForeground(values.mActivity, argument)
         values.service = service
 
     def on_start(self):
