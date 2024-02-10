@@ -214,14 +214,14 @@ class ChatScreen(Screen):
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
         self.client = OSCClient(b'localhost', 3000)
-        self.server = server = OSCThreadServer()
-        server.listen(
+        self.server = OSCThreadServer()
+        self.server.listen(
             address=b'localhost',
             port=3002,
             default=True,
         )
-        server.bind(b'/ws_message', self.on_message)
-        server.bind(b'/ws_opened', self.ws_opened)
+        self.server.bind(b'/ws_message', self.on_message)
+        self.server.bind(b'/ws_opened', self.ws_opened)
 
     @mainthread
     def ws_opened(self, department_id):

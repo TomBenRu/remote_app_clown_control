@@ -36,10 +36,6 @@ class OscHandler:
     def handle_ws_message(self, ws, message):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws message {message=}')
         if message_str := json.loads(message).get('message'):
-            try:
-                NotificationAndroid('Message from server', message_str).notify()
-            except Exception as e:
-                print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> notification failed {e=}')
             print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> VIBRATE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
             try:
                 self.vibrate()
