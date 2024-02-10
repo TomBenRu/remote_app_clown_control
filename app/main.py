@@ -49,6 +49,8 @@ class Values:
         self.departments_of_location = {}
         self.mActivity = None
         self.service = None
+        self.server = None
+        self.client = None
 
     def set_session_token(self, token: str):
         self.token = token
@@ -214,14 +216,14 @@ class ChatScreen(Screen):
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
         self.client = OSCClient(b'localhost', 3000)
-        self.server = OSCThreadServer()
-        self.server.listen(
+        values.server = OSCThreadServer()
+        values.server.listen(
             address=b'localhost',
             port=3002,
             default=True,
         )
-        self.server.bind(b'/ws_message', self.on_message)
-        self.server.bind(b'/ws_opened', self.ws_opened)
+        values.server.bind(b'/ws_message', self.on_message)
+        values.server.bind(b'/ws_opened', self.ws_opened)
 
     @mainthread
     def ws_opened(self, department_id):
