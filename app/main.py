@@ -4,7 +4,7 @@ import threading
 import jwt
 import plyer
 import requests
-from jnius import autoclass
+from jnius import autoclass, cast
 from kivy import platform
 from kivy.clock import mainthread
 from kivy.core.window import Window
@@ -210,7 +210,6 @@ class ChatTab(FloatLayout, MDTabsBase):
 class ChatScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        print('/////////////////////////////////////////////////////////////// initialization of chat screen')
         self.dialog_exit = None
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
@@ -349,13 +348,26 @@ class ClownControlApp(MDApp):
         sm.add_widget(ChatScreen(name='chat'))
         return sm
 
+    def service_is_running(self):
+        python_service = autoclass(SERVICE_NAME)
+        mActivity = python_service.mService
+        context = mActivity.getApplicationContext()
+        manager = cast('android.app.ActivityManager',
+                       mActivity.getSystemService(context.ACTIVITY_SERVICE))
+        for service in manager.getRunningServices(100):
+            if service.service.getClassName() == SERVICE_NAME:
+                return True
+        return False
+
     @mainthread
     def start_service(self):
+        print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX{self.service_is_running()=}')
         service = autoclass(SERVICE_NAME)
         values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
         argument = ''
         service.start(values.mActivity, argument)
         values.service = service
+        print(f'////////////////////////////////////////////////////////{self.service_is_running()=}')
 
     def on_start(self):
         if platform == 'android':
