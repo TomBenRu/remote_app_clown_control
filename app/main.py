@@ -354,6 +354,8 @@ class ClownControlApp(MDApp):
         manager = cast('android.app.ActivityManager',
                        mActivity.getSystemService(context.ACTIVITY_SERVICE))
         print(f'00000000000000000000000000000000000000000000000000000 {manager.getRunningServices(100)=}')
+        print(list(manager.getRunningServices(100)))
+        print(f'{type(manager.getRunningServices(100))=}')
         for service in manager.getRunningServices(100):
             print(f'====================================================================== {service=}')
             if service.service.getClassName() == SERVICE_NAME:
