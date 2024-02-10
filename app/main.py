@@ -210,6 +210,7 @@ class ChatTab(FloatLayout, MDTabsBase):
 class ChatScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        print('/////////////////////////////////////////////////////////////// initialization of chat screen')
         self.dialog_exit = None
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
