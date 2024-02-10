@@ -361,13 +361,19 @@ class ClownControlApp(MDApp):
 
     @mainthread
     def start_service(self):
-        print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX{self.service_is_running()=}')
+        try:
+            print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX{self.service_is_running()=}')
+        except Exception as e:
+            print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX{e=}')
         service = autoclass(SERVICE_NAME)
         values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
         argument = ''
         service.start(values.mActivity, argument)
         values.service = service
-        print(f'////////////////////////////////////////////////////////{self.service_is_running()=}')
+        try:
+            print(f'////////////////////////////////////////////////////////{self.service_is_running()=}')
+        except Exception as e:
+            print(f'////////////////////////////////////////////////////////{e=}')
 
     def on_start(self):
         if platform == 'android':
