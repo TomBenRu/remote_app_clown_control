@@ -371,14 +371,14 @@ class ClownControlApp(MDApp):
         argument = ''
         service.start(values.mActivity, argument)
         values.service = service
-        try:
-            print(f'////////////////////////////////////////////////////////{self.service_is_running()=}')
-        except Exception as e:
-            print(f'////////////////////////////////////////////////////////{e=}')
 
     def on_start(self):
         if platform == 'android':
             self.start_service()
+        try:
+            print(f'////////////////////////////////////////////////////////{self.service_is_running()=}')
+        except Exception as e:
+            print(f'////////////////////////////////////////////////////////{e=}')
 
 
 if __name__ == '__main__':
