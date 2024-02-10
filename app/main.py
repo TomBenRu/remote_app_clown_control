@@ -349,7 +349,7 @@ class ClownControlApp(MDApp):
         return sm
 
     def service_is_running(self):
-        from android import mActivity
+        from android import mActivity, cast
         context = mActivity.getApplicationContext()
         manager = cast('android.app.ActivityManager',
                        mActivity.getSystemService(context.ACTIVITY_SERVICE))
