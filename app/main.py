@@ -4,7 +4,7 @@ import threading
 import jwt
 import plyer
 import requests
-from jnius import autoclass, cast
+from jnius import autoclass
 from kivy import platform
 from kivy.clock import mainthread
 from kivy.core.window import Window
