@@ -349,8 +349,10 @@ class ClownControlApp(MDApp):
         return sm
 
     def service_is_running(self):
-        python_service = autoclass(SERVICE_NAME)
-        mActivity = python_service.mService
+        from android.config import SERVICE_CLASS_NAME
+
+        PythonService = autoclass(SERVICE_CLASS_NAME)
+        mActivity = PythonService.mService
         context = mActivity.getApplicationContext()
         manager = cast('android.app.ActivityManager',
                        mActivity.getSystemService(context.ACTIVITY_SERVICE))
