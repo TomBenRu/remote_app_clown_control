@@ -384,6 +384,7 @@ class ClownControlApp(MDApp):
 
     def start_service_if_not_running(self, name):
         if self.service_is_running(name):
+            print(f'++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {self.service_is_running(service_name)=}')
             return
 
         from android import mActivity
