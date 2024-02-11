@@ -347,7 +347,6 @@ class ClownControlApp(MDApp):
         sm.add_widget(ChatScreen(name='chat'))
         return sm
 
-    @mainthread
     def start_service(self):
         from android import mActivity
         context = mActivity.getApplicationContext()
@@ -359,7 +358,6 @@ class ClownControlApp(MDApp):
         service.start(values.mActivity, argument)
         values.service = service
 
-    @mainthread
     def start_notification_service(self):
         from android import mActivity
         context = mActivity.getApplicationContext()
