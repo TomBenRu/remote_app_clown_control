@@ -324,7 +324,11 @@ class ChatScreen(Screen):
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         self.client.send_message(b'/close_connection', [])
         if platform == 'android' and values.service:
-            values.service.stop(values.mActivity)
+            # Get the Android service class
+            Service = autoclass('org.kivy.android.PythonService')
+            # Stop the service
+            Service.mService.stopSelf()
+            # values.service.stop(values.mActivity)
 
         for tab in self.ids.chat_tabs.get_tab_list():
             print(f'{tab=}')
@@ -379,7 +383,6 @@ class ClownControlApp(MDApp):
                        mActivity.getSystemService(context.ACTIVITY_SERVICE))
         for service in manager.getRunningServices(100):
             if service.service.getClassName() == service_name_str:
-                values.service = service.service
                 return True
         return False
 
