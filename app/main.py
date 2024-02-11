@@ -360,6 +360,7 @@ class ClownControlApp(MDApp):
     def on_start(self):
         if platform == 'android':
             self.start_service()
+            # self.start_notification_service()
 
 
 if __name__ == '__main__':
