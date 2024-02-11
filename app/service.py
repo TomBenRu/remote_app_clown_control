@@ -20,7 +20,10 @@ class NotificationAndroid:
         self.message = message
 
     def notify(self, *args):
-        from android import mActivity
+        from android.config import SERVICE_CLASS_NAME
+
+        PythonService = autoclass(SERVICE_CLASS_NAME)
+        mActivity = PythonService.mService
         AndroidString = autoclass('java.lang.String')
         # PythonActivity = autoclass('org.kivy.android.PythonActivity')
         NotificationBuilder = autoclass('android.app.Notification$Builder')
