@@ -20,7 +20,9 @@ class NotificationAndroid:
         self.message = message
 
     def notify(self, *args):
+        print(f'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! in notify')
         from android.config import SERVICE_CLASS_NAME
+        print(f'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {SERVICE_CLASS_NAME=}')
 
         PythonService = autoclass(SERVICE_CLASS_NAME)
         print(f'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {PythonService=}')
