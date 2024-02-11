@@ -390,6 +390,7 @@ class ClownControlApp(MDApp):
         service = autoclass(self.get_service_name(name))
         service.start(mActivity, 'round_music_note_white_24',
                       'Music Service', 'Started', '')
+        print(f'++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {self.service_is_running(service_name)=}')
 
 
     @mainthread
