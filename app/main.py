@@ -324,11 +324,7 @@ class ChatScreen(Screen):
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         self.client.send_message(b'/close_connection', [])
         if platform == 'android' and values.service:
-            # Get the Android service class
-            Service = autoclass(SERVICE_NAME)
-            # Stop the service
-            Service.mService.stopSelf()
-            # values.service.stop(values.mActivity)
+            values.service.stop(values.mActivity)
 
         for tab in self.ids.chat_tabs.get_tab_list():
             print(f'{tab=}')
@@ -352,67 +348,13 @@ class ClownControlApp(MDApp):
         sm.add_widget(ChatScreen(name='chat'))
         return sm
 
-    def service_is_running_(self):
-        from android import mActivity, cast
-
-        context = mActivity.getApplicationContext()
-        service_name_str = f'{str(context.getPackageName())}.Service{service_name}'
-        print(f'%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% {service_name_str=}')
-
-        manager = cast('android.app.ActivityManager',
-                       mActivity.getSystemService(context.ACTIVITY_SERVICE))
-        print(f'00000000000000000000000000000000000000000000000000000 {manager.getRunningServices(100)=}')
-        print(list(manager.getRunningServices(100)))
-        print(f'{type(manager.getRunningServices(100))=}')
-        for service in manager.getRunningServices(100):
-            print(f'====================================================================== {service=}')
-            if service.service.getClassName() == SERVICE_NAME:
-                return True
-        return False
-
-    def get_service_name(self, name):
-        from android import mActivity
-        context = mActivity.getApplicationContext()
-        return str(context.getPackageName()) + '.Service' + name
-
-    def service_is_running(self, name):
-        from android import mActivity, cast
-        service_name_str = self.get_service_name(name)
-        context = mActivity.getApplicationContext()
-        manager = cast('android.app.ActivityManager',
-                       mActivity.getSystemService(context.ACTIVITY_SERVICE))
-        for service in manager.getRunningServices(100):
-            if service.service.getClassName() == service_name_str:
-                return True
-        return False
-
-    def start_service_if_not_running(self, name):
-        if self.service_is_running(name):
-            print(f'++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {self.service_is_running(service_name)=}')
-            return
-
-        from android import mActivity
-        values.service = autoclass(self.get_service_name(name))
-        values.service.start(mActivity, 'round_music_note_white_24',
-                      'Music Service', 'Started', '')
-        print(f'++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {self.service_is_running(service_name)=}')
-
-
     @mainthread
     def start_service(self):
-        self.start_service_if_not_running(service_name)
-
-
-
-        # try:
-        #     print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX{self.service_is_running()=}')
-        # except Exception as e:
-        #     print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX{e=}')
-        # service = autoclass(SERVICE_NAME)
-        # values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
-        # argument = ''
-        # service.start(values.mActivity, argument)
-        # values.service = service
+        service = autoclass(SERVICE_NAME)
+        values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+        argument = ''
+        service.start(values.mActivity, argument)
+        values.service = service
 
     def on_start(self):
         if platform == 'android':
