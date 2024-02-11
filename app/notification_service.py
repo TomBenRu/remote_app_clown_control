@@ -1,3 +1,5 @@
+import time
+
 from jnius import autoclass
 
 
@@ -24,3 +26,9 @@ class NotificationAndroid:
 
 def notify_android(title: str, message: str):
     NotificationAndroid(title, message).notify()
+
+
+if __name__ == '__main__':
+    while True:
+        print('notification service running...')
+        time.sleep(1)

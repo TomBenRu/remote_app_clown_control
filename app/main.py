@@ -31,7 +31,7 @@ from websocket import WebSocket, WebSocketApp
 Window.softinput_mode = "below_target"
 
 SERVICE_NAME = 'Websocket'
-NOTIFICATION_SERVICE_NAME = 'NotificationService'
+NOTIFICATION_SERVICE_NAME = 'Notification'
 
 
 class Values:
