@@ -21,7 +21,7 @@ class NotificationAndroid:
 
     def notify(self, *args):
         AndroidString = autoclass('java.lang.String')
-        PythonActivity = autoclass('org.kivy.android.PythonActivity')
+        PythonActivity = autoclass('org.renpy.android.PythonActivity')
         NotificationBuilder = autoclass('android.app.Notification$Builder')
         Drawable = autoclass(f"{PythonActivity.mActivity.getPackageName()}.R$drawable")
         # Drawable = autoclass('org.test.notify.R$drawable')  # jnius.autoclass("{}.R$drawable".format(service.getPackageName()))
