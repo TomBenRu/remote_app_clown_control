@@ -367,10 +367,12 @@ class ClownControlApp(MDApp):
         return False
 
     def get_service_name(self, name):
+        from android import mActivity
         context = mActivity.getApplicationContext()
         return str(context.getPackageName()) + '.Service' + name
 
     def service_is_running(self, name):
+        from android import mActivity, cast
         service_name_str = self.get_service_name(name)
         context = mActivity.getApplicationContext()
         manager = cast('android.app.ActivityManager',
@@ -383,6 +385,8 @@ class ClownControlApp(MDApp):
     def start_service_if_not_running(self, name):
         if self.service_is_running(name):
             return
+
+        from android import mActivity
         service = autoclass(self.get_service_name(name))
         service.start(mActivity, 'round_music_note_white_24',
                       'Music Service', 'Started', '')
@@ -390,7 +394,6 @@ class ClownControlApp(MDApp):
 
     @mainthread
     def start_service(self):
-        from android import mActivity, cast
         self.start_service_if_not_running(service_name)
 
 
