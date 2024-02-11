@@ -350,6 +350,7 @@ class ClownControlApp(MDApp):
         from android import mActivity
         context = mActivity.getApplicationContext()
         service_name = f'{str(context.getPackageName())}.Service{SERVICE_NAME}'
+        print(f'SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS {service_name=}')
         service = autoclass(service_name)
         values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
         argument = ''

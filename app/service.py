@@ -21,7 +21,7 @@ class NotificationAndroid:
 
     def notify(self, *args):
         print(f'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! in notify')
-        from android.config import SERVICE_CLASS_NAME
+        SERVICE_CLASS_NAME = 'org.hcc.remote_clown_control.ServiceWebsocket'
         print(f'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! {SERVICE_CLASS_NAME=}')
 
         PythonService = autoclass(SERVICE_CLASS_NAME)
