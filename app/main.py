@@ -30,10 +30,7 @@ from websocket import WebSocket, WebSocketApp
 
 Window.softinput_mode = "below_target"
 
-package_name = 'remote_clown_control'
-package_domain = 'org.hcc'
-service_name = 'Websocket'
-SERVICE_NAME = f'{package_domain}.{package_name}.Service{service_name}'
+SERVICE_NAME = 'Websocket'
 
 
 class Values:
@@ -350,7 +347,10 @@ class ClownControlApp(MDApp):
 
     @mainthread
     def start_service(self):
-        service = autoclass(SERVICE_NAME)
+        from android import mActivity
+        context = mActivity.getApplicationContext()
+        service_name = f'{str(context.getPackageName())}.Service{SERVICE_NAME}'
+        service = autoclass(service_name)
         values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
         argument = ''
         service.start(values.mActivity, argument)
