@@ -31,6 +31,7 @@ from websocket import WebSocket, WebSocketApp
 Window.softinput_mode = "below_target"
 
 SERVICE_NAME = 'Websocket'
+NOTIFICATION_SERVICE_NAME = 'NotificationService'
 
 
 class Values:
@@ -46,6 +47,7 @@ class Values:
         self.departments_of_location = {}
         self.mActivity = None
         self.service = None
+        self.notification_service = None
 
     def set_session_token(self, token: str):
         self.token = token
@@ -357,10 +359,20 @@ class ClownControlApp(MDApp):
         service.start(values.mActivity, argument)
         values.service = service
 
+    def start_notification_service(self):
+        from android import mActivity
+        context = mActivity.getApplicationContext()
+        service_name = f'{str(context.getPackageName())}.Service{NOTIFICATION_SERVICE_NAME}'
+        service = autoclass(service_name)
+        values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+        argument = ''
+        service.start(values.mActivity, argument)
+        values.notification_service = service
+
     def on_start(self):
         if platform == 'android':
             self.start_service()
-            # self.start_notification_service()
+            self.start_notification_service()
 
 
 if __name__ == '__main__':
