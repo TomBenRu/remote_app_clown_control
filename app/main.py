@@ -325,7 +325,7 @@ class ChatScreen(Screen):
         self.client.send_message(b'/close_connection', [])
         if platform == 'android' and values.service:
             # Get the Android service class
-            Service = autoclass('org.kivy.android.PythonService')
+            Service = autoclass(SERVICE_NAME)
             # Stop the service
             Service.mService.stopSelf()
             # values.service.stop(values.mActivity)
