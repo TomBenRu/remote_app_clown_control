@@ -359,6 +359,7 @@ class ClownControlApp(MDApp):
         service.start(values.mActivity, argument)
         values.service = service
 
+    @mainthread
     def start_notification_service(self):
         from android import mActivity
         context = mActivity.getApplicationContext()
