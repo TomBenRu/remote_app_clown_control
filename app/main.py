@@ -379,6 +379,7 @@ class ClownControlApp(MDApp):
                        mActivity.getSystemService(context.ACTIVITY_SERVICE))
         for service in manager.getRunningServices(100):
             if service.service.getClassName() == service_name_str:
+                values.service = service
                 return True
         return False
 
