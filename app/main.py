@@ -348,7 +348,7 @@ class ClownControlApp(MDApp):
         sm.add_widget(ChatScreen(name='chat'))
         return sm
 
-    def service_is_running(self):
+    def service_is_running_(self):
         from android import mActivity, cast
 
         context = mActivity.getApplicationContext()
@@ -366,25 +366,48 @@ class ClownControlApp(MDApp):
                 return True
         return False
 
+    def get_service_name(self, name):
+        context = mActivity.getApplicationContext()
+        return str(context.getPackageName()) + '.Service' + name
+
+    def service_is_running(self, name):
+        service_name_str = self.get_service_name(name)
+        context = mActivity.getApplicationContext()
+        manager = cast('android.app.ActivityManager',
+                       mActivity.getSystemService(context.ACTIVITY_SERVICE))
+        for service in manager.getRunningServices(100):
+            if service.service.getClassName() == service_name_str:
+                return True
+        return False
+
+    def start_service_if_not_running(self, name):
+        if self.service_is_running(name):
+            return
+        service = autoclass(self.get_service_name(name))
+        service.start(mActivity, 'round_music_note_white_24',
+                      'Music Service', 'Started', '')
+
+
     @mainthread
     def start_service(self):
-        try:
-            print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX{self.service_is_running()=}')
-        except Exception as e:
-            print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX{e=}')
-        service = autoclass(SERVICE_NAME)
-        values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
-        argument = ''
-        service.start(values.mActivity, argument)
-        values.service = service
+        from android import mActivity, cast
+        self.start_service_if_not_running(service_name)
+
+
+
+        # try:
+        #     print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX{self.service_is_running()=}')
+        # except Exception as e:
+        #     print(f'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX{e=}')
+        # service = autoclass(SERVICE_NAME)
+        # values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+        # argument = ''
+        # service.start(values.mActivity, argument)
+        # values.service = service
 
     def on_start(self):
         if platform == 'android':
             self.start_service()
-        try:
-            print(f'////////////////////////////////////////////////////////{self.service_is_running()=}')
-        except Exception as e:
-            print(f'////////////////////////////////////////////////////////{e=}')
 
 
 if __name__ == '__main__':
