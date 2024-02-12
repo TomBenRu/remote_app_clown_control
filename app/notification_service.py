@@ -44,6 +44,16 @@ notification_builder.setContentTitle(title)
 notification_builder.setContentText(message)
 notification_builder.setContentIntent(intent)
 print(f'................ {notification_builder=}')
+Drawable = autoclass("{}.R$drawable".format(service.getPackageName()))
+print(f'................ {Drawable=}')
+icon = getattr(Drawable, 'icon')
+print(f'................ {icon=}')
+notification_builder.setSmallIcon(icon)
+notification_builder.setAutoCancel(True)
+new_notification = notification_builder.getNotification()
+#Below sends the notification to the notification bar; nice but not a foreground service.
+#notification_service.notify(0, new_noti)
+service.startForeground(1, new_notification)
 
 
 class NotificationAndroid:
