@@ -19,6 +19,11 @@ print(f'................ {Notification=}')
 service_name = 'S1'
 package_name = 'com.something'
 service = autoclass('org.kivy.android.PythonService').mService
+print(f'................ {service=}')
+PythonActivity = autoclass('org.kivy.android' + '.PythonActivity')
+print(f'................ {PythonActivity=}')
+notification_service = service.getSystemService(Context.NOTIFICATION_SERVICE)
+print(f'................ {notification_service=}')
 
 
 class NotificationAndroid:
