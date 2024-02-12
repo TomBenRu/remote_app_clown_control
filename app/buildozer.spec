@@ -193,7 +193,7 @@ android.api = 33
 # The option may be used in three ways, the value may contain one or zero ':'
 # Some examples:
 # 1) A file to add to resources, legal resource names contain ['a-z','0-9','_']
-# android.add_resources = my_icons/all-inclusive.png:drawable/all_inclusive.png
+android.add_resources = my_icons/all-inclusive.png:drawable/icon.png
 # 2) A directory, here  'legal_icons' must contain resources of one kind
 # android.add_resources = legal_icons:drawable
 android.add_resources = icons/drawable-hdpi:drawable/drawable-hdpi, icons/drawable-mdpi:drawable/drawable-mdpi, icons/drawable-xhdpi:drawable/drawable-xhdpi, icons/drawable-xxhdpi:drawable/drawable-xxhdpi, icons/drawable-xxxhdpi:drawable/drawable-xxxhdpi
