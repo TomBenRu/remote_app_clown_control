@@ -16,6 +16,9 @@ NotificationBuilder = autoclass('android.app.Notification$Builder')
 print(f'................ {NotificationBuilder=}')
 Notification = autoclass('android.app.Notification')
 print(f'................ {Notification=}')
+service_name = 'S1'
+package_name = 'com.something'
+service = autoclass('org.kivy.android.PythonService').mService
 
 
 class NotificationAndroid:
