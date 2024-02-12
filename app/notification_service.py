@@ -24,6 +24,13 @@ PythonActivity = autoclass('org.kivy.android' + '.PythonActivity')
 print(f'................ {PythonActivity=}')
 notification_service = service.getSystemService(Context.NOTIFICATION_SERVICE)
 print(f'................ {notification_service=}')
+app_context = service.getApplication().getApplicationContext()
+notification_builder = NotificationBuilder(app_context)
+print(f'................ {notification_builder=}')
+title = AndroidString("EzTunes".encode('utf-8'))
+print(f'................ {title=}')
+message = AndroidString("Ready to play music.".encode('utf-8'))
+print(f'................ {message=}')
 
 
 class NotificationAndroid:
