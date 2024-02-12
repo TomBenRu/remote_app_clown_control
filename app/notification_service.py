@@ -45,8 +45,8 @@ class NotificationService:
         self.notification_builder.setContentText(self.message)
         self.notification_builder.setContentIntent(self.intent)
         self.Drawable = autoclass("{}.R$drawable".format(self.service.getPackageName()))
-        self.icon = getattr(self.Drawable, 'icon')
-        self.notification_builder.setSmallIcon(self.icon)
+        # self.icon = getattr(self.Drawable, 'icon')
+        # self.notification_builder.setSmallIcon(self.icon)
         self.notification_builder.setAutoCancel(True)
         self.new_notification = self.notification_builder.getNotification()
 
