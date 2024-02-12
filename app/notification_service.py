@@ -3,6 +3,9 @@ import time
 from jnius import autoclass
 
 
+Context = autoclass('android.content.Context')
+
+
 class NotificationAndroid:
     def __init__(self, title: str, message: str):
         self.title = title
