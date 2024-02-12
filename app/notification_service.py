@@ -51,6 +51,7 @@ class NotificationService:
         self.new_notification = self.notification_builder.getNotification()
 
     def notify_to_bar(self):
+        print('................... in notify_to_bar()')
         # Below sends the notification to the notification bar; nice but not a foreground service.
         self.notification_service.notify(0, self.new_notification)
         # self.service.startForeground(1, self.new_notification)
@@ -82,6 +83,7 @@ def notify_android(title: str, message: str):
 
 
 if __name__ == '__main__':
+    print('notification service starting...')
     notification_service = NotificationService()
     while True:
         print('notification service running...')
