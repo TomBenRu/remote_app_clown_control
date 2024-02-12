@@ -3,9 +3,11 @@ import time
 from jnius import autoclass
 
 
+print('................... in notification_service.py')
 Context = autoclass('android.content.Context')
-print(f'{Context=}')
-print('in notification_service.py')
+print(f'................ {Context=}')
+Intent = autoclass('android.content.Intent')
+print(f'................ {Intent=}')
 
 
 class NotificationAndroid:
