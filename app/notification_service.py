@@ -31,6 +31,15 @@ title = AndroidString("EzTunes".encode('utf-8'))
 print(f'................ {title=}')
 message = AndroidString("Ready to play music.".encode('utf-8'))
 print(f'................ {message=}')
+app_class = service.getApplication().getClass()
+print(f'................ {app_class=}')
+notification_intent = Intent(app_context, PythonActivity)
+print(f'................ {notification_intent=}')
+notification_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                             Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
+print(f'................ {notification_intent=}')
+notification_intent.setAction(Intent.ACTION_MAIN)
+print(f'................ {notification_intent=}')
 
 
 class NotificationAndroid:
