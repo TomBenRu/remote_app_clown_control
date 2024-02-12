@@ -196,7 +196,7 @@ android.api = 33
 # android.add_resources = my_icons/all-inclusive.png:drawable/all_inclusive.png
 # 2) A directory, here  'legal_icons' must contain resources of one kind
 # android.add_resources = legal_icons:drawable
-android.add_resources = icons/drawable-hdpi:drawable, icons/drawable-mdpi:drawable, icons/drawable-xhdpi:drawable, icons/drawable-xxhdpi:drawable, icons/drawable-xxxhdpi:drawable
+android.add_resources = icons/drawable-hdpi:drawable/xxx, icons/drawable-mdpi:drawable/xxx, icons/drawable-xhdpi:drawable/xxx, icons/drawable-xxhdpi:drawable/xxx, icons/drawable-xxxhdpi:drawable/xxx
 # 3) A directory, here 'legal_resources' must contain one or more directories, 
 # each of a resource kind:  drawable, xml, etc...
 # android.add_resources = legal_resources
