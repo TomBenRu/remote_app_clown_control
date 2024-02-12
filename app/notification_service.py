@@ -4,6 +4,8 @@ from jnius import autoclass
 
 
 Context = autoclass('android.content.Context')
+print(f'{Context=}')
+print('in notification_service.py')
 
 
 class NotificationAndroid:
