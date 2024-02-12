@@ -8,6 +8,14 @@ Context = autoclass('android.content.Context')
 print(f'................ {Context=}')
 Intent = autoclass('android.content.Intent')
 print(f'................ {Intent=}')
+PendingIntent = autoclass('android.app.PendingIntent')
+print(f'................ {PendingIntent=}')
+AndroidString = autoclass('java.lang.String')
+print(f'................ {AndroidString=}')
+NotificationBuilder = autoclass('android.app.Notification$Builder')
+print(f'................ {NotificationBuilder=}')
+Notification = autoclass('android.app.Notification')
+print(f'................ {Notification=}')
 
 
 class NotificationAndroid:
