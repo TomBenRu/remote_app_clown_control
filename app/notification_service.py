@@ -14,7 +14,7 @@ class NotificationService:
         self.server = SERVER
         self.server.listen(address=b'localhost', port=3000, default=True)
 
-        self.server.bind(b'/notify', self.notify_to_bar())
+        self.server.bind(b'/notify', self.notify_to_bar)
 
         self.Context = autoclass('android.content.Context')
         self.Intent = autoclass('android.content.Intent')
