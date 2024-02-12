@@ -12,7 +12,7 @@ class NotificationService:
         print('................... in notification_service.py')
 
         self.server = SERVER
-        self.server.listen(address=b'localhost', port=3000, default=True)
+        self.server.listen(address=b'localhost', port=3004, default=True)
 
         self.server.bind(b'/notify', self.notify_to_bar)
 

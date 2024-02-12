@@ -190,11 +190,12 @@ class CreateTeamScreen(Screen):
 
 
 class ChatTab(FloatLayout, MDTabsBase):
-    def __init__(self, osc_client: OSCClient, tab_pos: int, department_id=None, **kwargs):
+    def __init__(self, osc_client: OSCClient, notification_client: OSCClient, tab_pos: int, department_id=None, **kwargs):
         super().__init__(**kwargs)
         self.tab_pos = tab_pos
         self.department_id = department_id
         self.client = osc_client
+        self.notification_client = notification_client
         self.layout = GridLayout(cols=2, size_hint_y=None)
 
     @mainthread
@@ -203,7 +204,7 @@ class ChatTab(FloatLayout, MDTabsBase):
         self.client.send_message(b'/call',
                                  [user_input.encode('utf-8'),
                                   self.department_id.encode('utf-8') if self.department_id else '-1'.encode('utf-8')])
-        self.client.send_message(b'/notify', [])
+        self.notification_client.send_message(b'/notify', [])
         self.ids.input.text = ''
 
 
@@ -214,6 +215,7 @@ class ChatScreen(Screen):
         self.ws: WebSocketApp | None = None
         self.chat_tabs: dict[str, ChatTab] = {}
         self.client = OSCClient(b'localhost', 3000)
+        self.notification_client = OSCClient(b'localhost', 3004)
         self.server = server = OSCThreadServer()
         server.listen(
             address=b'localhost',
@@ -226,7 +228,7 @@ class ChatScreen(Screen):
     @mainthread
     def ws_opened(self, department_id):
         print(f'{department_id=}')
-        new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client, tab_pos=0)
+        new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client, notification_client=self.notification_client, tab_pos=0)
         self.chat_tabs['common_chat'] = new_chat_tab
         self.ids.chat_tabs.add_widget(new_chat_tab)
 
