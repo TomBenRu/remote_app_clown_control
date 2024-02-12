@@ -1,59 +1,59 @@
 import time
 
 from jnius import autoclass
+from oscpy.server import OSCThreadServer
 
 
-print('................... in notification_service.py')
-Context = autoclass('android.content.Context')
-print(f'................ {Context=}')
-Intent = autoclass('android.content.Intent')
-print(f'................ {Intent=}')
-PendingIntent = autoclass('android.app.PendingIntent')
-print(f'................ {PendingIntent=}')
-AndroidString = autoclass('java.lang.String')
-print(f'................ {AndroidString=}')
-NotificationBuilder = autoclass('android.app.Notification$Builder')
-print(f'................ {NotificationBuilder=}')
-Notification = autoclass('android.app.Notification')
-print(f'................ {Notification=}')
-service_name = 'S1'
-package_name = 'com.something'
-service = autoclass('org.kivy.android.PythonService').mService
-print(f'................ {service=}')
-PythonActivity = autoclass('org.kivy.android' + '.PythonActivity')
-print(f'................ {PythonActivity=}')
-notification_service = service.getSystemService(Context.NOTIFICATION_SERVICE)
-print(f'................ {notification_service=}')
-app_context = service.getApplication().getApplicationContext()
-notification_builder = NotificationBuilder(app_context)
-title = AndroidString("EzTunes".encode('utf-8'))
-print(f'................ {title=}')
-message = AndroidString("Ready to play music.".encode('utf-8'))
-print(f'................ {message=}')
-app_class = service.getApplication().getClass()
-print(f'................ {app_class=}')
-notification_intent = Intent(app_context, PythonActivity)
-notification_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                             Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
-notification_intent.setAction(Intent.ACTION_MAIN)
-notification_intent.addCategory(Intent.CATEGORY_LAUNCHER)
-print(f'................ {notification_intent=}')
-intent = PendingIntent.getActivity(service, 0, notification_intent, 0)
-print(f'................ {intent=}')
-notification_builder.setContentTitle(title)
-notification_builder.setContentText(message)
-notification_builder.setContentIntent(intent)
-print(f'................ {notification_builder=}')
-Drawable = autoclass("{}.R$drawable".format(service.getPackageName()))
-print(f'................ {Drawable=}')
-# icon = getattr(Drawable, 'icon')
-# print(f'................ {icon=}')
-# notification_builder.setSmallIcon(icon)
-notification_builder.setAutoCancel(True)
-new_notification = notification_builder.getNotification()
-#Below sends the notification to the notification bar; nice but not a foreground service.
-#notification_service.notify(0, new_noti)
-service.startForeground(1, new_notification)
+SERVER = OSCThreadServer()
+
+
+class NotificationService:
+    def __init__(self):
+        print('................... in notification_service.py')
+
+        self.server = SERVER
+        self.server.listen(address=b'localhost', port=3000, default=True)
+
+        self.server.bind(b'/notify', self.notify_to_bar())
+
+        self.Context = autoclass('android.content.Context')
+        self.Intent = autoclass('android.content.Intent')
+        self.PendingIntent = autoclass('android.app.PendingIntent')
+        self.AndroidString = autoclass('java.lang.String')
+        self.NotificationBuilder = autoclass('android.app.Notification$Builder')
+        self.Notification = autoclass('android.app.Notification')
+        self.service_name = 'S1'
+        self.package_name = 'com.something'
+        self.service = autoclass('org.kivy.android.PythonService').mService
+        # Previous version of Kivy had a reference to the service like below.
+        # self.service = jnius.autoclass('{}.Service{}'.format(package_name, service_name)).mService
+        self.PythonActivity = autoclass('org.kivy.android' + '.PythonActivity')
+        self.notification_service = self.service.getSystemService(
+            self.Context.NOTIFICATION_SERVICE)
+        self.app_context = self.service.getApplication().getApplicationContext()
+        self.notification_builder = self.NotificationBuilder(self.app_context)
+        self.title = self.AndroidString("EzTunes".encode('utf-8'))
+        self.message = self.AndroidString("Ready to play music.".encode('utf-8'))
+        self.app_class = self.service.getApplication().getClass()
+        self.notification_intent = self.Intent(self.app_context, self.PythonActivity)
+        self.notification_intent.setFlags(self.Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                     self.Intent.FLAG_ACTIVITY_SINGLE_TOP | self.Intent.FLAG_ACTIVITY_NEW_TASK)
+        self.notification_intent.setAction(self.Intent.ACTION_MAIN)
+        self.notification_intent.addCategory(self.Intent.CATEGORY_LAUNCHER)
+        self.intent = self.PendingIntent.getActivity(self.service, 0, self.notification_intent, 0)
+        self.notification_builder.setContentTitle(self.title)
+        self.notification_builder.setContentText(self.message)
+        self.notification_builder.setContentIntent(self.intent)
+        self.Drawable = autoclass("{}.R$drawable".format(self.service.getPackageName()))
+        self.icon = getattr(self.Drawable, 'icon')
+        self.notification_builder.setSmallIcon(self.icon)
+        self.notification_builder.setAutoCancel(True)
+        self.new_notification = self.notification_builder.getNotification()
+
+    def notify_to_bar(self):
+        # Below sends the notification to the notification bar; nice but not a foreground service.
+        self.notification_service.notify(0, self.new_notification)
+        # self.service.startForeground(1, self.new_notification)
 
 
 class NotificationAndroid:
@@ -82,6 +82,7 @@ def notify_android(title: str, message: str):
 
 
 if __name__ == '__main__':
+    notification_service = NotificationService()
     while True:
         print('notification service running...')
         time.sleep(1)

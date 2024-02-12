@@ -203,6 +203,7 @@ class ChatTab(FloatLayout, MDTabsBase):
         self.client.send_message(b'/call',
                                  [user_input.encode('utf-8'),
                                   self.department_id.encode('utf-8') if self.department_id else '-1'.encode('utf-8')])
+        self.client.send_message(b'/notify', [])
         self.ids.input.text = ''
 
 
