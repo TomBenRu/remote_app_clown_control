@@ -54,6 +54,7 @@ class NotificationService:
         # Below sends the notification to the notification bar; nice but not a foreground service.
         self.notification_service.notify(0, self.new_notification)
         # self.service.startForeground(1, self.new_notification)
+        print('................... finished notify_to_bar()')
 
 
 class NotificationAndroid:
