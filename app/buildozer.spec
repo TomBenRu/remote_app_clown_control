@@ -194,6 +194,7 @@ android.api = 33
 # Some examples:
 # 1) A file to add to resources, legal resource names contain ['a-z','0-9','_']
 # android.add_resources = my_icons/all-inclusive.png:drawable/all_inclusive.png
+android.add_resources = icons/ic_stat_message.png:drawable/ic_stat_message.png
 # 2) A directory, here  'legal_icons' must contain resources of one kind
 # android.add_resources = legal_icons:drawable
 # 3) A directory, here 'legal_resources' must contain one or more directories, 
