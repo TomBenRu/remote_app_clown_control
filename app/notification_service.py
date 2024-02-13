@@ -66,7 +66,8 @@ class NotificationAndroid:
         AndroidString = autoclass('java.lang.String')
         PythonActivity = autoclass('org.kivy.android.PythonActivity')
         NotificationBuilder = autoclass('android.app.Notification$Builder')
-        Drawable = autoclass('org.test.notify.R$drawable')  # jnius.autoclass("{}.R$drawable".format(service.getPackageName()))
+        service = autoclass('org.kivy.android.PythonService').mService
+        Drawable = autoclass(f"{service.getPackageName()}.R$drawable")  # jnius.autoclass("{}.R$drawable".format(service.getPackageName()))
         icon = Drawable.icon
         notification_builder = NotificationBuilder(PythonActivity.mActivity)
         notification_builder.setContentTitle(AndroidString(self.title.encode('utf-8')))
@@ -82,9 +83,14 @@ def notify_android(title: str, message: str):
     NotificationAndroid(title, message).notify()
 
 
+SERVER.listen(address=b'localhost', port=3004, default=True)
+
+SERVER.bind(b'/notify', notify_android)
+
+
 if __name__ == '__main__':
     print('notification service starting...')
-    notification_service = NotificationService()
+    # notification_service = NotificationService()
     while True:
         print('notification service running...')
         time.sleep(1)
