@@ -36,7 +36,7 @@ class NotificationService:
         self.app_class = self.service.getApplication().getClass()
         self.notification_intent = self.Intent(self.app_context, self.PythonActivity)
         self.notification_intent.setFlags(self.Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                     self.Intent.FLAG_ACTIVITY_SINGLE_TOP | self.Intent.FLAG_ACTIVITY_NEW_TASK)
+                                          self.Intent.FLAG_ACTIVITY_SINGLE_TOP | self.Intent.FLAG_ACTIVITY_NEW_TASK)
         self.notification_intent.setAction(self.Intent.ACTION_MAIN)
         self.notification_intent.addCategory(self.Intent.CATEGORY_LAUNCHER)
         self.intent = self.PendingIntent.getActivity(self.service, 0, self.notification_intent, 0)
@@ -86,14 +86,14 @@ def notify_android(title: str, message: str):
         print(f'Exception in notify_android(): {e}')
 
 
-SERVER.listen(address=b'localhost', port=3004, default=True)
-
-SERVER.bind(b'/notify', lambda: notify_android('ClownCall', 'New message'))
+# SERVER.listen(address=b'localhost', port=3004, default=True)
+#
+# SERVER.bind(b'/notify', lambda: notify_android('ClownCall', 'New message'))
 
 
 if __name__ == '__main__':
     print('notification service starting...')
-    # notification_service = NotificationService()
+    notification_service = NotificationService()
     while True:
         print('notification service running...')
         time.sleep(1)
