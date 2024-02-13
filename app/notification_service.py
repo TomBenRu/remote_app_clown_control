@@ -69,10 +69,11 @@ class NotificationAndroid:
         self.PythonActivity = autoclass('org.kivy.android.PythonActivity')
         self.NotificationBuilder = autoclass('android.app.Notification$Builder')
         self.service = autoclass('org.kivy.android.PythonService').mService
+        self.app_context = self.service.getApplication().getApplicationContext()
         self.Drawable = autoclass(
             f"{self.service.getPackageName()}.R$drawable")  # jnius.autoclass("{}.R$drawable".format(service.getPackageName()))
         self.icon = self.Drawable.icon
-        self.notification_builder = self.NotificationBuilder(self.PythonActivity.mActivity)
+        self.notification_builder = self.NotificationBuilder(self.app_context)
         self.notification_builder.setContentTitle(self.AndroidString(self.title.encode('utf-8')))
         self.notification_builder.setContentText(self.AndroidString(self.message.encode('utf-8')))
         self.notification_builder.setSmallIcon(self.icon)
