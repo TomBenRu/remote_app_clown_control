@@ -126,11 +126,15 @@
         size_hint: 1, 1
         pos_hint: {'center_x': 0.5, 'top': 1}
         ScrollView:
-            MDTextFieldRect:
+            do_scroll_x: False
+            do_scroll_y: True
+            size_hint: 1, None
+
+            MDLabel:
                 id: output
-                readonly: True
                 font_size: 36
-                multiline: True
+                size_hint: 1,None
+                height: self.texture_size[1]
         GridLayout:
             cols: 2
             size_hint: 1, None
