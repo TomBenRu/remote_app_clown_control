@@ -59,24 +59,29 @@ class NotificationService:
 
 class NotificationAndroid:
     def __init__(self, title: str, message: str):
+        self.server = SERVER
+        self.server.listen(address=b'localhost', port=3004, default=True)
+        self.server.bind(b'/notify', self.notify)
+
         self.title = title
         self.message = message
+        self.AndroidString = autoclass('java.lang.String')
+        self.PythonActivity = autoclass('org.kivy.android.PythonActivity')
+        self.NotificationBuilder = autoclass('android.app.Notification$Builder')
+        self.service = autoclass('org.kivy.android.PythonService').mService
+        self.Drawable = autoclass(
+            f"{self.service.getPackageName()}.R$drawable")  # jnius.autoclass("{}.R$drawable".format(service.getPackageName()))
+        self.icon = self.Drawable.icon
+        self.notification_builder = self.NotificationBuilder(self.PythonActivity.mActivity)
+        self.notification_builder.setContentTitle(self.AndroidString(self.title.encode('utf-8')))
+        self.notification_builder.setContentText(self.AndroidString(self.message.encode('utf-8')))
+        self.notification_builder.setSmallIcon(self.icon)
+        self.notification_builder.setAutoCancel(True)
+        self.Context = autoclass('android.content.Context')
+        self.notification_service = self.PythonActivity.mActivity.getSystemService(self.Context.NOTIFICATION_SERVICE)
 
     def notify(self, *args):
-        AndroidString = autoclass('java.lang.String')
-        PythonActivity = autoclass('org.kivy.android.PythonActivity')
-        NotificationBuilder = autoclass('android.app.Notification$Builder')
-        service = autoclass('org.kivy.android.PythonService').mService
-        Drawable = autoclass(f"{service.getPackageName()}.R$drawable")  # jnius.autoclass("{}.R$drawable".format(service.getPackageName()))
-        icon = Drawable.icon
-        notification_builder = NotificationBuilder(PythonActivity.mActivity)
-        notification_builder.setContentTitle(AndroidString(self.title.encode('utf-8')))
-        notification_builder.setContentText(AndroidString(self.message.encode('utf-8')))
-        notification_builder.setSmallIcon(icon)
-        notification_builder.setAutoCancel(True)
-        Context = autoclass('android.content.Context')
-        notification_service = PythonActivity.mActivity.getSystemService(Context.NOTIFICATION_SERVICE)
-        notification_service.notify(0, notification_builder.build())
+        self.notification_service.notify(0, self.notification_builder.build())
 
 
 def notify_android(title: str, message: str):
@@ -86,14 +91,10 @@ def notify_android(title: str, message: str):
         print(f'Exception in notify_android(): {e}')
 
 
-# SERVER.listen(address=b'localhost', port=3004, default=True)
-#
-# SERVER.bind(b'/notify', lambda: notify_android('ClownCall', 'New message'))
-
-
 if __name__ == '__main__':
     print('notification service starting...')
-    notification_service = NotificationService()
+    # notification_service = NotificationService()
+    notification_android = NotificationAndroid('ClownCall', 'New message')
     while True:
         print('notification service running...')
         time.sleep(1)
