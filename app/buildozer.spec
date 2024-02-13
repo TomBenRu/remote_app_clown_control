@@ -45,7 +45,7 @@ requirements = python3, kivy, kivymd, plyer, pyjnius, websocket-client, requests
 
 # (str) Presplash of the application
 #presplash.filename = %(source.dir)s/data/presplash.png
-presplash.filename = icons/clown_control_icon.png
+presplash.filename = icons/clown_control_presplash.png
 
 # (str) Icon of the application
 #icon.filename = %(source.dir)s/data/icon.png
