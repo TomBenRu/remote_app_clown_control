@@ -79,7 +79,7 @@ class NotificationAndroid:
         self.notification_builder.setSmallIcon(self.icon)
         self.notification_builder.setAutoCancel(True)
         self.Context = autoclass('android.content.Context')
-        self.notification_service = self.PythonActivity.mActivity.getSystemService(self.Context.NOTIFICATION_SERVICE)
+        self.notification_service = self.service.getSystemService(self.Context.NOTIFICATION_SERVICE)
 
     def notify(self, *args):
         self.notification_service.notify(0, self.notification_builder.build())
