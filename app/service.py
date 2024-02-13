@@ -26,7 +26,9 @@ class OscHandler:
         self.ws: WebSocketApp | None = None
 
         self.vibrator = plyer.vibrator
-        self.vibrator.vibrate(time=4)
+        self.vibrator.vibrate(time=0.2)
+        self.notification = plyer.notification
+        self.notification.notify(title='Hello', message='Hello World', app_name='Hello World')
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> osc handler init')
 
     def handle_call(self, message, department_id):
