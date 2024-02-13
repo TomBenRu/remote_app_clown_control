@@ -80,7 +80,10 @@ class NotificationAndroid:
 
 
 def notify_android(title: str, message: str):
-    NotificationAndroid(title, message).notify()
+    try:
+        NotificationAndroid(title, message).notify()
+    except Exception as e:
+        print(f'Exception in notify_android(): {e}')
 
 
 SERVER.listen(address=b'localhost', port=3004, default=True)
