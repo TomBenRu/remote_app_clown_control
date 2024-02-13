@@ -24,6 +24,8 @@ class OscHandler:
         self.server.bind(b'/close_connection', self.close_connection)
 
         self.ws: WebSocketApp | None = None
+
+        self.vibrator = plyer.vibrator
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> osc handler init')
 
     def handle_call(self, message, department_id):
@@ -86,7 +88,7 @@ class OscHandler:
 
     def vibrate(self):
         # plyer.vibrator.vibrate(time=4)
-        plyer.vibrator.pattern(pattern=[0, 0.5, 0.5, 1, 0.5, 0.5, 0.5, 1])
+        self.vibrator.pattern(pattern=[0, 0.5, 0.5, 1, 0.5, 0.5, 0.5, 1])
 
 
 if __name__ == '__main__':
