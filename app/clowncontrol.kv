@@ -125,15 +125,15 @@
         cols: 1
         size_hint: 1, 1
         pos_hint: {'center_x': 0.5, 'top': 1}
-        ScrollView:
+        MDScrollView:
             do_scroll_x: False
             do_scroll_y: True
-            size_hint: 1, None
+            size_hint: 1, 1
 
             MDLabel:
                 id: output
                 font_size: 36
-                size_hint: 1, 1
+                size_hint: 1, None
         GridLayout:
             cols: 2
             size_hint: 1, None
