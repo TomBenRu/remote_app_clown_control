@@ -375,11 +375,6 @@ class ClownControlApp(MDApp):
         if platform == 'android':
             self.start_service()
             # self.start_notification_service()
-            title = 'My Title'
-            message = 'My Message'
-            ticker = 'My Ticker'
-            kwargs = {'title': title, 'message': message, 'ticker': ticker}
-            plyer.notification.notify(**kwargs)
 
 
 if __name__ == '__main__':

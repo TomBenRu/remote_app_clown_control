@@ -28,6 +28,12 @@ class OscHandler:
         self.vibrator = plyer.vibrator
         self.vibrator.vibrate(time=0.2)
 
+        title = 'My Title'
+        message = 'My Message'
+        ticker = 'My Ticker'
+        kwargs = {'title': title, 'message': message, 'ticker': ticker}
+        plyer.notification.notify(**kwargs)
+
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> osc handler init')
 
     def handle_call(self, message, department_id):
