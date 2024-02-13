@@ -88,7 +88,7 @@ def notify_android(title: str, message: str):
 
 SERVER.listen(address=b'localhost', port=3004, default=True)
 
-SERVER.bind(b'/notify', notify_android)
+SERVER.bind(b'/notify', lambda: notify_android('ClownCall', 'New message'))
 
 
 if __name__ == '__main__':
