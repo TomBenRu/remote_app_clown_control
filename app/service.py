@@ -88,6 +88,7 @@ class OscHandler:
 
     def close_connection(self):
         if self.ws and self.ws.sock and self.ws.sock.connected:
+            self.ws.send(json.dumps({'closing': True}))
             self.ws.close()
             self.ws = None
 
