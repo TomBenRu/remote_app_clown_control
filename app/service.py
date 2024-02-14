@@ -75,7 +75,7 @@ class OscHandler:
         self.open_ws_connection(ws_url.decode('utf-8'),
                                 token.decode('utf-8'),
                                 team_of_actors_id.decode('utf-8'))
-        self.handle_call(message, None)
+        # self.handle_call(message, None)
 
     def open_ws_connection(self, ws_url: str, token: str, team_of_actors_id: str):
         if self.ws:
