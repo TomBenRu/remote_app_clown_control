@@ -86,9 +86,9 @@ class OscHandler:
         threading.Thread(target=self.ws.run_forever,
                          kwargs={"sslopt": {"cert_reqs": ssl.CERT_NONE}, 'reconnect': 5}).start()
 
-    def close_connection(self):
+    def close_connection(self, message):
         if self.ws and self.ws.sock and self.ws.sock.connected:
-            self.ws.send(json.dumps({'closing': True}))
+            self.ws.send(json.dumps({'closing': True, 'message': message.decode('utf-8')}))
             self.ws.close()
             self.ws = None
 
