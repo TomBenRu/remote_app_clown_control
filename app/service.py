@@ -89,7 +89,7 @@ class OscHandler:
     def close_connection(self, message):
         if self.ws and self.ws.sock and self.ws.sock.connected:
             print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> close connection {message=}')
-            self.ws.send(json.dumps({'closing': True, 'message': message.decode('utf-8')}))
+            self.ws.send(json.dumps({'closing': True, 'chat-message': message.decode('utf-8')}))
             print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> close connection {message=} after send')
             self.ws.close()
             self.ws = None
