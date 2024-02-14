@@ -282,6 +282,7 @@ class ChatScreen(Screen):
                 self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
                                                                   f" hat den Chat verlassen.\n")
                 self.ids.chat_tabs.remove_widget(self.ids.chat_tabs.get_tab_list()[self.chat_tabs[department_id].tab_pos])
+                del self.chat_tabs[department_id]
             else:
                 ...
 
