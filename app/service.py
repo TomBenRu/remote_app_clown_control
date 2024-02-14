@@ -37,11 +37,13 @@ class OscHandler:
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> osc handler init')
 
     def handle_call(self, message, department_id):
+        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> handle call {message=}, {department_id=}')
         message = message.decode('utf-8')
         department_id = department_id.decode('utf-8')
         if department_id == '-1':
             department_id = None
         self.ws.send(json.dumps({'chat-message': message, 'receiver_id': department_id}))
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Message sent')
 
     def handle_ws_message(self, ws, message):
         if message_str := json.loads(message).get('message'):
