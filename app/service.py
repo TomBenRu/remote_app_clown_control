@@ -41,7 +41,10 @@ class OscHandler:
         message = message.decode('utf-8')
         if department_id is not None and department_id == '-1':
             department_id = None
-        self.ws.send(json.dumps({'chat-message': message, 'receiver_id': department_id}))
+        try:
+            self.ws.send(json.dumps({'chat-message': message, 'receiver_id': department_id}))
+        except Exception as e:
+            print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> handle call failed {e=}')
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Message sent')
 
     def handle_ws_message(self, ws, message):
