@@ -238,7 +238,8 @@ class ChatScreen(Screen):
 
     def create_connection_service(self):
         self.client.send_message(b'/connect',
-                                 [values.ws_url.encode('utf-8'),
+                                 ['Hallo! Wir freuen uns darauf, Freude zu euch zu bringen 😃.'.encode('utf-8'),
+                                        values.ws_url.encode('utf-8'),
                                         values.token.encode('utf-8'),
                                         values.team_of_actors['id'].encode('utf-8')])
 
@@ -316,11 +317,8 @@ class ChatScreen(Screen):
         self.dialog_exit.dismiss(force=True)
 
     def logout(self, instance):
-        # self.client.send_message(b'/call',
-        #                          ['Wir verabschieden uns für heute. Danke für die Unterstützung!'.encode('utf-8'),
-        #                           '-1'.encode('utf-8')])
         self.client.send_message(b'/close_connection',
-                                 ['Wir verabschieden uns für heute. Danke für die Unterstützung!'.encode('utf-8')])
+                                 ['Wir verabschieden uns für heute. Danke für die Unterstützung! 👋'.encode('utf-8')])
         values.session.post(f'{values.backend_url}actors/delete-team',
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
         if platform == 'android' and values.service:
