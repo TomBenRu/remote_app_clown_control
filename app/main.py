@@ -261,11 +261,6 @@ class ChatScreen(Screen):
                 self.chat_tabs[receiver_id].ids.output.text += f">>> {send_confirmation}\n"
                 self.chat_tabs['common_chat'].ids.output.text += f">>> {values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
         elif message:
-            # self.notify_event()
-            # eine Vibration wird ausgelöst, wenn die App auf Android läuft
-            # if platform == 'android':
-            #     # plyer.vibrator.vibrate(time=4)
-            #     plyer.vibrator.pattern(pattern=[0, 0.5, 0.5, 1, 0.5, 0.5, 0.5, 1])
             if department_id:
                 self.chat_tabs['common_chat'].ids.output.text += (f"<<< {values.departments_of_location[department_id]['name']}:"
                                                                   f" {message}\n")
@@ -273,7 +268,7 @@ class ChatScreen(Screen):
             else:
                 ...
         elif joined:
-            if department_id:
+            if department_id and not self.chat_tabs.get(department_id):
                 self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
                                                                   f" hat den Chat betreten.\n")
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
