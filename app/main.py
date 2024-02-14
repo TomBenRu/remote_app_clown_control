@@ -238,8 +238,7 @@ class ChatScreen(Screen):
 
     def create_connection_service(self):
         self.client.send_message(b'/connect',
-                                 ['Hallo! Wir freuen uns darauf, Freude zu euch zu bringen 😃.'.encode('utf-8'),
-                                        values.ws_url.encode('utf-8'),
+                                 [values.ws_url.encode('utf-8'),
                                         values.token.encode('utf-8'),
                                         values.team_of_actors['id'].encode('utf-8')])
 
