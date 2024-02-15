@@ -39,7 +39,7 @@ class OscHandler:
     def handle_call(self, message, department_id):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> handle call {message=}, {department_id=}')
         message = message.decode('utf-8')
-        if department_id is not None and department_id == '-1':
+        if department_id is not None and department_id.decode('utf-8') == '-1':
             department_id = None
         try:
             self.ws.send(json.dumps({'chat-message': message, 'receiver_id': department_id}))
