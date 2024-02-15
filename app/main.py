@@ -95,7 +95,7 @@ class LoginScreen(Screen):
             else:
                 self.ids.error_label.text = 'Username oder Passwort ungültig!'
         except requests.exceptions.RequestException as e:
-            self.layout.add_widget(Label(text=str(e)))
+            info = MDDialog(title='Verbindungsfehler', text='Es konnte keine Verbindung zum Server hergestellt werden.')
 
 
 class CreateTeamScreen(Screen):
