@@ -354,7 +354,7 @@ class ChatScreen(Screen):
             self.dlg = MDDialog(title='Logout',
                                 text='Der Server ist nicht erreichbar. Bitte stellen Sie sicher, '
                                      'dass eine Verbindung zum Netzwerk besteht.',
-                                buttons=[MDFlatButton(text='Ok', on_release=lambda: self.dlg.dismiss())])
+                                buttons=[MDFlatButton(text='Ok', on_release=lambda x: self.dlg.dismiss())])
             self.dlg.open()
             return
         self.client.send_message(b'/close_connection',
