@@ -53,6 +53,9 @@ class OscHandler:
             except Exception as e:
                 print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> vibrate failed {e=}')
         self.client.send_message(b'/ws_message', [message.encode('utf-8'),])
+        if message_str.get('joined') and (department_id := message_str.get('department_id')):
+            self.handle_call(self.greeting_message, department_id)
+            self.client.send_message(b'/put_message_to_output', [department_id.encode('utf-8'), self.greeting_message])
 
     def handle_ws_error(self, ws, error):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws error {error=}')
