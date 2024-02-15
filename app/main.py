@@ -281,7 +281,9 @@ class ChatScreen(Screen):
                 self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
                                                                   f" hat den Chat betreten.\n")
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
-                                       department_id=department_id, osc_client=self.client, notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
+                                       color_indicator='blue',
+                                       department_id=department_id, osc_client=self.client,
+                                       notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
                 new_chat_tab.ids.output.text = self.text_closed_departments[department_id]
                 self.chat_tabs[department_id] = new_chat_tab
                 self.ids.chat_tabs.add_widget(new_chat_tab)
