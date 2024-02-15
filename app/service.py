@@ -62,7 +62,8 @@ class OscHandler:
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws opened {ws=}')
         self.client.send_message(b'/ws_opened', ['-1'.encode('utf-8'),])
         if self.greeting_message:
-            self.handle_call('self.greeting_message'.encode('utf-8'), None)
+            print(f'........................... {self.greeting_message}')
+            self.handle_call(self.greeting_message, None)
 
     def handle_ws_close(self, ws, close_status_code, close_msg):
         self.client.send_message(b'/ws_closed', [close_status_code.encode('utf-8'), close_msg.encode('utf-8'),])
@@ -71,7 +72,7 @@ class OscHandler:
         self.client.send_message(b'/ws_already_open', [1,])
 
     def handle_connect(self, message, ws_url, token, team_of_actors_id):
-        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> connect: {ws_url=}, {token=}, {team_of_actors_id=}')
+        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> connect: {message=} {ws_url=}, {token=}, {team_of_actors_id=}')
         self.open_ws_connection(ws_url.decode('utf-8'),
                                 token.decode('utf-8'),
                                 team_of_actors_id.decode('utf-8'))
