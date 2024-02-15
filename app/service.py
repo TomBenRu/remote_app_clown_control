@@ -62,7 +62,7 @@ class OscHandler:
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws opened {ws=}')
         self.client.send_message(b'/ws_opened', ['-1'.encode('utf-8'),])
         if self.greeting_message:
-            self.handle_call(self.greeting_message, None)
+            self.handle_call('self.greeting_message'.encode('utf-8'), None)
 
     def handle_ws_close(self, ws, close_status_code, close_msg):
         self.client.send_message(b'/ws_closed', [close_status_code.encode('utf-8'), close_msg.encode('utf-8'),])
