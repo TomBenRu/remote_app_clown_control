@@ -333,8 +333,13 @@ class ChatScreen(Screen):
     def logout(self, instance):
         self.client.send_message(b'/close_connection',
                                  ['Wir verabschieden uns für heute. Danke für die Unterstützung! 👋'.encode('utf-8')])
-        values.session.post(f'{values.backend_url}actors/delete-team',
-                            params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
+        response = values.session.delete(f'{values.backend_url}actors/delete-team',
+                                         params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
+        print(f'{response.json()=}')
+        print(f'{response.status_code=}')
+        if response.status_code != 200:
+            print(f'{response.text=}')
+            return
         if values.store.get('team_of_actors') and values.store.get('team_of_actors')['id']:
             values.store.put('team_of_actors', id=None)
         if platform == 'android' and values.service:
