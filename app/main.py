@@ -77,7 +77,7 @@ class LoginScreen(Screen):
             self.ids.username.text = values.store.get('login_data')['username']
             self.ids.password.text = values.store.get('login_data')['password']
 
-    def validate_user(self):
+    def validate_user(self, *args):
         data = {'username': self.ids.username.text, 'password': self.ids.password.text}
         try:
             response = requests.post(f'{values.backend_url}token/', data, timeout=10)
@@ -101,7 +101,7 @@ class LoginScreen(Screen):
                                          MDFlatButton(text="Cancel", on_release=self.dismiss)])
             info_dlg.open()
 
-    def dismiss(self):
+    def dismiss(self, *args):
         values.service.stop(values.mActivity)
         # MDApp.get_running_app().stop()
 
