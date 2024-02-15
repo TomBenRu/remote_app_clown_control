@@ -109,8 +109,6 @@ class OscHandler:
 
 
 if __name__ == '__main__':
-    # SERVER.listen(b'localhost', port=3000, default=True)
-    # SERVER.bind(b'/call', handle_call)
     osc_handler = OscHandler()
 
     t = 0
@@ -118,9 +116,4 @@ if __name__ == '__main__':
         time.sleep(5)
         t += 5
         print(f'>>>>>>>>>>>>>>>>>>>> {t=}')
-        # message = f'message {t}'.encode('utf-8')
-        # try:
-        #     CLIENT.send_message(b'/message', [message,],)
-        # except Exception as e:
-        #     print(f'------------------Fehler: {e}---------------------------')
 
