@@ -48,6 +48,7 @@ class Values:
         self.mActivity = None
         self.service = None
         self.notification_service = None
+        self.store: JsonStore = JsonStore('../racc.json')
 
     def set_session_token(self, token: str):
         self.token = token
@@ -70,10 +71,10 @@ values = Values()
 class LoginScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.store = JsonStore('../racc.json')
-        if self.store.exists('login_data'):
-            self.ids.username.text = self.store.get('login_data')['username']
-            self.ids.password.text = self.store.get('login_data')['password']
+        # self.store = JsonStore('../racc.json')
+        if values.store.exists('login_data'):
+            self.ids.username.text = values.store.get('login_data')['username']
+            self.ids.password.text = values.store.get('login_data')['password']
 
     def validate_user(self):
         data = {'username': self.ids.username.text, 'password': self.ids.password.text}
@@ -83,8 +84,11 @@ class LoginScreen(Screen):
                 values.set_session_token(response.json().get('access_token'))
                 values.set_user_id(jwt.decode(jwt=response.json().get('access_token'),
                                               options={"verify_signature": False}).get('user_id'))
-                self.store.put('login_data', username=self.ids.username.text, password=self.ids.password.text)
+                values.store.put('login_data', username=self.ids.username.text, password=self.ids.password.text)
                 self.ids.error_label.text = ''
+                if values.store.exists('team_of_actors') and values.store.get('team_of_actors')['id']:
+                    values.session.post(f'{values.backend_url}actors/delete-team',
+                                        params={'team_of_actor_id': values.store.get('team_of_actors')['id']}, timeout=10)
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'team'
             else:
@@ -183,6 +187,7 @@ class CreateTeamScreen(Screen):
                 print([a['artist_name'] for a in response.json()['actors']])
                 values.set_team_of_actors(response.json())
                 print([a['artist_name'] for a in values.team_of_actors['actors']])
+                values.store.put('team_of_actors', id=values.team_of_actors['id'])
             else:
                 self.layout_clown_select.add_widget(Label(text='Fehler bei der Teamerstellung!'))
         except requests.exceptions.RequestException as e:
@@ -320,6 +325,8 @@ class ChatScreen(Screen):
                                  ['Wir verabschieden uns für heute. Danke für die Unterstützung! 👋'.encode('utf-8')])
         values.session.post(f'{values.backend_url}actors/delete-team',
                             params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
+        if values.store.get('team_of_actors') and values.store.get('team_of_actors')['id']:
+            values.store.put('team_of_actors', id=None)
         if platform == 'android' and values.service:
             values.service.stop(values.mActivity)
 
