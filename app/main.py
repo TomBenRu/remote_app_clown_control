@@ -95,7 +95,9 @@ class LoginScreen(Screen):
             else:
                 self.ids.error_label.text = 'Username oder Passwort ungültig!'
         except requests.exceptions.RequestException as e:
-            info_dlg = MDDialog(title='Verbindungsfehler', text='Es konnte keine Verbindung zum Server hergestellt werden.')
+            info_dlg = MDDialog(title='Verbindungsfehler',
+                                text='Es konnte keine Verbindung zum Server hergestellt werden.',
+                                buttons=[MDFlatButton(text="Okay")])
             info_dlg.open()
 
 
