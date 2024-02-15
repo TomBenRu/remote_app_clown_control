@@ -97,8 +97,13 @@ class LoginScreen(Screen):
         except requests.exceptions.RequestException as e:
             info_dlg = MDDialog(title='Verbindungsfehler',
                                 text='Es konnte keine Verbindung zum Server hergestellt werden.',
-                                buttons=[MDFlatButton(text="Okay")])
+                                buttons=[MDFlatButton(text="Try again", on_release=self.validate_user),
+                                         MDFlatButton(text="Cancel", on_release=self.dismiss)])
             info_dlg.open()
+
+    def dismiss(self):
+        values.service.stop(values.mActivity)
+        MDApp.get_running_app().stop()
 
 
 class CreateTeamScreen(Screen):
