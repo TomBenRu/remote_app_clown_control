@@ -285,7 +285,8 @@ class ChatScreen(Screen):
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
                                        department_id=department_id, osc_client=self.client,
                                        notification_client=self.notification_client, tab_pos=tab_position)
-                new_chat_tab.ids.output.text = self.text_pos_closed_departments[department_id][0]
+                new_chat_tab.ids.output.text = (self.text_pos_closed_departments[department_id][0]
+                                                if self.text_pos_closed_departments[department_id] else '')
                 self.chat_tabs[department_id] = new_chat_tab
                 self.ids.chat_tabs.add_widget(new_chat_tab, tab_position)
             else:
