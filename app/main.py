@@ -240,6 +240,7 @@ class ChatScreen(Screen):
         server.bind(b'/ws_opened', self.ws_opened)
 
         self.text_closed_departments = defaultdict(str)
+        self.dlg = None
 
     @mainthread
     def ws_opened(self, department_id):
@@ -338,7 +339,14 @@ class ChatScreen(Screen):
     def close_dialog_exit(self, instance):
         self.dialog_exit.dismiss(force=True)
 
-    def logout(self, instance):
+    def logout(self, *args):
+        response = values.session.get('/connection_test')
+        if response.status_code != 200:
+            self.dlg = MDDialog(title='Logout',
+                                text='Der Server ist nicht erreichbar. Bitte stellen Sie sicher, '
+                                     'dass eine Verbindung zum Netzwerk besteht.',
+                                buttons=[MDFlatButton(text='Ok', on_release=lambda: self.dlg.dismiss())])
+            return
         self.client.send_message(b'/close_connection',
                                  ['Wir verabschieden uns für heute. Danke für die Unterstützung! 👋'.encode('utf-8')])
         response = values.session.delete(f'{values.backend_url}actors/delete-team',
