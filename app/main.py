@@ -231,7 +231,7 @@ class ChatScreen(Screen):
         server.bind(b'/ws_message', self.on_message)
         server.bind(b'/ws_opened', self.ws_opened)
 
-        self.text_pos_closed_departments = defaultdict(list)
+        self.text_closed_departments = defaultdict(str)
 
     @mainthread
     def ws_opened(self, department_id):
@@ -280,25 +280,23 @@ class ChatScreen(Screen):
             if department_id and not self.chat_tabs.get(department_id):
                 self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
                                                                   f" hat den Chat betreten.\n")
-                tab_position = (self.text_pos_closed_departments[department_id][1]
-                                if self.text_pos_closed_departments[department_id] else len(self.chat_tabs))
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
-                                       department_id=department_id, osc_client=self.client,
-                                       notification_client=self.notification_client, tab_pos=tab_position)
-                new_chat_tab.ids.output.text = (self.text_pos_closed_departments[department_id][0]
-                                                if self.text_pos_closed_departments[department_id] else '')
+                                       department_id=department_id, osc_client=self.client, notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
+                new_chat_tab.ids.output.text = self.text_closed_departments[department_id]
                 self.chat_tabs[department_id] = new_chat_tab
-                self.ids.chat_tabs.add_widget(new_chat_tab, tab_position)
+                self.ids.chat_tabs.add_widget(new_chat_tab)
             else:
                 ...
         elif left:
             if department_id:
                 self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
                                                                   f" hat den Chat verlassen.\n")
+                tab_position = self.chat_tabs[department_id].tab_pos
+                for tab in self.chat_tabs.values():
+                    if tab.tab_pos > tab_position:
+                        tab.tab_pos -= 1
                 self.ids.chat_tabs.remove_widget(self.ids.chat_tabs.get_tab_list()[self.chat_tabs[department_id].tab_pos])
-                self.text_pos_closed_departments[department_id].clear()
-                self.text_pos_closed_departments[department_id].append(self.chat_tabs[department_id].ids.output.text)
-                self.text_pos_closed_departments[department_id].append(self.chat_tabs[department_id].tab_pos)
+                self.text_closed_departments[department_id] = self.chat_tabs[department_id].ids.output.text
                 del self.chat_tabs[department_id]
             else:
                 ...
