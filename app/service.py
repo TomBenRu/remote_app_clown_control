@@ -56,7 +56,6 @@ class OscHandler:
         if (self.greeting_message and json.loads(message).get('joined')
                 and (department_id := json.loads(message).get('department_id'))):
             self.handle_call(self.greeting_message, department_id.encode('utf-8'))
-            # self.client.send_message(b'/put_message_to_output', [department_id.encode('utf-8'), self.greeting_message])
 
     def handle_ws_error(self, ws, error):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws error {error=}')
@@ -65,9 +64,9 @@ class OscHandler:
     def handle_ws_open(self, ws):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws opened {ws=}')
         self.client.send_message(b'/ws_opened', ['-1'.encode('utf-8'),])
-        if self.greeting_message:
-            print(f'........................... {self.greeting_message}')
-            self.handle_call(self.greeting_message, None)
+        # if self.greeting_message:
+        #     print(f'........................... {self.greeting_message}')
+        #     self.handle_call(self.greeting_message, None)
 
     def handle_ws_close(self, ws, close_status_code, close_msg):
         self.client.send_message(b'/ws_closed', [close_status_code.encode('utf-8'), close_msg.encode('utf-8'),])
