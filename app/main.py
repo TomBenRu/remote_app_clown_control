@@ -344,7 +344,7 @@ class ChatScreen(Screen):
         self.dialog_exit.dismiss(force=True)
 
     def logout(self, *args):
-        response = values.session.get('/connection_test')
+        response = values.session.get(f'{values.backend_url}/connection_test')
         if response.status_code != 200:
             self.dlg = MDDialog(title='Logout',
                                 text='Der Server ist nicht erreichbar. Bitte stellen Sie sicher, '
