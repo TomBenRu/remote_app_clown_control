@@ -344,6 +344,9 @@ class ChatScreen(Screen):
         self.dialog_exit.dismiss(force=True)
 
     def logout(self, *args):
+        if self.dialog_exit:
+            self.dialog_exit.dismiss(force=True)
+            self.dialog_exit = None
         try:
             response = values.session.get(f'{values.backend_url}/connection_test')
         except Exception as e:
@@ -352,6 +355,7 @@ class ChatScreen(Screen):
                                 text='Der Server ist nicht erreichbar. Bitte stellen Sie sicher, '
                                      'dass eine Verbindung zum Netzwerk besteht.',
                                 buttons=[MDFlatButton(text='Ok', on_release=lambda: self.dlg.dismiss())])
+            self.dlg.open()
             return
         self.client.send_message(b'/close_connection',
                                  ['Wir verabschieden uns für heute. Danke für die Unterstützung! 👋'.encode('utf-8')])
