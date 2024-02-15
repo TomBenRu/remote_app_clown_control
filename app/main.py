@@ -76,8 +76,11 @@ class LoginScreen(Screen):
         if values.store.exists('login_data'):
             self.ids.username.text = values.store.get('login_data')['username']
             self.ids.password.text = values.store.get('login_data')['password']
+        self.info_dlg: MDDialog | None = None
 
     def validate_user(self, *args):
+        if self.info_dlg:
+            self.info_dlg.dismiss()
         data = {'username': self.ids.username.text, 'password': self.ids.password.text}
         try:
             response = requests.post(f'{values.backend_url}token/', data, timeout=10)
@@ -95,13 +98,14 @@ class LoginScreen(Screen):
             else:
                 self.ids.error_label.text = 'Username oder Passwort ungültig!'
         except requests.exceptions.RequestException as e:
-            info_dlg = MDDialog(title='Verbindungsfehler',
+            self.info_dlg = MDDialog(title='Verbindungsfehler',
                                 text='Es konnte keine Verbindung zum Server hergestellt werden.',
                                 buttons=[MDFlatButton(text="Try again", on_release=self.validate_user),
                                          MDFlatButton(text="Cancel", on_release=self.dismiss)])
-            info_dlg.open()
+            self.info_dlg.open()
 
     def dismiss(self, *args):
+        self.info_dlg.dismiss()
         values.service.stop(values.mActivity)
         MDApp.get_running_app().stop()
 
