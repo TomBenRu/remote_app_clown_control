@@ -280,11 +280,14 @@ class ChatScreen(Screen):
             if department_id and not self.chat_tabs.get(department_id):
                 self.chat_tabs['common_chat'].ids.output.text += (f"{values.departments_of_location[department_id]['name']}"
                                                                   f" hat den Chat betreten.\n")
+                tab_position = (self.text_pos_closed_departments[department_id][1]
+                                if self.text_pos_closed_departments[department_id] else len(self.chat_tabs))
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
-                                       department_id=department_id, osc_client=self.client, notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
+                                       department_id=department_id, osc_client=self.client,
+                                       notification_client=self.notification_client, tab_pos=tab_position)
                 new_chat_tab.ids.output.text = self.text_pos_closed_departments[department_id][0]
                 self.chat_tabs[department_id] = new_chat_tab
-                self.ids.chat_tabs.add_widget(new_chat_tab, self.text_pos_closed_departments[department_id][1])
+                self.ids.chat_tabs.add_widget(new_chat_tab, tab_position)
             else:
                 ...
         elif left:
