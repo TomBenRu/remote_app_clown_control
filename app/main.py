@@ -103,7 +103,7 @@ class LoginScreen(Screen):
 
     def dismiss(self):
         values.service.stop(values.mActivity)
-        MDApp.get_running_app().stop()
+        # MDApp.get_running_app().stop()
 
 
 class CreateTeamScreen(Screen):
