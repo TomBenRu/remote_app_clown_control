@@ -28,12 +28,6 @@ class OscHandler:
         self.vibrator = plyer.vibrator
         self.vibrator.vibrate(time=0.2)
 
-        # title = 'My Title'
-        # message = 'My Message'
-        # ticker = 'My Ticker'
-        # kwargs = {'title': title, 'message': message, 'ticker': ticker}
-        # plyer.notification.notify(**kwargs)
-
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> osc handler init')
 
     def handle_call(self, message, department_id):
@@ -63,6 +57,7 @@ class OscHandler:
     def handle_ws_open(self, ws):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws opened {ws=}')
         self.client.send_message(b'/ws_opened', ['-1'.encode('utf-8'),])
+        self.handle_call('Hallo! Wir sind im Haus'.encode('utf-8'), None)
 
     def handle_ws_close(self, ws, close_status_code, close_msg):
         self.client.send_message(b'/ws_closed', [close_status_code.encode('utf-8'), close_msg.encode('utf-8'),])
@@ -70,12 +65,11 @@ class OscHandler:
     def handle_already_open_ws_connection(self):
         self.client.send_message(b'/ws_already_open', [1,])
 
-    def handle_connect(self, message, ws_url, token, team_of_actors_id):
+    def handle_connect(self, ws_url, token, team_of_actors_id):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> connect: {ws_url=}, {token=}, {team_of_actors_id=}')
         self.open_ws_connection(ws_url.decode('utf-8'),
                                 token.decode('utf-8'),
                                 team_of_actors_id.decode('utf-8'))
-        self.handle_call(message, None)
 
     def open_ws_connection(self, ws_url: str, token: str, team_of_actors_id: str):
         if self.ws:
