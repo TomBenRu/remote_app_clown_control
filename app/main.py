@@ -285,7 +285,7 @@ class ChatScreen(Screen):
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
                     sender = response.json() if response.status_code == 200 else None
-                    names = [a['artist_name'] for a in sender.json()['actors']] if sender else []
+                    names = [a['artist_name'] for a in sender['actors']] if sender else []
                     for chat_tab in self.chat_tabs.values():
                         chat_tab.ids.output.text += f"{names} >>>: {send_confirmation}\n"
             else:
