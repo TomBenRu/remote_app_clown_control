@@ -285,17 +285,17 @@ class ChatScreen(Screen):
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
                     sender = response.json() if response.status_code == 200 else None
-                    names = [a['artist_name'] for a in sender['actors']] if sender else []
+                    names = ', '.join([a['artist_name'] for a in sender['actors']]) if sender else ''
                     for chat_tab in self.chat_tabs.values():
-                        chat_tab.ids.output.text += f"{names} >>>: {send_confirmation}\n"
+                        chat_tab.ids.output.text += f"[{names}] >>>\n{send_confirmation}\n"
             else:
-                self.chat_tabs[receiver_id].ids.output.text += f">>> {send_confirmation}\n"
-                self.chat_tabs['common_chat'].ids.output.text += f">>> {values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
+                self.chat_tabs[receiver_id].ids.output.text += f">>>\n{send_confirmation}\n"
+                self.chat_tabs['common_chat'].ids.output.text += f">>>\n{values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
         elif message:
             if department_id:
-                self.chat_tabs['common_chat'].ids.output.text += (f"<<< {values.departments_of_location[department_id]['name']}:"
+                self.chat_tabs['common_chat'].ids.output.text += (f"<<<\n{values.departments_of_location[department_id]['name']}:"
                                                                   f" {message}\n")
-                self.chat_tabs[department_id].ids.output.text += f"<<< {message}\n"
+                self.chat_tabs[department_id].ids.output.text += f"<<<\n{message}\n"
             else:
                 ...
         elif joined:
