@@ -268,6 +268,7 @@ class ChatScreen(Screen):
         message_dict = json.loads(message.decode('utf-8'))
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>> {message_dict=}')
         send_confirmation = message_dict.get('send_confirmation')
+        sender_id = message_dict.get('sender_id')
         receiver_id = message_dict.get('receiver_id')
         department_id = message_dict.get('department_id')
         clowns_team_id = message_dict.get('clowns_team_id')
@@ -277,8 +278,16 @@ class ChatScreen(Screen):
 
         if send_confirmation:
             if not receiver_id:
-                for chat_tab in self.chat_tabs.values():
-                    chat_tab.ids.output.text += f">>> {send_confirmation}\n"
+                if sender_id == values.team_of_actors['id']:
+                    for chat_tab in self.chat_tabs.values():
+                        chat_tab.ids.output.text += f">>> {send_confirmation}\n"
+                else:
+                    response = values.session.get(f'{values.backend_url}/actors/team_of_actors',
+                                                params={'team_of_actors_id': sender_id}, timeout=10)
+                    sender = response.json() if response.status_code == 200 else None
+                    names = [a['artist_name'] for a in sender.json()['actors']] if sender else []
+                    for chat_tab in self.chat_tabs.values():
+                        chat_tab.ids.output.text += f"{names} >>>: {send_confirmation}\n"
             else:
                 self.chat_tabs[receiver_id].ids.output.text += f">>> {send_confirmation}\n"
                 self.chat_tabs['common_chat'].ids.output.text += f">>> {values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
