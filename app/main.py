@@ -250,7 +250,8 @@ class ChatScreen(Screen):
     def ws_opened(self, department_id):
         print(f'{department_id=}')
         if not self.chat_tabs.get('common_chat'):
-            new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client, notification_client=self.notification_client, tab_pos=0)
+            new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client,
+                                   notification_client=self.notification_client, tab_pos=0)
             self.chat_tabs['common_chat'] = new_chat_tab
             self.ids.chat_tabs.add_widget(new_chat_tab)
 
@@ -287,10 +288,18 @@ class ChatScreen(Screen):
                     sender = response.json() if response.status_code == 200 else None
                     names = ', '.join([a['artist_name'] for a in sender['actors']]) if sender else ''
                     for chat_tab in self.chat_tabs.values():
-                        chat_tab.ids.output.text += f"[{names}] >>>\n{send_confirmation}\n"
+                        chat_tab.ids.output.text += f">>> [{names}]\n{send_confirmation}\n"
             else:
-                self.chat_tabs[receiver_id].ids.output.text += f">>>\n{send_confirmation}\n"
-                self.chat_tabs['common_chat'].ids.output.text += f">>>\n{values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
+                if sender_id == values.team_of_actors['id']:
+                    self.chat_tabs[receiver_id].ids.output.text += f">>>\n{send_confirmation}\n"
+                    self.chat_tabs['common_chat'].ids.output.text += f">>>\n{values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
+                else:
+                    response = values.session.get(f'{values.backend_url}actors/team_of_actors',
+                                                  params={'team_of_actors_id': sender_id}, timeout=10)
+                    sender = response.json() if response.status_code == 200 else None
+                    names = ', '.join([a['artist_name'] for a in sender['actors']]) if sender else ''
+                    self.chat_tabs[receiver_id].ids.output.text += f">>> [{names}]\n{send_confirmation}\n"
+                    self.chat_tabs['common_chat'].ids.output.text += f">>> [{names}]\n{values.departments_of_location[receiver_id]['name']}: {send_confirmation}\n"
         elif message:
             if department_id:
                 self.chat_tabs['common_chat'].ids.output.text += (f"<<<\n{values.departments_of_location[department_id]['name']}:"

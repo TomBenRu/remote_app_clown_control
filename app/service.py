@@ -46,8 +46,7 @@ class OscHandler:
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Message sent')
 
     def handle_ws_message(self, ws, message):
-        if message_str := json.loads(message).get('message'):
-            print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> VIBRATE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+        if json.loads(message).get('message'):
             try:
                 self.vibrate()
             except Exception as e:
@@ -104,7 +103,6 @@ class OscHandler:
             self.client.send_message(b'/ws_already_closed', [])
 
     def vibrate(self):
-        # plyer.vibrator.vibrate(time=4)
         self.vibrator.pattern(pattern=[0, 0.5, 0.5, 1, 0.5, 0.5, 0.5, 1])
 
 
