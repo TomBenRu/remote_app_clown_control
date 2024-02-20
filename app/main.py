@@ -50,6 +50,7 @@ class Values:
         self.service = None
         self.notification_service = None
         self.store: JsonStore = JsonStore('../racc.json')
+        self.connect_to_past_ws = False
 
     def set_session_token(self, token: str):
         self.token = token
@@ -90,11 +91,13 @@ class LoginScreen(Screen):
                                               options={"verify_signature": False}).get('user_id'))
                 values.store.put('login_data', username=self.ids.username.text, password=self.ids.password.text)
                 self.ids.error_label.text = ''
-                if values.store.exists('team_of_actors') and values.store.get('team_of_actors')['id']:
-                    print('Team of actors found')
-                    print(f'....................................................... {values.store.get("team_of_actors")["id"]=}')
-                    values.session.delete(f'{values.backend_url}actors/delete-team',
-                                        params={'team_of_actor_id': values.store.get('team_of_actors')['id']}, timeout=10)
+                # if values.store.exists('team_of_actors') and values.store.get('team_of_actors')['id']:
+                #     print('Team of actors found')
+                #     print(f'....................................................... {values.store.get("team_of_actors")["id"]=}')
+                #     # alternativ zum Löschen des Teams
+                #     # kann das Team auch für die erneute Websocket Verbindung übernommen werden
+                #     values.session.delete(f'{values.backend_url}actors/delete-team',
+                #                         params={'team_of_actor_id': values.store.get('team_of_actors')['id']}, timeout=10)
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'team'
             else:
@@ -124,6 +127,10 @@ class CreateTeamScreen(Screen):
         self.location_id = None
 
     def on_enter(self, *args):
+        if values.store.exists('team_of_actors') and values.store.get('team_of_actors')['id']:
+            values.connect_to_past_ws = True
+            self.manager.transition = SlideTransition(direction="left")
+
         self.users = self.get_users()
         for user in self.users:
             layout = MDBoxLayout(orientation='horizontal')
@@ -197,6 +204,7 @@ class CreateTeamScreen(Screen):
                     values.session.delete(f'{values.backend_url}actors/delete-team',
                                           params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
                     self.layout_clown_select.add_widget(Label(text='Fehler beim Abruf der Abteilungen!'))
+
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'chat'
                 print([a['artist_name'] for a in response.json()['actors']])
@@ -248,6 +256,11 @@ class ChatScreen(Screen):
 
         self.text_closed_departments = defaultdict(str)
         self.dlg = None
+
+    def on_enter(self, *args):
+        if values.connect_to_past_ws:
+            self.create_connection_service()
+            values.connect_to_past_ws = False
 
     @mainthread
     def ws_opened(self, department_id):
