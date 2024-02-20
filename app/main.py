@@ -203,6 +203,7 @@ class CreateTeamScreen(Screen):
                 values.set_team_of_actors(response.json())
                 print([a['artist_name'] for a in values.team_of_actors['actors']])
                 values.store.put('team_of_actors', id=values.team_of_actors['id'])
+                print(f'....................................................... {values.store.get("team_of_actors")["id"]=}')
             else:
                 self.layout_clown_select.add_widget(Label(text='Fehler bei der Teamerstellung!'))
         except requests.exceptions.RequestException as e:
