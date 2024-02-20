@@ -194,7 +194,7 @@ class CreateTeamScreen(Screen):
                 if response_departments.status_code == 200:
                     values.set_departments_of_location(response_departments.json())
                 else:
-                    values.session.post(f'{values.backend_url}actors/delete-team',
+                    values.session.delete(f'{values.backend_url}actors/delete-team',
                                         params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
                     self.layout_clown_select.add_widget(Label(text='Fehler beim Abruf der Abteilungen!'))
                 self.manager.transition = SlideTransition(direction="left")
