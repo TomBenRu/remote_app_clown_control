@@ -93,7 +93,7 @@ class LoginScreen(Screen):
                 if values.store.exists('team_of_actors') and values.store.get('team_of_actors')['id']:
                     print('Team of actors found')
                     print(f'....................................................... {values.store.get("team_of_actors")["id"]=}')
-                    values.session.post(f'{values.backend_url}actors/delete-team',
+                    values.session.delete(f'{values.backend_url}actors/delete-team',
                                         params={'team_of_actor_id': values.store.get('team_of_actors')['id']}, timeout=10)
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'team'
@@ -195,7 +195,7 @@ class CreateTeamScreen(Screen):
                     values.set_departments_of_location(response_departments.json())
                 else:
                     values.session.delete(f'{values.backend_url}actors/delete-team',
-                                        params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
+                                          params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
                     self.layout_clown_select.add_widget(Label(text='Fehler beim Abruf der Abteilungen!'))
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'chat'
