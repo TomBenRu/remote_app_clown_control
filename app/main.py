@@ -91,6 +91,8 @@ class LoginScreen(Screen):
                 values.store.put('login_data', username=self.ids.username.text, password=self.ids.password.text)
                 self.ids.error_label.text = ''
                 if values.store.exists('team_of_actors') and values.store.get('team_of_actors')['id']:
+                    print('Team of actors found')
+                    print(f'....................................................... {values.store.get("team_of_actors")["id"]=}')
                     values.session.post(f'{values.backend_url}actors/delete-team',
                                         params={'team_of_actor_id': values.store.get('team_of_actors')['id']}, timeout=10)
                 self.manager.transition = SlideTransition(direction="left")
