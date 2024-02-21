@@ -284,7 +284,7 @@ class ChatScreen(Screen):
         if not self.chat_tabs.get('common_chat'):
             new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client,
                                    notification_client=self.notification_client, tab_pos=0)
-            if values.store.exists('messages') and self.store.get('messages').get('common_chat'):
+            if values.store.exists('messages') and values.store.get('messages').get('common_chat'):
                 for message in values.store.get('messages')['common_chat']:
                     new_chat_tab.ids.output.text += message
             self.chat_tabs['common_chat'] = new_chat_tab
