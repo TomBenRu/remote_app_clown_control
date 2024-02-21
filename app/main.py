@@ -302,9 +302,10 @@ class ChatScreen(Screen):
     def save_message_to_store(self, department_id: str, message: str):
         if not values.store.exists('messages'):
             values.store['messages'] = {department_id: [message]}
-        elif not values.store.get('messages').get(department_id):
-            messages_in_store = values.store.get('messages')
-            messages_in_store[department_id] = [message]
+        else:
+            messages_in_store = values.store.get('messages').get(department_id, [])
+            messages_in_store.append(message)
+            values.store['messages'][department_id] = messages_in_store
 
     @mainthread
     def on_message(self, message):
@@ -326,6 +327,7 @@ class ChatScreen(Screen):
                         new_text = f">>> {send_confirmation}\n"
                         chat_tab.ids.output.text += new_text
                         self.save_message_to_store(department_id, new_text)
+                        print(f'........................................... {values.store.get("messages")=}')
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
