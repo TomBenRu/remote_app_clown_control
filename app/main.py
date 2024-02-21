@@ -132,6 +132,7 @@ class CreateTeamScreen(Screen):
             values.connect_to_past_ws = True
             self.manager.transition = SlideTransition(direction="left")
             self.manager.current = 'chat'
+            return
 
         self.users = self.get_users()
         for user in self.users:
