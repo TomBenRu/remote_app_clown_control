@@ -135,6 +135,8 @@ class CreateTeamScreen(Screen):
                 values.connect_to_past_ws = True
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'chat'
+                self.get_departments_from_server(values.team_of_actors['location']['id'])
+                return
 
         self.users = self.get_users()
         for user in self.users:
@@ -167,6 +169,17 @@ class CreateTeamScreen(Screen):
             return response_departments.json()
         else:
             return None
+
+    def get_departments_from_server(self, location_id):
+        response_departments = values.session.get(f'{values.backend_url}actors/departments_of_location',
+                                                  params={'location_id': location_id}, timeout=10)
+        print(f'{response_departments.json()=}')
+        if response_departments.status_code == 200:
+            values.set_departments_of_location(response_departments.json())
+        else:
+            values.session.delete(f'{values.backend_url}actors/delete-team',
+                                  params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
+            self.layout_clown_select.add_widget(Label(text='Fehler beim Abruf der Abteilungen!'))
 
     def open_location_menu(self, item):
         width = min(max(len(loc['name']) for loc in self.locations) * sp(15), Window.width * 0.8)
@@ -208,15 +221,7 @@ class CreateTeamScreen(Screen):
                                            json={'location_id': self.location_id,
                                                  'actor_ids': selected_users}, timeout=10)
             if response.status_code == 200:
-                response_departments = values.session.get(f'{values.backend_url}actors/departments_of_location',
-                                                          params={'location_id': self.location_id}, timeout=10)
-                print(f'{response_departments.json()=}')
-                if response_departments.status_code == 200:
-                    values.set_departments_of_location(response_departments.json())
-                else:
-                    values.session.delete(f'{values.backend_url}actors/delete-team',
-                                          params={'team_of_actor_id': values.team_of_actors['id']}, timeout=10)
-                    self.layout_clown_select.add_widget(Label(text='Fehler beim Abruf der Abteilungen!'))
+                self.get_departments_from_server(self.location_id)
 
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'chat'
