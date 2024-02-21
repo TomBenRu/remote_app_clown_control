@@ -284,10 +284,9 @@ class ChatScreen(Screen):
         if not self.chat_tabs.get('common_chat'):
             new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client,
                                    notification_client=self.notification_client, tab_pos=0)
-            if values.store.get('messages') and self.store.get('messages').get('common_chat'):
-                values.store.put('messages', common_chat=[])
-            else:
-                new_chat_tab.ids.output.text += values.store.get('messages').get('common_chat')
+            if values.store.exists('messages') and self.store.get('messages').get('common_chat'):
+                for message in values.store.get('messages')['common_chat']:
+                    new_chat_tab.ids.output.text += message
             self.chat_tabs['common_chat'] = new_chat_tab
             self.ids.chat_tabs.add_widget(new_chat_tab)
 
@@ -301,11 +300,11 @@ class ChatScreen(Screen):
                                         values.team_of_actors['id'].encode('utf-8')])
 
     def save_message_to_store(self, department_id: str, message: str):
-        messages_in_store = values.store.get('messages')
-        if messages_in_store.get(department_id):
-            messages_in_store += {department_id: []}
-        messages_in_store[department_id].append(message)
-        values.store['messages'] = messages_in_store
+        if not values.store.exists('messages'):
+            values.store['messages'] = {department_id: [message]}
+        elif not values.store.get('messages').get(department_id):
+            messages_in_store = values.store.get('messages')
+            messages_in_store[department_id] = [message]
 
     @mainthread
     def on_message(self, message):
