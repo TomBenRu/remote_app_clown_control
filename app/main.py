@@ -302,10 +302,11 @@ class ChatScreen(Screen):
     def save_message_to_store(self, department_id: str, message: str):
         if not values.store.exists('messages'):
             values.store['messages'] = {department_id: [message]}
-        else:
-            messages_in_store = values.store.get('messages').get(department_id, [])
-            messages_in_store.append(message)
-            values.store['messages'][department_id] = messages_in_store
+            print(f'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {values.store.get("messages")=}')
+            return
+        messages_in_store = values.store.get('messages').get(department_id, [])
+        messages_in_store.append(message)
+        values.store['messages'][department_id] = messages_in_store
         print(f'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {values.store.get("messages")=}')
 
     @mainthread
@@ -377,9 +378,10 @@ class ChatScreen(Screen):
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
                                        department_id=department_id, osc_client=self.client,
                                        notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
-                if values.store.exists('messages') and values.store.get('messages').get(department_id):
-                    print(f'######################################## {values.store.get("messages").get(department_id)=}')
-                    for message in values.store.get('messages')[department_id]:
+
+                if values.store.exists('messages'):
+                    print(f'######################################## {values.store.get("messages")=}')
+                    for message in values.store.get('messages').get(department_id, []):
                         new_chat_tab.ids.output.text += message
 
                 self.chat_tabs[department_id] = new_chat_tab
@@ -446,6 +448,8 @@ class ChatScreen(Screen):
                                  ['Wir verabschieden uns für heute. Danke für die Unterstützung! 👋'.encode('utf-8')])
         if values.store.get('team_of_actors') and values.store.get('team_of_actors')['id']:
             values.store.put('team_of_actors', id=None)
+        if values.store.get('messages'):
+            del values.store['messages']
         if platform == 'android' and values.service:
             values.service.stop(values.mActivity)
 
