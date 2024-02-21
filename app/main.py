@@ -306,6 +306,7 @@ class ChatScreen(Screen):
             messages_in_store = values.store.get('messages').get(department_id, [])
             messages_in_store.append(message)
             values.store['messages'][department_id] = messages_in_store
+        print(f'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {values.store.get("messages")=}')
 
     @mainthread
     def on_message(self, message):
