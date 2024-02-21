@@ -161,7 +161,7 @@ class CreateTeamScreen(Screen):
         ]
 
     def get_team_from_server(self, team_id):
-        response_departments = values.session.get(f'{values.backend_url}actors//team_of_actors',
+        response_departments = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': team_id}, timeout=10)
         if response_departments.status_code == 200:
             return response_departments.json()
