@@ -52,7 +52,7 @@ class OscHandler:
             except Exception as e:
                 print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> vibrate failed {e=}')
         self.client.send_message(b'/ws_message', [message.encode('utf-8'),])
-        if (self.greeting_message and json.loads(message).get('joined')
+        if (self.greeting_message and json.loads(message).get('joined') and json.loads(message).get('reconnect')
                 and (department_id := json.loads(message).get('department_id'))):
             self.handle_call(self.greeting_message, department_id.encode('utf-8'))
 
