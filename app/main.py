@@ -129,6 +129,7 @@ class CreateTeamScreen(Screen):
     def on_enter(self, *args):
         if values.store.exists('team_of_actors') and values.store.get('team_of_actors')['id']:
             print(f'............................ Team of actors found {values.store.get("team_of_actors")["id"]=}')
+            values.team_of_actors = self.get_team_of_actors(values.store.get('team_of_actors')['id'])
             values.connect_to_past_ws = True
             self.manager.transition = SlideTransition(direction="left")
             self.manager.current = 'chat'
@@ -157,6 +158,14 @@ class CreateTeamScreen(Screen):
             }
             for location in self.locations
         ]
+
+    def get_team_from_server(self, team_id):
+        response_departments = values.session.get(f'{values.backend_url}actors//team_of_actors',
+                                                  params={'team_of_actors_id': team_id}, timeout=10)
+        if response_departments.status_code == 200:
+            return response_departments.json()
+        else:
+            return None
 
     def open_location_menu(self, item):
         width = min(max(len(loc['name']) for loc in self.locations) * sp(15), Window.width * 0.8)
