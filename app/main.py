@@ -129,11 +129,12 @@ class CreateTeamScreen(Screen):
     def on_enter(self, *args):
         if values.store.exists('team_of_actors') and values.store.get('team_of_actors')['id']:
             print(f'............................ Team of actors found {values.store.get("team_of_actors")["id"]=}')
-            values.team_of_actors = self.get_team_of_actors(values.store.get('team_of_actors')['id'])
-            values.connect_to_past_ws = True
-            self.manager.transition = SlideTransition(direction="left")
-            self.manager.current = 'chat'
-            return
+
+            if team_of_actors := self.get_team_from_server(values.store.get('team_of_actors')['id']):
+                values.set_team_of_actors(team_of_actors)
+                values.connect_to_past_ws = True
+                self.manager.transition = SlideTransition(direction="left")
+                self.manager.current = 'chat'
 
         self.users = self.get_users()
         for user in self.users:
