@@ -377,11 +377,10 @@ class ChatScreen(Screen):
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
                                        department_id=department_id, osc_client=self.client,
                                        notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
-                if values.store.get('messages') and values.store.get('messages').get(department_id):
+                if values.store.exists('messages') and values.store.get('messages').get(department_id):
+                    print(f'######################################## {values.store.get("messages").get(department_id)=}')
                     for message in values.store.get('messages')[department_id]:
                         new_chat_tab.ids.output.text += message
-                else:
-                    values.store.put('messages', department_id=[])
 
                 self.chat_tabs[department_id] = new_chat_tab
                 self.ids.chat_tabs.add_widget(new_chat_tab)
