@@ -45,6 +45,11 @@ class OscHandler:
             print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> handle call failed {e=}')
         print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Message sent')
 
+    def handle_confirmation_of_receipt(self, message):
+        message_id = json.loads(message).get('message_id')
+        confirmation_message = json.dumps({'message_id': message_id, 'send_confirmation': True})
+        self.ws.send(confirmation_message)
+
     def handle_ws_message(self, ws, message):
         if json.loads(message).get('message'):
             try:
@@ -55,6 +60,8 @@ class OscHandler:
         if (self.greeting_message and json.loads(message).get('joined') and not json.loads(message).get('reconnect')
                 and (department_id := json.loads(message).get('department_id'))):
             self.handle_call(self.greeting_message, department_id.encode('utf-8'))
+
+        self.handle_confirmation_of_receipt(message)
 
     def handle_ws_error(self, ws, error):
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ws error {error=}')
