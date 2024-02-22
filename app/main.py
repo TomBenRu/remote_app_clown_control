@@ -449,7 +449,9 @@ class ChatScreen(Screen):
         if values.store.get('team_of_actors') and values.store.get('team_of_actors')['id']:
             values.store.put('team_of_actors', id=None)
         if values.store.get('messages'):
-            del values.store['messages']
+            values.store['messages'] = {}
+        print(f'????????????????????????????????? {values.store.get("messages")=}')
+
         if platform == 'android' and values.service:
             values.service.stop(values.mActivity)
 
