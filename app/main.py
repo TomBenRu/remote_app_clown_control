@@ -128,6 +128,7 @@ class CreateTeamScreen(Screen):
     def on_enter(self, *args):
         if values.store.exists('team_of_actors') and values.store.get('team_of_actors')['id']:
             print(f'............................ Team of actors found {values.store.get("team_of_actors")["id"]=}')
+            print(f'............................ {values.store.get("messages")=}')
 
             if team_of_actors := self.get_team_from_server(values.store.get('team_of_actors')['id']):
                 values.set_team_of_actors(team_of_actors)
@@ -274,13 +275,14 @@ class ChatScreen(Screen):
         self.dlg = None
 
     def on_enter(self, *args):
+        print(f'0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ {values.store.get("messages")=}')
         if values.connect_to_past_ws:
             self.create_connection_service()
             values.connect_to_past_ws = False
 
     @mainthread
     def ws_opened(self, department_id):
-        print(f'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ {values.store.get("messages")=}')
+        print(f'1$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ {values.store.get("messages")=}')
         print(f'{department_id=}')
         if not self.chat_tabs.get('common_chat'):
             new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client,
