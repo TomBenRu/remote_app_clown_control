@@ -285,6 +285,7 @@ class ChatScreen(Screen):
             new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client,
                                    notification_client=self.notification_client, tab_pos=0)
             if values.store.exists('messages') and values.store.get('messages').get('common_chat'):
+                print(f'0........................................... {values.store.get("messages")=}')
                 for message in values.store.get('messages')['common_chat']:
                     new_chat_tab.ids.output.text += message
             self.chat_tabs['common_chat'] = new_chat_tab
@@ -322,6 +323,8 @@ class ChatScreen(Screen):
         joined = message_dict.get('joined')
         left = message_dict.get('left')
 
+        print(f'........................................... {values.store.get("messages")=}')
+
         if send_confirmation:
             if not receiver_id:
                 if sender_id == values.team_of_actors['id']:
@@ -329,7 +332,7 @@ class ChatScreen(Screen):
                         new_text = f">>> {send_confirmation}\n"
                         chat_tab.ids.output.text += new_text
                         self.save_message_to_store(department_id, new_text)
-                        print(f'........................................... {values.store.get("messages")=}')
+                        print(f'1........................................... {values.store.get("messages")=}')
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
@@ -382,6 +385,7 @@ class ChatScreen(Screen):
                 if values.store.exists('messages'):
                     print(f'######################################## {values.store.get("messages")=}')
                     for message in values.store.get('messages').get(department_id, []):
+                        print(f'%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% {message=}')
                         new_chat_tab.ids.output.text += message
 
                 self.chat_tabs[department_id] = new_chat_tab
