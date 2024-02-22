@@ -304,14 +304,15 @@ class ChatScreen(Screen):
                                         values.team_of_actors['id'].encode('utf-8')])
 
     def save_message_to_store(self, department_id: str, message: str):
-        if not values.store.exists('messages'):
-            values.store['messages'] = {department_id: [message]}
-            print(f'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {values.store.get("messages")=}')
+        store: JsonStore = JsonStore('../racc.json')
+        if not store.exists('messages'):
+            store['messages'] = {department_id: [message]}
+            print(f'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {store.get("messages")=}')
             return
-        messages_in_store = values.store.get('messages').get(department_id, [])
+        messages_in_store = store.get('messages').get(department_id, [])
         messages_in_store.append(message)
-        values.store['messages'][department_id] = messages_in_store
-        print(f'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {values.store.get("messages")=}')
+        store['messages'][department_id] = messages_in_store
+        print(f'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {store.get("messages")=}')
 
     @mainthread
     def on_message(self, message):
@@ -455,8 +456,8 @@ class ChatScreen(Screen):
                                  ['Wir verabschieden uns für heute. Danke für die Unterstützung! 👋'.encode('utf-8')])
         if values.store.get('team_of_actors') and values.store.get('team_of_actors')['id']:
             values.store.put('team_of_actors', id=None)
-        # if values.store.get('messages'):
-        #     values.store['messages'] = {}
+        if values.store.get('messages'):
+            values.store['messages'] = {}
         print(f'????????????????????????????????? {values.store.get("messages")=}')
 
         if platform == 'android' and values.service:
