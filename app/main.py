@@ -280,6 +280,7 @@ class ChatScreen(Screen):
 
     @mainthread
     def ws_opened(self, department_id):
+        print(f'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ {values.store.get("messages")=}')
         print(f'{department_id=}')
         if not self.chat_tabs.get('common_chat'):
             new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client,
