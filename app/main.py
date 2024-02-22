@@ -455,8 +455,8 @@ class ChatScreen(Screen):
                                  ['Wir verabschieden uns für heute. Danke für die Unterstützung! 👋'.encode('utf-8')])
         if values.store.get('team_of_actors') and values.store.get('team_of_actors')['id']:
             values.store.put('team_of_actors', id=None)
-        if values.store.get('messages'):
-            values.store['messages'] = {}
+        # if values.store.get('messages'):
+        #     values.store['messages'] = {}
         print(f'????????????????????????????????? {values.store.get("messages")=}')
 
         if platform == 'android' and values.service:
