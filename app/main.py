@@ -397,7 +397,8 @@ class ChatScreen(Screen):
             self.dialog_exit.dismiss(force=True)
             self.dialog_exit = None
         try:
-            response = values.session.get(f'{values.backend_url}/connection_test')
+            response = values.session.get(f'{values.backend_url}connection_test')
+            print(f'....................... connection_test: {response.status_code}')
         except Exception as e:
             print(f'..................................... {e=}')
             self.dlg = MDDialog(title='Logout',
