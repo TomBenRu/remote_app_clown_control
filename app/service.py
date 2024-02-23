@@ -47,7 +47,7 @@ class OscHandler:
 
     def handle_confirmation_of_receipt(self, message):
         message_id = json.loads(message).get('message_id')
-        confirmation_message = json.dumps({'message_id': message_id, 'send_confirmation': True})
+        confirmation_message = json.dumps({'message_id': message_id, 'confirmation_of_receipt': True})
         self.ws.send(confirmation_message)
 
     def handle_ws_message(self, ws, message):
