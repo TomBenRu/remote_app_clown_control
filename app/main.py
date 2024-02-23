@@ -121,7 +121,6 @@ class CreateTeamScreen(Screen):
     def on_enter(self, *args):
         if values.store.exists('team_of_actors') and values.store.get('team_of_actors')['id']:
             print(f'............................ Team of actors found {values.store.get("team_of_actors")["id"]=}')
-            print(f'............................ {values.store.get("messages")=}')
 
             if team_of_actors := self.get_team_from_server(values.store.get('team_of_actors')['id']):
                 values.set_team_of_actors(team_of_actors)
@@ -429,6 +428,8 @@ class ChatScreen(Screen):
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = 'login'
         print(f'{threading.active_count()=}')
+
+        values.store.put('team_of_actors', id=None)
         MDApp.get_running_app().stop()
 
 
