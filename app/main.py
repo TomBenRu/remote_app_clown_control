@@ -90,13 +90,6 @@ class LoginScreen(Screen):
                                               options={"verify_signature": False}).get('user_id'))
                 values.store.put('login_data', username=self.ids.username.text, password=self.ids.password.text)
                 self.ids.error_label.text = ''
-                # if values.store.exists('team_of_actors') and values.store.get('team_of_actors')['id']:
-                #     print('Team of actors found')
-                #     print(f'....................................................... {values.store.get("team_of_actors")["id"]=}')
-                #     # alternativ zum Löschen des Teams
-                #     # kann das Team auch für die erneute Websocket Verbindung übernommen werden
-                #     values.session.delete(f'{values.backend_url}actors/delete-team',
-                #                         params={'team_of_actor_id': values.store.get('team_of_actors')['id']}, timeout=10)
                 self.manager.transition = SlideTransition(direction="left")
                 self.manager.current = 'team'
             else:
@@ -275,22 +268,16 @@ class ChatScreen(Screen):
         self.dlg = None
 
     def on_enter(self, *args):
-        print(f'0$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ {values.store.get("messages")=}')
         if values.connect_to_past_ws:
             self.create_connection_service()
             values.connect_to_past_ws = False
 
     @mainthread
     def ws_opened(self, department_id):
-        print(f'1$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ {values.store.get("messages")=}')
         print(f'{department_id=}')
         if not self.chat_tabs.get('common_chat'):
             new_chat_tab = ChatTab(tab_label_text='Chat', osc_client=self.client,
                                    notification_client=self.notification_client, tab_pos=0)
-            if values.store.exists('messages') and values.store.get('messages').get('common_chat'):
-                print(f'0........................................... {values.store.get("messages")=}')
-                for message in values.store.get('messages')['common_chat']:
-                    new_chat_tab.ids.output.text += message
             self.chat_tabs['common_chat'] = new_chat_tab
             self.ids.chat_tabs.add_widget(new_chat_tab)
 
@@ -302,16 +289,6 @@ class ChatScreen(Screen):
                                  ['Hallo! Wir sind im Haus. 😊'.encode('utf-8'), values.ws_url.encode('utf-8'),
                                         values.token.encode('utf-8'),
                                         values.team_of_actors['id'].encode('utf-8')])
-
-    def save_message_to_store(self, department_id: str, message: str):
-        if not values.store.exists('messages'):
-            values.store['messages'] = {department_id: [message]}
-            print(f'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {values.store.get("messages")=}')
-            return
-        messages_in_store = values.store.get('messages').get(department_id, [])
-        messages_in_store.append(message)
-        values.store['messages'][department_id] = messages_in_store
-        print(f'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ {values.store.get("messages")=}')
 
     @mainthread
     def on_message(self, message):
@@ -326,16 +303,12 @@ class ChatScreen(Screen):
         joined = message_dict.get('joined')
         left = message_dict.get('left')
 
-        print(f'........................................... {values.store.get("messages")=}')
-
         if send_confirmation:
             if not receiver_id:
                 if sender_id == values.team_of_actors['id']:
                     for department_id, chat_tab in self.chat_tabs.items():
-                        new_text = f">>> {send_confirmation}\n"
+                        new_text = f">>>\n{send_confirmation}\n"
                         chat_tab.ids.output.text += new_text
-                        self.save_message_to_store(department_id, new_text)
-                        print(f'1........................................... {values.store.get("messages")=}')
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
@@ -344,7 +317,6 @@ class ChatScreen(Screen):
                     new_text = f">>> [{names}]\n{send_confirmation}\n"
                     for department_id, chat_tab in self.chat_tabs.items():
                         chat_tab.ids.output.text += new_text
-                        self.save_message_to_store(department_id, new_text)
             else:
                 if sender_id == values.team_of_actors['id']:
                     new_text_receiver_tab = f">>>\n{send_confirmation}\n"
@@ -352,8 +324,6 @@ class ChatScreen(Screen):
                                            f"{send_confirmation}\n")
                     self.chat_tabs[receiver_id].ids.output.text += new_text_receiver_tab
                     self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
-                    self.save_message_to_store(receiver_id, new_text_receiver_tab)
-                    self.save_message_to_store('common_chat', new_text_common_tab)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
@@ -364,32 +334,21 @@ class ChatScreen(Screen):
                                            f"{send_confirmation}\n")
                     self.chat_tabs[receiver_id].ids.output.text += new_text_receiver_tab
                     self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
-                    self.save_message_to_store(receiver_id, new_text_receiver_tab)
-                    self.save_message_to_store('common_chat', new_text_common_tab)
         elif message:
             if department_id:
                 new_text_receiver_tab = f">>>\n{message}\n"
                 new_text_common_tab = f"<<<\n{values.departments_of_location[department_id]['name']}: {message}\n"
                 self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
                 self.chat_tabs[department_id].ids.output.text += new_text_receiver_tab
-                self.save_message_to_store('common_chat', new_text_common_tab)
-                self.save_message_to_store(department_id, new_text_receiver_tab)
             else:
                 ...
         elif joined:
             if department_id and not self.chat_tabs.get(department_id):
                 joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten.\n"
                 self.chat_tabs['common_chat'].ids.output.text += joined_message
-                self.save_message_to_store('common_chat', joined_message)
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
                                        department_id=department_id, osc_client=self.client,
                                        notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
-
-                if values.store.exists('messages'):
-                    print(f'######################################## {values.store.get("messages")=}')
-                    for message in values.store.get('messages').get(department_id, []):
-                        print(f'%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% {message=}')
-                        new_chat_tab.ids.output.text += message
 
                 self.chat_tabs[department_id] = new_chat_tab
                 self.ids.chat_tabs.add_widget(new_chat_tab)
@@ -457,11 +416,6 @@ class ChatScreen(Screen):
         print(f'................... {response_all_messages.json()=}')
         self.client.send_message(b'/close_connection',
                                  ['Wir verabschieden uns für heute. Danke für die Unterstützung! 👋'.encode('utf-8')])
-        if values.store.get('team_of_actors') and values.store.get('team_of_actors')['id']:
-            values.store.put('team_of_actors', id=None)
-        # if values.store.get('messages'):
-        #     values.store['messages'] = {}
-        print(f'????????????????????????????????? {values.store.get("messages")=}')
 
         if platform == 'android' and values.service:
             values.service.stop(values.mActivity)
