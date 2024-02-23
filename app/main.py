@@ -442,7 +442,7 @@ class ChatScreen(Screen):
             self.dialog_exit.dismiss(force=True)
             self.dialog_exit = None
         try:
-            response = values.session.get(f'{values.backend_url}/connection_test')
+            response = values.session.get(f'{values.backend_url}connection_test')
         except Exception as e:
             print(f'..................................... {e=}')
             self.dlg = MDDialog(title='Logout',
@@ -451,6 +451,9 @@ class ChatScreen(Screen):
                                 buttons=[MDFlatButton(text='Ok', on_release=lambda x: self.dlg.dismiss())])
             self.dlg.open()
             return
+        response_all_messages = values.session.get(f'{values.backend_url}actors/session_messages',
+                                                   params=[values.team_of_actors['id']])
+        print(f'................... {response_all_messages.json()=}')
         self.client.send_message(b'/close_connection',
                                  ['Wir verabschieden uns für heute. Danke für die Unterstützung! 👋'.encode('utf-8')])
         if values.store.get('team_of_actors') and values.store.get('team_of_actors')['id']:
