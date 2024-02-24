@@ -357,7 +357,6 @@ class ChatScreen(Screen):
             if department_id:
                 left_message = f"{values.departments_of_location[department_id]['name']} hat den Chat verlassen.\n"
                 self.chat_tabs['common_chat'].ids.output.text += left_message
-                self.save_message_to_store('common_chat', left_message)
                 tab_position = self.chat_tabs[department_id].tab_pos
                 for tab in self.chat_tabs.values():
                     if tab.tab_pos > tab_position:
