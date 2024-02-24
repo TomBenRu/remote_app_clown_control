@@ -300,6 +300,7 @@ class ChatScreen(Screen):
         clowns_team_id = message_dict.get('clowns_team_id')
         message = message_dict.get('message')
         joined = message_dict.get('joined')
+        reconnect = message_dict.get('reconnect')
         left = message_dict.get('left')
 
         if send_confirmation:
@@ -334,6 +335,16 @@ class ChatScreen(Screen):
                     self.chat_tabs[receiver_id].ids.output.text += new_text_receiver_tab
                     self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
         elif message:
+            if reconnect:
+                if department_id and not self.chat_tabs.get(department_id):
+                    joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten.\n"
+                    self.chat_tabs['common_chat'].ids.output.text += joined_message
+                    new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
+                                           department_id=department_id, osc_client=self.client,
+                                           notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
+
+                    self.chat_tabs[department_id] = new_chat_tab
+                    self.ids.chat_tabs.add_widget(new_chat_tab)
             if department_id:
                 new_text_receiver_tab = f">>>\n{message}\n"
                 new_text_common_tab = f"<<<\n{values.departments_of_location[department_id]['name']}: {message}\n"
