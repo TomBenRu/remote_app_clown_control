@@ -289,8 +289,9 @@ class ChatScreen(Screen):
         print(args)
 
     def create_connection_service(self):
+        greeting = 'Hallo! Wir sind im Haus. 😊' if values.connect_to_past_ws else ''
         self.client.send_message(b'/connect',
-                                 ['Hallo! Wir sind im Haus. 😊'.encode('utf-8'), values.ws_url.encode('utf-8'),
+                                 [greeting.encode('utf-8'), values.ws_url.encode('utf-8'),
                                         values.token.encode('utf-8'),
                                         values.team_of_actors['id'].encode('utf-8')])
 
