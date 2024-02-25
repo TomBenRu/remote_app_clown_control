@@ -273,7 +273,7 @@ class ChatScreen(Screen):
             if response.status_code != 200:
                 print(f'Fehler in set_all_messages_to_unsent: {response.status_code=}')
                 print(f'.......................... {response.json()}')
-            self.create_connection_service()
+            self.create_connection_service(False)
             values.connect_to_past_ws = False
 
     @mainthread
@@ -288,8 +288,8 @@ class ChatScreen(Screen):
     def on_tab_switch(self, *args):
         print(args)
 
-    def create_connection_service(self):
-        greeting = 'Hallo! Wir sind im Haus. 😊' if values.connect_to_past_ws else ''
+    def create_connection_service(self, with_greeting=True):
+        greeting = 'Hallo! Wir sind im Haus. 😊' if with_greeting else ''
         self.client.send_message(b'/connect',
                                  [greeting.encode('utf-8'), values.ws_url.encode('utf-8'),
                                         values.token.encode('utf-8'),
