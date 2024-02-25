@@ -268,6 +268,10 @@ class ChatScreen(Screen):
 
     def on_enter(self, *args):
         if values.connect_to_past_ws:
+            response = values.session.post(f'{values.backend_url}actors/set_all_messages_to_unsent',
+                                           params={'team_of_actors_id': values.team_of_actors['id']})
+            if response.status_code != 200:
+                print(f'Fehler in set_all_messages_to_unsent: {response.status_code=}')
             self.create_connection_service()
             values.connect_to_past_ws = False
 
@@ -297,12 +301,11 @@ class ChatScreen(Screen):
         sender_id = message_dict.get('sender_id')
         receiver_id = message_dict.get('receiver_id')
         department_id = message_dict.get('department_id')
-        clowns_team_id = message_dict.get('clowns_team_id')
         message = message_dict.get('message')
         joined = message_dict.get('joined')
-        reconnect = message_dict.get('reconnect')
         left = message_dict.get('left')
 
+        # Tabs müssen wiederhergestellt werden, wenn die App während einer Session neu gestartet wird:
         if department_id and not self.chat_tabs.get(department_id):
             joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten.\n"
             self.chat_tabs['common_chat'].ids.output.text += joined_message
