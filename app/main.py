@@ -272,6 +272,7 @@ class ChatScreen(Screen):
                                            params={'team_of_actors_id': values.team_of_actors['id']})
             if response.status_code != 200:
                 print(f'Fehler in set_all_messages_to_unsent: {response.status_code=}')
+                print(f'.......................... {response.json()}')
             self.create_connection_service()
             values.connect_to_past_ws = False
 
