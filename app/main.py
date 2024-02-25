@@ -351,7 +351,7 @@ class ChatScreen(Screen):
                     self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
         elif message:
             if department_id:
-                new_text_receiver_tab = f">>>\n{message}\n"
+                new_text_receiver_tab = f"<<<\n{message}\n"
                 new_text_common_tab = f"<<<\n{values.departments_of_location[department_id]['name']}: {message}\n"
                 self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
                 self.chat_tabs[department_id].ids.output.text += new_text_receiver_tab
