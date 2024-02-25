@@ -269,7 +269,7 @@ class ChatScreen(Screen):
     def on_enter(self, *args):
         if values.connect_to_past_ws:
             response = values.session.post(f'{values.backend_url}actors/set_all_messages_to_unsent',
-                                           json={'team_of_actors_id': values.team_of_actors['id']})
+                                           params={'team_of_actors_id': values.team_of_actors['id']})
             if response.status_code != 200:
                 print(f'Fehler in set_all_messages_to_unsent: {response.status_code=}')
                 print(f'.......................... {response.json()}')
