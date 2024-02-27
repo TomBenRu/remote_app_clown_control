@@ -205,9 +205,13 @@ class CreateTeamScreen(Screen):
             return []
 
     def create_team(self):
-        if not self.location_id:
-            return
         selected_users = [user['id'] for switch, user in zip(self.checkboxes, self.users) if switch.active]
+        if not self.location_id or not selected_users:
+            self.dlg = MDDialog(title='Team',
+                                text='Bitte mindestens eine Person und eine Location auswählen!',
+                                buttons=[MDFlatButton(text='Ok', on_release=lambda x: self.dlg.dismiss())])
+            self.dlg.open()
+            return
         try:
             response = values.session.post(f'{values.backend_url}actors/new-team',
                                            json={'location_id': self.location_id,
