@@ -190,15 +190,23 @@
             height: '72dp'
 
 
-<MessageLabel@MDLabel>:
+<MessageBubble@BoxLayout>:
+    orientation: 'horizontal'
     size_hint_y: None
-    height: self.texture_size[1]
-    valign: 'middle'
-    padding: 10
-    canvas.before:
-        Color:
-            rgba: root.color
-        RoundedRectangle:
-            pos: self.pos
-            size: self.size
-            radius: [10]
+    height: lbl.height
+    MDLabel:
+        id: lbl
+        text: root.text
+        size_hint_y: None
+        height: self.texture_size[1]
+        valign: 'middle'
+        padding: 10
+        width: self.texture_size[0]
+        size_hint_x: None
+        canvas.before:
+            Color:
+                rgba: root.color
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [10]

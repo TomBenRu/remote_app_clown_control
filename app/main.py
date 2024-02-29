@@ -9,6 +9,7 @@ from jnius import autoclass
 from kivy import platform
 from kivy.clock import mainthread
 from kivy.core.window import Window
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen, SlideTransition
 from kivy.uix.gridlayout import GridLayout
@@ -251,12 +252,12 @@ class ChatTab(FloatLayout, MDTabsBase):
         self.ids.input.text = ''
 
 
-class MessageLabel(MDLabel):
+class MessageBubble(BoxLayout):
     def __init__(self, message, incoming=True, **kwargs):
-        super(MessageLabel, self).__init__(**kwargs)
+        super(MessageBubble, self).__init__(**kwargs)
         self.text = message
-        self.halign = 'left' if incoming else 'right'
         self.color = (1, 0, 0, 0.3) if incoming else (0, 0, 1, 0.3)
+        self.pos_hint = {'right': 1} if incoming else {'left': 1}
 
 
 class ChatScreen(Screen):
@@ -322,7 +323,7 @@ class ChatScreen(Screen):
         # Tabs müssen wiederhergestellt werden, wenn die App während einer Session neu gestartet wird:
         if department_id and not self.chat_tabs.get(department_id):
             joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten."
-            label = MessageLabel(message=joined_message, incoming=True)
+            label = MessageBubble(message=joined_message, incoming=True)
             self.chat_tabs['common_chat'].ids.output.add_widget(label)
             new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
                                    department_id=department_id, osc_client=self.client,
@@ -335,7 +336,7 @@ class ChatScreen(Screen):
             if not receiver_id:
                 if sender_id == values.team_of_actors['id']:
                     for department_id, chat_tab in self.chat_tabs.items():
-                        label = MessageLabel(message=send_confirmation, incoming=True)
+                        label = MessageBubble(message=send_confirmation, incoming=True)
                         chat_tab.ids.output.add_widget(label)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
@@ -344,15 +345,15 @@ class ChatScreen(Screen):
                     names = ', '.join([a['artist_name'] for a in sender['actors']]) if sender else ''
                     new_text = f"[{names}]\n{send_confirmation}"
                     for department_id, chat_tab in self.chat_tabs.items():
-                        label = MessageLabel(message=new_text, incoming=False)
+                        label = MessageBubble(message=new_text, incoming=False)
                         chat_tab.ids.output.add_widget(label)
             else:
                 if sender_id == values.team_of_actors['id']:
                     new_text_receiver_tab = f"{send_confirmation}"
                     new_text_common_tab = (f"{values.departments_of_location[receiver_id]['name']}: "
                                            f"{send_confirmation}")
-                    label_receiver_tab = MessageLabel(message=new_text_receiver_tab, incoming=False)
-                    label_common_tab = MessageLabel(message=new_text_common_tab, incoming=False)
+                    label_receiver_tab = MessageBubble(message=new_text_receiver_tab, incoming=False)
+                    label_common_tab = MessageBubble(message=new_text_common_tab, incoming=False)
                     self.chat_tabs[receiver_id].ids.output.add_widget(label_receiver_tab)
                     self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
                 else:
@@ -363,16 +364,16 @@ class ChatScreen(Screen):
                     new_text_receiver_tab = f"[{names}]\n{send_confirmation}"
                     new_text_common_tab = (f"[{names}]\n{values.departments_of_location[receiver_id]['name']}: "
                                            f"{send_confirmation}")
-                    label_receiver_tab = MessageLabel(message=new_text_receiver_tab, incoming=False)
-                    label_common_tab = MessageLabel(message=new_text_common_tab, incoming=False)
+                    label_receiver_tab = MessageBubble(message=new_text_receiver_tab, incoming=False)
+                    label_common_tab = MessageBubble(message=new_text_common_tab, incoming=False)
                     self.chat_tabs[receiver_id].ids.output.add_widget(label_receiver_tab)
                     self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
         elif message:
             if department_id:
                 new_text_receiver_tab = f"{message}"
                 new_text_common_tab = f"{values.departments_of_location[department_id]['name']}: {message}"
-                label_receiver_tab = MessageLabel(message=new_text_receiver_tab, incoming=True)
-                label_common_tab = MessageLabel(message=new_text_common_tab, incoming=True)
+                label_receiver_tab = MessageBubble(message=new_text_receiver_tab, incoming=True)
+                label_common_tab = MessageBubble(message=new_text_common_tab, incoming=True)
                 self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
                 self.chat_tabs[department_id].ids.output.add_widget(label_receiver_tab)
             else:
@@ -380,7 +381,7 @@ class ChatScreen(Screen):
         elif joined:
             if department_id and not self.chat_tabs.get(department_id):
                 joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten."
-                label_common_tab = MessageLabel(message=joined_message, incoming=True)
+                label_common_tab = MessageBubble(message=joined_message, incoming=True)
                 self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
                                        department_id=department_id, osc_client=self.client,
@@ -393,7 +394,7 @@ class ChatScreen(Screen):
         elif left:
             if department_id:
                 left_message = f"{values.departments_of_location[department_id]['name']} hat den Chat verlassen."
-                label_common_tab = MessageLabel(message=left_message, incoming=True)
+                label_common_tab = MessageBubble(message=left_message, incoming=True)
                 label_common_tab.text = left_message
                 self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
                 tab_position = self.chat_tabs[department_id].tab_pos
