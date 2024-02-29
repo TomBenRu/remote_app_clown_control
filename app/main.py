@@ -251,6 +251,14 @@ class ChatTab(FloatLayout, MDTabsBase):
         self.ids.input.text = ''
 
 
+class LabelReceived:
+    pass
+
+
+class LabelSent:
+    pass
+
+
 class ChatScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -326,45 +334,62 @@ class ChatScreen(Screen):
             if not receiver_id:
                 if sender_id == values.team_of_actors['id']:
                     for department_id, chat_tab in self.chat_tabs.items():
-                        new_text = f">>>\n{send_confirmation}\n"
-                        chat_tab.ids.output.text += new_text
+                        label = LabelReceived()
+                        label.text = send_confirmation
+                        chat_tab.ids.output.add_widget(label)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
                     sender = response.json() if response.status_code == 200 else None
                     names = ', '.join([a['artist_name'] for a in sender['actors']]) if sender else ''
-                    new_text = f">>> [{names}]\n{send_confirmation}\n"
+                    new_text = f"[{names}]\n{send_confirmation}"
                     for department_id, chat_tab in self.chat_tabs.items():
-                        chat_tab.ids.output.text += new_text
+                        label = LabelSent()
+                        label.text = new_text
+                        chat_tab.ids.output.add_widget(label)
             else:
                 if sender_id == values.team_of_actors['id']:
-                    new_text_receiver_tab = f">>>\n{send_confirmation}\n"
-                    new_text_common_tab = (f">>>\n{values.departments_of_location[receiver_id]['name']}: "
-                                           f"{send_confirmation}\n")
-                    self.chat_tabs[receiver_id].ids.output.text += new_text_receiver_tab
-                    self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
+                    new_text_receiver_tab = f"{send_confirmation}"
+                    new_text_common_tab = (f"{values.departments_of_location[receiver_id]['name']}: "
+                                           f"{send_confirmation}")
+                    label_receiver_tab = LabelSent()
+                    label_receiver_tab.text = new_text_receiver_tab
+                    label_common_tab = LabelSent()
+                    label_common_tab.text = new_text_common_tab
+                    self.chat_tabs[receiver_id].ids.output.add_widget(label_receiver_tab)
+                    self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
                     sender = response.json() if response.status_code == 200 else None
                     names = ', '.join([a['artist_name'] for a in sender['actors']]) if sender else ''
-                    new_text_receiver_tab = f">>> [{names}]\n{send_confirmation}\n"
-                    new_text_common_tab = (f">>> [{names}]\n{values.departments_of_location[receiver_id]['name']}: "
-                                           f"{send_confirmation}\n")
-                    self.chat_tabs[receiver_id].ids.output.text += new_text_receiver_tab
-                    self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
+                    new_text_receiver_tab = f"[{names}]\n{send_confirmation}"
+                    new_text_common_tab = (f"[{names}]\n{values.departments_of_location[receiver_id]['name']}: "
+                                           f"{send_confirmation}")
+                    label_receiver_tab = LabelSent()
+                    label_receiver_tab.text = new_text_receiver_tab
+                    label_common_tab = LabelSent()
+                    label_common_tab.text = new_text_common_tab
+                    self.chat_tabs[receiver_id].ids.add_widget(label_receiver_tab)
+                    self.chat_tabs['common_chat'].ids.add_widget(label_common_tab)
         elif message:
             if department_id:
-                new_text_receiver_tab = f"<<<\n{message}\n"
-                new_text_common_tab = f"<<<\n{values.departments_of_location[department_id]['name']}: {message}\n"
-                self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
-                self.chat_tabs[department_id].ids.output.text += new_text_receiver_tab
+                new_text_receiver_tab = f"{message}"
+                new_text_common_tab = f"{values.departments_of_location[department_id]['name']}: {message}"
+                label_receiver_tab = LabelReceived()
+                label_receiver_tab.text = new_text_receiver_tab
+                label_common_tab = LabelReceived()
+                label_common_tab.text = new_text_common_tab
+                self.chat_tabs['common_chat'].ids.add_widget(label_common_tab)
+                self.chat_tabs[department_id].ids.add_widget(label_receiver_tab)
             else:
                 ...
         elif joined:
             if department_id and not self.chat_tabs.get(department_id):
-                joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten.\n"
-                self.chat_tabs['common_chat'].ids.output.text += joined_message
+                joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten."
+                label_common_tab = LabelReceived()
+                label_common_tab.text = joined_message
+                self.chat_tabs['common_chat'].ids.add_widget(label_common_tab)
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
                                        department_id=department_id, osc_client=self.client,
                                        notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
@@ -375,8 +400,10 @@ class ChatScreen(Screen):
                 ...
         elif left:
             if department_id:
-                left_message = f"{values.departments_of_location[department_id]['name']} hat den Chat verlassen.\n"
-                self.chat_tabs['common_chat'].ids.output.text += left_message
+                left_message = f"{values.departments_of_location[department_id]['name']} hat den Chat verlassen."
+                label_common_tab = LabelReceived()
+                label_common_tab.text = left_message
+                self.chat_tabs['common_chat'].ids.add_widget(label_common_tab)
                 tab_position = self.chat_tabs[department_id].tab_pos
                 for tab in self.chat_tabs.values():
                     if tab.tab_pos > tab_position:

@@ -130,13 +130,43 @@
             do_scroll_y: True
             size_hint: 1, 1
 
-            MDLabel:
+            BoxLayout:
                 id: output
-                font_size: 36
-                font_name: 'fonts/seguiemj'
-                size_hint: 1, None
-                padding: 20, 0, 20, 0
-                height: self.texture_size[1]
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+
+                # Beispiel für eine eingehende Nachricht
+                MDLabel:
+                    text: 'Eingehende Nachricht'
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    halign: 'left'
+                    valign: 'middle'
+                    padding: 10
+                    canvas.before:
+                        Color:
+                            rgba: (1, 0, 0, 0.3)  # Rot für eingehende Nachrichten
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10]
+
+                # Beispiel für eine ausgehende Nachricht
+                MDLabel:
+                    text: 'Ausgehende Nachricht'
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    halign: 'right'
+                    valign: 'middle'
+                    padding: 10
+                    canvas.before:
+                        Color:
+                            rgba: (0, 0, 1, 0.3)  # Blau für ausgehende Nachrichten
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [10]
         GridLayout:
             cols: 2
             size_hint: 1, None
@@ -160,5 +190,35 @@
             height: '72dp'
 
 
+<LabelReceived>
+    MDLabel:
+        text: 'Eingehende Nachricht'
+        size_hint_y: None
+        height: self.texture_size[1]
+        halign: 'left'
+        valign: 'middle'
+        padding: 10
+        canvas.before:
+            Color:
+                rgba: (1, 0, 0, 0.3)  # Rot für eingehende Nachrichten
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [10]
 
-            
+
+<LabelSent>
+      MDLabel:
+            text: 'Ausgehende Nachricht'
+            size_hint_y: None
+            height: self.texture_size[1]
+            halign: 'right'
+            valign: 'middle'
+            padding: 10
+            canvas.before:
+                Color:
+                    rgba: (0, 0, 1, 0.3)  # Blau für ausgehende Nachrichten
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10]
