@@ -190,35 +190,15 @@
             height: '72dp'
 
 
-<LabelReceived>
-    MDLabel:
-        text: 'Eingehende Nachricht'
-        size_hint_y: None
-        height: self.texture_size[1]
-        halign: 'left'
-        valign: 'middle'
-        padding: 10
-        canvas.before:
-            Color:
-                rgba: (1, 0, 0, 0.3)  # Rot für eingehende Nachrichten
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [10]
-
-
-<LabelSent>
-    MDLabel:
-        text: 'Ausgehende Nachricht'
-        size_hint_y: None
-        height: self.texture_size[1]
-        halign: 'right'
-        valign: 'middle'
-        padding: 10
-        canvas.before:
-            Color:
-                rgba: (0, 0, 1, 0.3)  # Blau für ausgehende Nachrichten
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [10]
+<MessageLabel@MDLabel>:
+    size_hint_y: None
+    height: self.texture_size[1]
+    valign: 'middle'
+    padding: 10
+    canvas.before:
+        Color:
+            rgba: root.color
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [10]
