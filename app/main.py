@@ -365,23 +365,23 @@ class ChatScreen(Screen):
                                            f"{send_confirmation}")
                     label_receiver_tab = MessageLabel(message=new_text_receiver_tab, incoming=False)
                     label_common_tab = MessageLabel(message=new_text_common_tab, incoming=False)
-                    self.chat_tabs[receiver_id].ids.add_widget(label_receiver_tab)
-                    self.chat_tabs['common_chat'].ids.add_widget(label_common_tab)
+                    self.chat_tabs[receiver_id].ids.output.add_widget(label_receiver_tab)
+                    self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
         elif message:
             if department_id:
                 new_text_receiver_tab = f"{message}"
                 new_text_common_tab = f"{values.departments_of_location[department_id]['name']}: {message}"
                 label_receiver_tab = MessageLabel(message=new_text_receiver_tab, incoming=True)
                 label_common_tab = MessageLabel(message=new_text_common_tab, incoming=True)
-                self.chat_tabs['common_chat'].ids.add_widget(label_common_tab)
-                self.chat_tabs[department_id].ids.add_widget(label_receiver_tab)
+                self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
+                self.chat_tabs[department_id].ids.output.add_widget(label_receiver_tab)
             else:
                 ...
         elif joined:
             if department_id and not self.chat_tabs.get(department_id):
                 joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten."
                 label_common_tab = MessageLabel(message=joined_message, incoming=True)
-                self.chat_tabs['common_chat'].ids.add_widget(label_common_tab)
+                self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
                                        department_id=department_id, osc_client=self.client,
                                        notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
@@ -395,7 +395,7 @@ class ChatScreen(Screen):
                 left_message = f"{values.departments_of_location[department_id]['name']} hat den Chat verlassen."
                 label_common_tab = MessageLabel(message=left_message, incoming=True)
                 label_common_tab.text = left_message
-                self.chat_tabs['common_chat'].ids.add_widget(label_common_tab)
+                self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
                 tab_position = self.chat_tabs[department_id].tab_pos
                 for tab in self.chat_tabs.values():
                     if tab.tab_pos > tab_position:
