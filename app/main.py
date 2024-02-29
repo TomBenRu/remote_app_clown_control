@@ -321,8 +321,10 @@ class ChatScreen(Screen):
 
         # Tabs müssen wiederhergestellt werden, wenn die App während einer Session neu gestartet wird:
         if department_id and not self.chat_tabs.get(department_id):
-            joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten.\n"
-            self.chat_tabs['common_chat'].ids.output.text += joined_message
+            joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten."
+            label = LabelReceived()
+            label.text = joined_message
+            self.chat_tabs['common_chat'].ids.output.add_widget(label)
             new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
                                    department_id=department_id, osc_client=self.client,
                                    notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
