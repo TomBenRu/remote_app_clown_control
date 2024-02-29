@@ -327,7 +327,9 @@ class ChatScreen(Screen):
                 if sender_id == values.team_of_actors['id']:
                     for department_id, chat_tab in self.chat_tabs.items():
                         new_text = f">>>\n{send_confirmation}\n"
-                        chat_tab.ids.output.text += new_text
+                        lb_text = MDLabel()
+                        lb_text.text = new_text
+                        chat_tab.ids.output.add_widget(lb_text)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
@@ -335,14 +337,20 @@ class ChatScreen(Screen):
                     names = ', '.join([a['artist_name'] for a in sender['actors']]) if sender else ''
                     new_text = f">>> [{names}]\n{send_confirmation}\n"
                     for department_id, chat_tab in self.chat_tabs.items():
-                        chat_tab.ids.output.text += new_text
+                        lb_text = MDLabel()
+                        lb_text.text = new_text
+                        chat_tab.ids.output.add_widget(lb_text)
             else:
                 if sender_id == values.team_of_actors['id']:
                     new_text_receiver_tab = f">>>\n{send_confirmation}\n"
                     new_text_common_tab = (f">>>\n{values.departments_of_location[receiver_id]['name']}: "
                                            f"{send_confirmation}\n")
-                    self.chat_tabs[receiver_id].ids.output.text += new_text_receiver_tab
-                    self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
+                    lb_text_1 = MDLabel()
+                    lb_text_2 = MDLabel()
+                    lb_text_1.text = new_text_receiver_tab
+                    lb_text_2.text = new_text_common_tab
+                    self.chat_tabs[receiver_id].ids.output.add_widget(lb_text_1)
+                    self.chat_tabs['common_chat'].ids.output.add_widget(lb_text_2)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
@@ -351,14 +359,22 @@ class ChatScreen(Screen):
                     new_text_receiver_tab = f">>> [{names}]\n{send_confirmation}\n"
                     new_text_common_tab = (f">>> [{names}]\n{values.departments_of_location[receiver_id]['name']}: "
                                            f"{send_confirmation}\n")
-                    self.chat_tabs[receiver_id].ids.output.text += new_text_receiver_tab
-                    self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
+                    lb_text_1 = MDLabel()
+                    lb_text_2 = MDLabel()
+                    lb_text_1.text = new_text_receiver_tab
+                    lb_text_2.text = new_text_common_tab
+                    self.chat_tabs[receiver_id].ids.output.add_widget(lb_text_1)
+                    self.chat_tabs['common_chat'].ids.output.add_widget(lb_text_2)
         elif message:
             if department_id:
                 new_text_receiver_tab = f"<<<\n{message}\n"
                 new_text_common_tab = f"<<<\n{values.departments_of_location[department_id]['name']}: {message}\n"
-                self.chat_tabs['common_chat'].ids.output.text += new_text_common_tab
-                self.chat_tabs[department_id].ids.output.text += new_text_receiver_tab
+                lb_text_1 = MDLabel()
+                lb_text_2 = MDLabel()
+                lb_text_1.text = new_text_receiver_tab
+                lb_text_2.text = new_text_common_tab
+                self.chat_tabs[receiver_id].ids.output.add_widget(lb_text_1)
+                self.chat_tabs['common_chat'].ids.output.add_widget(lb_text_2)
             else:
                 ...
         elif joined:
