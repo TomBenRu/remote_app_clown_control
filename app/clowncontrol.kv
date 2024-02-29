@@ -208,17 +208,17 @@
 
 
 <LabelSent>
-      MDLabel:
-            text: 'Ausgehende Nachricht'
-            size_hint_y: None
-            height: self.texture_size[1]
-            halign: 'right'
-            valign: 'middle'
-            padding: 10
-            canvas.before:
-                Color:
-                    rgba: (0, 0, 1, 0.3)  # Blau für ausgehende Nachrichten
-                RoundedRectangle:
-                    pos: self.pos
-                    size: self.size
-                    radius: [10]
+    MDLabel:
+        text: 'Ausgehende Nachricht'
+        size_hint_y: None
+        height: self.texture_size[1]
+        halign: 'right'
+        valign: 'middle'
+        padding: 10
+        canvas.before:
+            Color:
+                rgba: (0, 0, 1, 0.3)  # Blau für ausgehende Nachrichten
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [10]
