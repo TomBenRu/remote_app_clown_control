@@ -402,7 +402,7 @@ class ChatScreen(Screen):
                 self.ids.chat_tabs.remove_widget(self.ids.chat_tabs.get_tab_list()[self.chat_tabs[department_id].tab_pos])
                 del self.chat_tabs[department_id]
             else:
-                ...
+                pass
 
     @mainthread
     def on_error(self, ws: WebSocket, error):
