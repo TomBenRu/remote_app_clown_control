@@ -199,13 +199,12 @@
     MDLabel:
         id: lbl
         text: root.text
-        size_hint_max_x: 0.8
-        size_hint_y: None
+        text_size: (self.width * 0.8, None)
+        size_hint: None, None
         height: self.texture_size[1]
         valign: 'middle'
         padding: 10
         # text_size: (Window.width * 0.8, None)
-        size_hint_x: None
         canvas.before:
             Color:
                 rgba: (1, 0, 0, 0.3) if root.incoming else (0, 0, 1, 0.3)
