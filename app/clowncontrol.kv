@@ -202,9 +202,9 @@
         text_size: (Window.width * 0.8, None)
         size_hint: None, None
         height: self.texture_size[1]
+        width: self.texture_size[0]
         valign: 'middle'
         padding: 10
-        # text_size: (Window.width * 0.8, None)
         canvas.before:
             Color:
                 rgba: (1, 0, 0, 0.3) if root.incoming else (0, 0, 1, 0.3)
