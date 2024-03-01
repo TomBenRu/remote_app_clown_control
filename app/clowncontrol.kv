@@ -138,38 +138,6 @@
                 size_hint_y: None
                 height: self.minimum_height
                 spacing: 10
-
-                # Beispiel für eine eingehende Nachricht
-                MDLabel:
-                    text: 'Eingehende Nachricht'
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                    halign: 'left'
-                    valign: 'middle'
-                    padding: 10
-                    canvas.before:
-                        Color:
-                            rgba: (1, 0, 0, 0.3)  # Rot für eingehende Nachrichten
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [10]
-
-                # Beispiel für eine ausgehende Nachricht
-                MDLabel:
-                    text: 'Ausgehende Nachricht'
-                    size_hint_y: None
-                    height: self.texture_size[1]
-                    halign: 'right'
-                    valign: 'middle'
-                    padding: 10
-                    canvas.before:
-                        Color:
-                            rgba: (0, 0, 1, 0.3)  # Blau für ausgehende Nachrichten
-                        RoundedRectangle:
-                            pos: self.pos
-                            size: self.size
-                            radius: [10]
         GridLayout:
             cols: 2
             size_hint: 1, None
@@ -196,7 +164,7 @@
 <MessageBubble@AnchorLayout>:
     size_hint_y: None
     height: lbl.height
-    anchor_x: 'left' if root.incoming else 'right'
+    anchor_x: 'left' if root.mode == 'incoming' else 'right' if mode == 'outgoing' else 'center'
     CustomLabel:
         id: lbl
         text: root.text
@@ -206,7 +174,7 @@
         padding: 10
         canvas.before:
             Color:
-                rgba: (1, 0, 0, 0.3) if root.incoming else (0, 0, 1, 0.3)
+                rgba: (1, 0, 0, 0.3) if root.mode == 'incoming' else (0, 0, 1, 0.3) if root.mode == 'outgoing' else (1, 1, 0, 0.3)
             RoundedRectangle:
                 pos: self.pos
                 size: self.size
