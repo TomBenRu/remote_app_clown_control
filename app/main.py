@@ -524,4 +524,3 @@ class ClownControlApp(MDApp):
 
 if __name__ == '__main__':
     ClownControlApp().run()
-'#ff654d'
