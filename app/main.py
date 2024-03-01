@@ -272,7 +272,7 @@ class MessageBubble(AnchorLayout):
         self.mode = mode
         self.text = message
 
-
+'#aaaaaa'
 class ChatScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

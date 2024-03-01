@@ -169,13 +169,14 @@
         id: lbl
         text: root.text
         font_name: 'fonts/seguiemj'
+        color: (1, 1, 1, 1) if root.mode == 'info' else (0, 0, 0, 1)
         size_hint: None, None
         height: self.texture_size[1]
         valign: 'middle'
         padding: 10
         canvas.before:
             Color:
-                rgba: (0, 0.7, 1, 1) if root.mode == 'incoming' else (1, 0.4, 0.3, 1) if root.mode == 'outgoing' else (0.2, 0.2, 0.2, 1)
+                rgba: (0.62, 0.82, 1, 1) if root.mode == 'incoming' else (1, 0.69, 0.57, 1) if root.mode == 'outgoing' else (0.2, 0.2, 0.2, 1)
             RoundedRectangle:
                 pos: self.pos
                 size: self.size
