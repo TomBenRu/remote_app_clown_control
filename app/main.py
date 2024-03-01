@@ -254,6 +254,14 @@ class ChatTab(FloatLayout, MDTabsBase):
         self.ids.input.text = ''
 
 
+class CustomLabel(Label):
+    text = StringProperty('')
+
+    def on_texture_size(self, *args):
+        self.width = min(self.texture_size[0], Window.width * 0.8)
+        self.text_size = (self.width, None)
+
+
 class MessageBubble(AnchorLayout):
     text = StringProperty('')  # Definieren Sie die text-Eigenschaft
     incoming = BooleanProperty(True)  # Definieren Sie die incoming-Eigenschaft

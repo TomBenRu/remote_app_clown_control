@@ -196,23 +196,19 @@
     size_hint_y: None
     height: lbl.height
     anchor_x: 'left' if root.incoming else 'right'
-    BoxLayout:
+    CustomLabel:
+        id: lbl
+        text: root.text
         size_hint: None, None
-        width: min(lbl.texture_size[0], Window.width * 0.8)
-        height: lbl.height
-        MDLabel:
-            id: lbl
-            text: root.text
-            text_size: (Window.width * 0.8, None)
-            size_hint: None, None
-            height: self.texture_size[1]
-            valign: 'middle'
-            padding: 10
-            canvas.before:
-                Color:
-                    rgba: (1, 0, 0, 0.3) if root.incoming else (0, 0, 1, 0.3)
-                RoundedRectangle:
-                    pos: self.pos
-                    size: self.size
-                    radius: [10]
+        height: self.texture_size[1]
+        valign: 'middle'
+        padding: 10
+        canvas.before:
+            Color:
+                rgba: (1, 0, 0, 0.3) if root.incoming else (0, 0, 1, 0.3)
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [10]
+
 
