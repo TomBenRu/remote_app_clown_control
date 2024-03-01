@@ -340,7 +340,7 @@ class ChatScreen(Screen):
             if not receiver_id:
                 if sender_id == values.team_of_actors['id']:
                     for department_id, chat_tab in self.chat_tabs.items():
-                        label = MessageBubble(message=send_confirmation, incoming=True)
+                        label = MessageBubble(message=send_confirmation, incoming=False)
                         chat_tab.ids.output.add_widget(label)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
