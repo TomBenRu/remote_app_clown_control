@@ -336,7 +336,7 @@ class ChatScreen(Screen):
         # Tabs müssen wiederhergestellt werden, wenn die App während einer Session neu gestartet wird:
         if department_id and not self.chat_tabs.get(department_id):
             joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten."
-            label = MessageBubble(message=joined_message, mode='incoming')
+            label = MessageBubble(message=joined_message, mode='info')
             self.chat_tabs['common_chat'].ids.output.add_widget(label)
             new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
                                    department_id=department_id, osc_client=self.client,
@@ -383,7 +383,6 @@ class ChatScreen(Screen):
                     self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
         elif message:
             if department_id:
-                print(f'.............................. message {message_dict=}')
                 new_text_receiver_tab = f"{message}"
                 new_text_common_tab = f"{values.departments_of_location[department_id]['name']}: {message}"
                 label_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='incoming')
@@ -393,7 +392,6 @@ class ChatScreen(Screen):
             else:
                 ...
         elif joined:
-            print(f'.............................. joined {message_dict=}')
             if department_id and not self.chat_tabs.get(department_id):
                 joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten."
                 label_common_tab = MessageBubble(message=joined_message, mode='info')
