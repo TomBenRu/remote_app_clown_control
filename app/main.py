@@ -383,6 +383,7 @@ class ChatScreen(Screen):
                     self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
         elif message:
             if department_id:
+                print(f'.............................. message {message_dict=}')
                 new_text_receiver_tab = f"{message}"
                 new_text_common_tab = f"{values.departments_of_location[department_id]['name']}: {message}"
                 label_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='incoming')
