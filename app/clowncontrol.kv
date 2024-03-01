@@ -196,13 +196,13 @@
     anchor_x: 'left' if root.incoming else 'right'
     MDLabel:
         id: lbl
-    text: root.text
-    size_hint: None, None
-    height: self.texture_size[1]
-    valign: 'middle'
-    padding: 10
-    text_size: (min(Window.width * 0.8, None))
-    size_hint_x: None
+        text: root.text
+        size_hint: None, None
+        height: self.texture_size[1]
+        valign: 'middle'
+        padding: 10
+        text_size: min(Window.width * 0.8, None)
+        size_hint_x: None
         canvas.before:
             Color:
                 rgba: (1, 0, 0, 0.3) if root.incoming else (0, 0, 1, 0.3)
