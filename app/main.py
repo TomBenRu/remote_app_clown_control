@@ -10,6 +10,7 @@ from kivy import platform
 from kivy.clock import mainthread
 from kivy.core.window import Window
 from kivy.properties import ListProperty, StringProperty, BooleanProperty
+from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen, SlideTransition
@@ -253,7 +254,7 @@ class ChatTab(FloatLayout, MDTabsBase):
         self.ids.input.text = ''
 
 
-class MessageBubble(BoxLayout):
+class MessageBubble(AnchorLayout):
     text = StringProperty('')  # Definieren Sie die text-Eigenschaft
     incoming = BooleanProperty(True)  # Definieren Sie die incoming-Eigenschaft
 
