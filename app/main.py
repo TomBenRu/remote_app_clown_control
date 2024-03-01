@@ -393,6 +393,7 @@ class ChatScreen(Screen):
                 ...
         elif joined:
             if department_id and not self.chat_tabs.get(department_id):
+                print(f'.............................. joined {message_dict=}')
                 joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten."
                 label_common_tab = MessageBubble(message=joined_message, mode='info')
                 self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
