@@ -9,7 +9,7 @@ from jnius import autoclass
 from kivy import platform
 from kivy.clock import mainthread
 from kivy.core.window import Window
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, StringProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import Screen, SlideTransition
@@ -254,6 +254,7 @@ class ChatTab(FloatLayout, MDTabsBase):
 
 
 class MessageBubble(BoxLayout):
+    text = StringProperty('')  # Definieren Sie die text-Eigenschaft
     color = ListProperty([1, 1, 1, 1])  # Definieren Sie die color-Eigenschaft
     def __init__(self, message, incoming=True, **kwargs):
         super(MessageBubble, self).__init__(**kwargs)
