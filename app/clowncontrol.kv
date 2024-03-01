@@ -191,6 +191,7 @@
 
 
 <MessageBubble@BoxLayout>:
+    anchor_x: 'left' if root.incoming else 'right'
     orientation: 'horizontal'
     size_hint_y: None
     height: lbl.height
@@ -201,11 +202,11 @@
         height: self.texture_size[1]
         valign: 'middle'
         padding: 10
-        width: self.texture_size[0]
+        width: min(self.texture_size[0], Window.width * 0.8)
         size_hint_x: None
         canvas.before:
             Color:
-                rgba: root.color
+                rgba: (1, 0, 0, 0.3) if root.incoming else (0, 0, 1, 0.3)
             RoundedRectangle:
                 pos: self.pos
                 size: self.size
