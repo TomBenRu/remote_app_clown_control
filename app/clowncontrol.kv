@@ -193,6 +193,8 @@
 
 
 <MessageBubble@AnchorLayout>:
+    size_hint_y: None
+    height: lbl.height
     anchor_x: 'left' if root.incoming else 'right'
     MDLabel:
         id: lbl
