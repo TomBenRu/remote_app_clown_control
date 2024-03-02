@@ -164,7 +164,9 @@
 
 <MessageBubble@BoxLayout>:
     orientation: 'vertical'
-    spacing: dp(10) if root.mode == 'info' else dp(0)
+    spacing: dp(100) if root.mode == 'info' else dp(0)
+    size_hint_y: None
+    height: lbl.height
     AnchorLayout:
         size_hint_y: None
         height: lbl.height
