@@ -263,7 +263,7 @@ class CustomLabel(Label):
         self.text_size = (self.width, None)
 
 
-class MessageBubble(AnchorLayout):
+class MessageBubble(BoxLayout):
     text = StringProperty('')  # Definieren Sie die text-Eigenschaft
     mode = StringProperty('incoming')  # Definieren Sie die Mode-Eigenschaft (incoming, outgoing, info
 

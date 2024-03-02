@@ -162,25 +162,28 @@
             height: '72dp'
 
 
-<MessageBubble@AnchorLayout>:
-    size_hint_y: None
-    height: lbl.height
-    anchor_x: 'left' if root.mode == 'incoming' else 'right' if root.mode == 'outgoing' else 'center'
-    padding: dp(100) if root.mode == 'info' else 0
-    CustomLabel:
-        id: lbl
-        text: root.text
-        font_name: 'fonts/seguiemj'
-        font_size: '10sp' if root.mode == 'info' else '15sp'
-        color: (1, 1, 1, 1) if root.mode == 'info' else (0, 0, 0, 1)
-        size_hint: None, None
-        height: self.texture_size[1]
-        valign: 'middle'
-        padding: 10
-        canvas.before:
-            Color:
-                rgba: (0.62, 0.82, 1, 1) if root.mode == 'incoming' else (1, 0.69, 0.57, 1) if root.mode == 'outgoing' else (0.2, 0.2, 0.2, 1)
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [20]
+MessageBubble@BoxLayout:
+    orientation: 'vertical'
+    spacing: dp(10) if root.mode == 'info' else dp(0)
+    AnchorLayout:
+        size_hint_y: None
+        height: lbl.height
+        anchor_x: 'left' if root.mode == 'incoming' else 'right' if root.mode == 'outgoing' else 'center'
+        CustomLabel:
+            id: lbl
+            text: root.text
+            font_name: 'fonts/seguiemj'
+            font_size: '10sp' if root.mode == 'info' else '15sp'
+            color: (1, 1, 1, 1) if root.mode == 'info' else (0, 0, 0, 1)
+            size_hint: None, None
+            height: self.texture_size[1]
+            valign: 'middle'
+            padding: 10
+            canvas.before:
+                Color:
+                    rgba: (0.62, 0.82, 1, 1) if root.mode == 'incoming' else (1, 0.69, 0.57, 1) if root.mode == 'outgoing' else (0.2, 0.2, 0.2, 1)
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10]
+
