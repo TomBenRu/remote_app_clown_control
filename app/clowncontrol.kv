@@ -169,6 +169,7 @@
         id: lbl
         text: root.text
         font_name: 'fonts/seguiemj'
+        font_size: '10sp' if root.mode == 'info' else '15sp'
         color: (1, 1, 1, 1) if root.mode == 'info' else (0, 0, 0, 1)
         size_hint: None, None
         height: self.texture_size[1]

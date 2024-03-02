@@ -346,11 +346,12 @@ class ChatScreen(Screen):
             self.chat_tabs[department_id] = new_chat_tab
             self.ids.chat_tabs.add_widget(new_chat_tab)
 
+        label_timestamp = MessageBubble(message=timestamp, mode='info')
+
         if send_confirmation:
             if not receiver_id:
                 if sender_id == values.team_of_actors['id']:
                     for department_id, chat_tab in self.chat_tabs.items():
-                        label_timestamp = MessageBubble(message=timestamp, mode='info')
                         chat_tab.ids.output.add_widget(label_timestamp)
                         label = MessageBubble(message=send_confirmation, mode='outgoing')
                         chat_tab.ids.output.add_widget(label)
@@ -361,22 +362,19 @@ class ChatScreen(Screen):
                     names = ', '.join([a['artist_name'] for a in sender['actors']]) if sender else ''
                     new_text = f"[{names}]\n{send_confirmation}"
                     for department_id, chat_tab in self.chat_tabs.items():
-                        label_timestamp = MessageBubble(message=timestamp, mode='info')
                         chat_tab.ids.output.add_widget(label_timestamp)
                         label = MessageBubble(message=new_text, mode='outgoing')
                         chat_tab.ids.output.add_widget(label)
             else:
-                label_timestamp_receiver_tab = MessageBubble(message=timestamp, mode='info')
-                label_timestamp_common_tab = MessageBubble(message=timestamp, mode='info')
                 if sender_id == values.team_of_actors['id']:
                     new_text_receiver_tab = f"{send_confirmation}"
                     new_text_common_tab = (f"{values.departments_of_location[receiver_id]['name']}: "
                                            f"{send_confirmation}")
                     label_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='outgoing')
                     label_common_tab = MessageBubble(message=new_text_common_tab, mode='outgoing')
-                    self.chat_tabs[receiver_id].ids.output.add_widget(label_timestamp_receiver_tab)
+                    self.chat_tabs[receiver_id].ids.output.add_widget(label_timestamp)
                     self.chat_tabs[receiver_id].ids.output.add_widget(label_receiver_tab)
-                    self.chat_tabs['common_chat'].ids.output.add_widget(label_timestamp_common_tab)
+                    self.chat_tabs['common_chat'].ids.output.add_widget(label_timestamp)
                     self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
@@ -388,9 +386,9 @@ class ChatScreen(Screen):
                                            f"{send_confirmation}")
                     label_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='outgoing')
                     label_common_tab = MessageBubble(message=new_text_common_tab, mode='outgoing')
-                    self.chat_tabs[receiver_id].ids.output.add_widget(label_timestamp_receiver_tab)
+                    self.chat_tabs[receiver_id].ids.output.add_widget(label_timestamp)
                     self.chat_tabs[receiver_id].ids.output.add_widget(label_receiver_tab)
-                    self.chat_tabs['common_chat'].ids.output.add_widget(label_timestamp_common_tab)
+                    self.chat_tabs['common_chat'].ids.output.add_widget(label_timestamp)
                     self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
         elif message:
             if department_id:
@@ -398,7 +396,9 @@ class ChatScreen(Screen):
                 new_text_common_tab = f"{values.departments_of_location[department_id]['name']}: {message}"
                 label_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='incoming')
                 label_common_tab = MessageBubble(message=new_text_common_tab, mode='incoming')
+                self.chat_tabs['common_chat'].ids.output.add_widget(label_timestamp)
                 self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
+                self.chat_tabs[department_id].ids.output.add_widget(label_timestamp)
                 self.chat_tabs[department_id].ids.output.add_widget(label_receiver_tab)
             else:
                 ...
