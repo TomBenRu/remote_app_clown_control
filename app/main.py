@@ -324,8 +324,8 @@ class ChatScreen(Screen):
     @mainthread
     def on_message(self, message):
         message_dict = json.loads(message.decode('utf-8'))
-        print(f'>>>>>>>>>>>>>>>>>>>>>>>>>> {message_dict=}')
-        timestamp = message_dict.get('timestamp')
+        print(f'on_message() >>>>>>>>>>>>>>>>>>>>>>>>>> {message_dict=}')
+        timestamp = message_dict.get('timestamp', 'kein timestamp')
         send_confirmation = message_dict.get('send_confirmation')
         sender_id = message_dict.get('sender_id')
         receiver_id = message_dict.get('receiver_id')
