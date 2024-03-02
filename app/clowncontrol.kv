@@ -164,9 +164,8 @@
 
 <MessageBubble@AnchorLayout>:
     size_hint_y: None
-    height: lbl.height
+    height: lbl.height + dp(20) if root.mode == 'info' else lbl.height
     anchor_x: 'left' if root.mode == 'incoming' else 'right' if root.mode == 'outgoing' else 'center'
-    padding_top: dp(100) if root.mode == 'info' else 0
     CustomLabel:
         id: lbl
         text: root.text
