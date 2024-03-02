@@ -325,6 +325,7 @@ class ChatScreen(Screen):
     def on_message(self, message):
         message_dict = json.loads(message.decode('utf-8'))
         print(f'>>>>>>>>>>>>>>>>>>>>>>>>>> {message_dict=}')
+        timestamp = message_dict.get('timestamp')
         send_confirmation = message_dict.get('send_confirmation')
         sender_id = message_dict.get('sender_id')
         receiver_id = message_dict.get('receiver_id')
@@ -349,6 +350,8 @@ class ChatScreen(Screen):
             if not receiver_id:
                 if sender_id == values.team_of_actors['id']:
                     for department_id, chat_tab in self.chat_tabs.items():
+                        label_timestamp = MessageBubble(message=timestamp, mode='info')
+                        chat_tab.ids.output.add_widget(label_timestamp)
                         label = MessageBubble(message=send_confirmation, mode='outgoing')
                         chat_tab.ids.output.add_widget(label)
                 else:
@@ -358,6 +361,8 @@ class ChatScreen(Screen):
                     names = ', '.join([a['artist_name'] for a in sender['actors']]) if sender else ''
                     new_text = f"[{names}]\n{send_confirmation}"
                     for department_id, chat_tab in self.chat_tabs.items():
+                        label_timestamp = MessageBubble(message=timestamp, mode='info')
+                        chat_tab.ids.output.add_widget(label_timestamp)
                         label = MessageBubble(message=new_text, mode='outgoing')
                         chat_tab.ids.output.add_widget(label)
             else:
