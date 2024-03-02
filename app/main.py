@@ -366,13 +366,17 @@ class ChatScreen(Screen):
                         label = MessageBubble(message=new_text, mode='outgoing')
                         chat_tab.ids.output.add_widget(label)
             else:
+                label_timestamp_receiver_tab = MessageBubble(message=timestamp, mode='info')
+                label_timestamp_common_tab = MessageBubble(message=timestamp, mode='info')
                 if sender_id == values.team_of_actors['id']:
                     new_text_receiver_tab = f"{send_confirmation}"
                     new_text_common_tab = (f"{values.departments_of_location[receiver_id]['name']}: "
                                            f"{send_confirmation}")
                     label_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='outgoing')
                     label_common_tab = MessageBubble(message=new_text_common_tab, mode='outgoing')
+                    self.chat_tabs[receiver_id].ids.output.add_widget(label_timestamp_receiver_tab)
                     self.chat_tabs[receiver_id].ids.output.add_widget(label_receiver_tab)
+                    self.chat_tabs['common_chat'].ids.output.add_widget(label_timestamp_common_tab)
                     self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
@@ -384,7 +388,9 @@ class ChatScreen(Screen):
                                            f"{send_confirmation}")
                     label_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='outgoing')
                     label_common_tab = MessageBubble(message=new_text_common_tab, mode='outgoing')
+                    self.chat_tabs[receiver_id].ids.output.add_widget(label_timestamp_receiver_tab)
                     self.chat_tabs[receiver_id].ids.output.add_widget(label_receiver_tab)
+                    self.chat_tabs['common_chat'].ids.output.add_widget(label_timestamp_common_tab)
                     self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
         elif message:
             if department_id:
