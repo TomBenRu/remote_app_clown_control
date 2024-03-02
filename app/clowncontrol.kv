@@ -1,4 +1,5 @@
 #:import Window kivy.core.window.Window
+#:import dp kivy.metrics.dp
 
 <LoginScreen>
     MDCard:
@@ -165,6 +166,7 @@
     size_hint_y: None
     height: lbl.height
     anchor_x: 'left' if root.mode == 'incoming' else 'right' if root.mode == 'outgoing' else 'center'
+    padding: dp(10) if root.mode == 'info' else 0
     CustomLabel:
         id: lbl
         text: root.text
