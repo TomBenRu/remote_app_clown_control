@@ -447,6 +447,11 @@ class ChatScreen(Screen):
                 ...
 
     def scroll_to_bottom(self, chat_tab):
+        print(f'in scroll_to_bottom()..................................{chat_tab.ids.output.y=}')
+        # Überprüfen Sie, ob das Ende des BoxLayout sichtbar ist
+        if chat_tab.ids.output.y < 0:
+            # Wenn das Ende des BoxLayout nicht sichtbar ist, scrollen Sie zum unteren Ende des ScrollView
+            chat_tab.ids.scroll_view.scroll_y = 0
         # Scrollen Sie zum unteren Ende des ScrollView
         chat_tab.ids.scroll_view.scroll_y = 0
 
