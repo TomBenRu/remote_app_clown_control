@@ -8,7 +8,7 @@ import plyer
 import requests
 from jnius import autoclass
 from kivy import platform
-from kivy.clock import mainthread
+from kivy.clock import mainthread, Clock
 from kivy.core.window import Window
 from kivy.properties import ListProperty, StringProperty, BooleanProperty
 from kivy.uix.anchorlayout import AnchorLayout
@@ -352,8 +352,9 @@ class ChatScreen(Screen):
                 if sender_id == values.team_of_actors['id']:
                     for department_id, chat_tab in self.chat_tabs.items():
                         chat_tab.ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
-                        label = MessageBubble(message=send_confirmation, mode='outgoing')
-                        chat_tab.ids.output.add_widget(label)
+                        bubble = MessageBubble(message=send_confirmation, mode='outgoing')
+                        chat_tab.ids.output.add_widget(bubble)
+                        Clock.schedule_once(lambda dt: chat_tab.ids.scroll_view.scroll_to(bubble), 0)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
