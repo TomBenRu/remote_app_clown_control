@@ -359,7 +359,7 @@ class ChatScreen(Screen):
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
                     sender = response.json() if response.status_code == 200 else None
                     names = ', '.join([a['artist_name'] for a in sender['actors']]) if sender else ''
-                    new_text = f"[{names}]\n{send_confirmation}"
+                    new_text = f"von [{names}]:\n{send_confirmation}"
                     for department_id, chat_tab in self.chat_tabs.items():
                         chat_tab.ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
                         bubble = MessageBubble(message=new_text, mode='outgoing')
@@ -368,7 +368,7 @@ class ChatScreen(Screen):
             else:
                 if sender_id == values.team_of_actors['id']:
                     new_text_receiver_tab = f"{send_confirmation}"
-                    new_text_common_tab = (f"{values.departments_of_location[receiver_id]['name']}: "
+                    new_text_common_tab = (f"{values.departments_of_location[receiver_id]['name']}:\n"
                                            f"{send_confirmation}")
                     bubble_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='outgoing')
                     bubble_common_tab = MessageBubble(message=new_text_common_tab, mode='outgoing')
@@ -386,8 +386,8 @@ class ChatScreen(Screen):
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
                     sender = response.json() if response.status_code == 200 else None
                     names = ', '.join([a['artist_name'] for a in sender['actors']]) if sender else ''
-                    new_text_receiver_tab = f"[{names}]\n{send_confirmation}"
-                    new_text_common_tab = (f"[{names}]\n{values.departments_of_location[receiver_id]['name']}: "
+                    new_text_receiver_tab = f"von [{names}]:\n{send_confirmation}"
+                    new_text_common_tab = (f"von [{names}] an {values.departments_of_location[receiver_id]['name']}:\n"
                                            f"{send_confirmation}")
                     bubble_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='outgoing')
                     bubble_common_tab = MessageBubble(message=new_text_common_tab, mode='outgoing')
@@ -402,7 +402,7 @@ class ChatScreen(Screen):
         elif message:
             if department_id:
                 new_text_department_tab = f"{message}"
-                new_text_common_tab = f"{values.departments_of_location[department_id]['name']}: {message}"
+                new_text_common_tab = f"an {values.departments_of_location[department_id]['name']}:\n{message}"
                 bubble_department_tab = MessageBubble(message=new_text_department_tab, mode='incoming')
                 bubble_common_tab = MessageBubble(message=new_text_common_tab, mode='incoming')
                 self.chat_tabs['common_chat'].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
