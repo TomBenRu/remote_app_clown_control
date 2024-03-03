@@ -452,8 +452,6 @@ class ChatScreen(Screen):
         if chat_tab.ids.output.y < 0:
             # Wenn das Ende des BoxLayout nicht sichtbar ist, scrollen Sie zum unteren Ende des ScrollView
             chat_tab.ids.scroll_view.scroll_y = 0
-        # Scrollen Sie zum unteren Ende des ScrollView
-        chat_tab.ids.scroll_view.scroll_y = 0
 
     @mainthread
     def on_error(self, ws: WebSocket, error):
