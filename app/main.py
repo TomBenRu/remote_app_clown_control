@@ -352,7 +352,7 @@ class ChatScreen(Screen):
                     for department_id, chat_tab in self.chat_tabs.items():
                         chat_tab.ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
                         bubble = MessageBubble(message=send_confirmation, mode='outgoing')
-                        chat_tab.ids.scroll_view.do_layout()
+                        chat_tab.ids.output.add_widget(bubble)
                         Clock.schedule_once(lambda dt: self.scroll_to_bottom(chat_tab), 0.5)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
@@ -376,7 +376,6 @@ class ChatScreen(Screen):
                     self.chat_tabs[receiver_id].ids.output.add_widget(bubble_receiver_tab)
                     self.chat_tabs['common_chat'].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
                     self.chat_tabs['common_chat'].ids.output.add_widget(bubble_common_tab)
-                    self.chat_tabs['common_chat'].ids.scroll_view.do_layout()
                     Clock.schedule_once(
                         lambda dt: self.scroll_to_bottom(self.chat_tabs[receiver_id]), 0.5)
                     Clock.schedule_once(
