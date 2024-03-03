@@ -346,7 +346,6 @@ class ChatScreen(Screen):
             self.chat_tabs[department_id] = new_chat_tab
             self.ids.chat_tabs.add_widget(new_chat_tab)
 
-
         if send_confirmation:
             if not receiver_id:
                 if sender_id == values.team_of_actors['id']:
@@ -354,7 +353,7 @@ class ChatScreen(Screen):
                         chat_tab.ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
                         bubble = MessageBubble(message=send_confirmation, mode='outgoing')
                         chat_tab.ids.output.add_widget(bubble)
-                        Clock.schedule_once(lambda dt: chat_tab.ids.scroll_view.scroll_to(bubble), 0)
+                        Clock.schedule_once(lambda dt: chat_tab.ids.scroll_view.scroll_to(bubble), 0.5)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
@@ -363,19 +362,25 @@ class ChatScreen(Screen):
                     new_text = f"[{names}]\n{send_confirmation}"
                     for department_id, chat_tab in self.chat_tabs.items():
                         chat_tab.ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
-                        label = MessageBubble(message=new_text, mode='outgoing')
-                        chat_tab.ids.output.add_widget(label)
+                        bubble = MessageBubble(message=new_text, mode='outgoing')
+                        chat_tab.ids.output.add_widget(bubble)
+                        Clock.schedule_once(lambda dt: chat_tab.ids.scroll_view.scroll_to(bubble), 0.5)
             else:
                 if sender_id == values.team_of_actors['id']:
                     new_text_receiver_tab = f"{send_confirmation}"
                     new_text_common_tab = (f"{values.departments_of_location[receiver_id]['name']}: "
                                            f"{send_confirmation}")
-                    label_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='outgoing')
-                    label_common_tab = MessageBubble(message=new_text_common_tab, mode='outgoing')
+                    bubble_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='outgoing')
+                    bubble_common_tab = MessageBubble(message=new_text_common_tab, mode='outgoing')
                     self.chat_tabs[receiver_id].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
-                    self.chat_tabs[receiver_id].ids.output.add_widget(label_receiver_tab)
+                    self.chat_tabs[receiver_id].ids.output.add_widget(bubble_receiver_tab)
                     self.chat_tabs['common_chat'].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
-                    self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
+                    self.chat_tabs['common_chat'].ids.output.add_widget(bubble_common_tab)
+                    Clock.schedule_once(
+                        lambda dt: self.chat_tabs[receiver_id].ids.scroll_view.scroll_to(bubble_receiver_tab), 0.5)
+                    Clock.schedule_once(
+                        lambda dt: self.chat_tabs['common_chat'].ids.scroll_view.scroll_to(bubble_common_tab), 0.5)
+
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
@@ -384,49 +389,60 @@ class ChatScreen(Screen):
                     new_text_receiver_tab = f"[{names}]\n{send_confirmation}"
                     new_text_common_tab = (f"[{names}]\n{values.departments_of_location[receiver_id]['name']}: "
                                            f"{send_confirmation}")
-                    label_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='outgoing')
-                    label_common_tab = MessageBubble(message=new_text_common_tab, mode='outgoing')
+                    bubble_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='outgoing')
+                    bubble_common_tab = MessageBubble(message=new_text_common_tab, mode='outgoing')
                     self.chat_tabs[receiver_id].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
-                    self.chat_tabs[receiver_id].ids.output.add_widget(label_receiver_tab)
+                    self.chat_tabs[receiver_id].ids.output.add_widget(bubble_receiver_tab)
                     self.chat_tabs['common_chat'].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
-                    self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
+                    self.chat_tabs['common_chat'].ids.output.add_widget(bubble_common_tab)
+                    Clock.schedule_once(
+                        lambda dt: self.chat_tabs[receiver_id].ids.scroll_view.scroll_to(bubble_receiver_tab), 0.5)
+                    Clock.schedule_once(
+                        lambda dt: self.chat_tabs['common_chat'].ids.scroll_view.scroll_to(bubble_common_tab), 0.5)
         elif message:
             if department_id:
-                new_text_receiver_tab = f"{message}"
+                new_text_department_tab = f"{message}"
                 new_text_common_tab = f"{values.departments_of_location[department_id]['name']}: {message}"
-                label_receiver_tab = MessageBubble(message=new_text_receiver_tab, mode='incoming')
-                label_common_tab = MessageBubble(message=new_text_common_tab, mode='incoming')
+                bubble_department_tab = MessageBubble(message=new_text_department_tab, mode='incoming')
+                bubble_common_tab = MessageBubble(message=new_text_common_tab, mode='incoming')
                 self.chat_tabs['common_chat'].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
-                self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
+                self.chat_tabs['common_chat'].ids.output.add_widget(bubble_common_tab)
                 self.chat_tabs[department_id].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
-                self.chat_tabs[department_id].ids.output.add_widget(label_receiver_tab)
+                self.chat_tabs[department_id].ids.output.add_widget(bubble_department_tab)
+                Clock.schedule_once(
+                    lambda dt: self.chat_tabs[department_id].ids.scroll_view.scroll_to(bubble_department_tab), 0.5)
+                Clock.schedule_once(
+                    lambda dt: self.chat_tabs['common_chat'].ids.scroll_view.scroll_to(bubble_common_tab), 0.5)
             else:
                 ...
         elif joined:
             if department_id and not self.chat_tabs.get(department_id):
                 joined_message = f"{values.departments_of_location[department_id]['name']} hat den Chat betreten."
-                label_common_tab = MessageBubble(message=joined_message, mode='info')
-                self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
+                bubble_common_tab = MessageBubble(message=joined_message, mode='info')
+                self.chat_tabs['common_chat'].ids.output.add_widget(bubble_common_tab)
                 new_chat_tab = ChatTab(tab_label_text=f'{values.departments_of_location[department_id]["name"]}',
                                        department_id=department_id, osc_client=self.client,
                                        notification_client=self.notification_client, tab_pos=len(self.chat_tabs))
 
                 self.chat_tabs[department_id] = new_chat_tab
                 self.ids.chat_tabs.add_widget(new_chat_tab)
+                Clock.schedule_once(
+                    lambda dt: self.chat_tabs['common_chat'].ids.scroll_view.scroll_to(bubble_common_tab), 0.5)
             else:
                 ...
         elif left:
             if department_id:
                 left_message = f"{values.departments_of_location[department_id]['name']} hat den Chat verlassen."
-                label_common_tab = MessageBubble(message=left_message, mode='info')
-                label_common_tab.text = left_message
-                self.chat_tabs['common_chat'].ids.output.add_widget(label_common_tab)
+                bubble_common_tab = MessageBubble(message=left_message, mode='info')
+                self.chat_tabs['common_chat'].ids.output.add_widget(bubble_common_tab)
                 tab_position = self.chat_tabs[department_id].tab_pos
                 for tab in self.chat_tabs.values():
                     if tab.tab_pos > tab_position:
                         tab.tab_pos -= 1
                 self.ids.chat_tabs.remove_widget(self.ids.chat_tabs.get_tab_list()[self.chat_tabs[department_id].tab_pos])
                 del self.chat_tabs[department_id]
+                Clock.schedule_once(
+                    lambda dt: self.chat_tabs['common_chat'].ids.scroll_view.scroll_to(bubble_common_tab), 0.5)
             else:
                 ...
 
