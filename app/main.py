@@ -402,7 +402,7 @@ class ChatScreen(Screen):
         elif message:
             if department_id:
                 new_text_department_tab = f"{message}"
-                new_text_common_tab = f"von {values.departments_of_location[department_id]['name']}:\n{message}"
+                new_text_common_tab = f"{values.departments_of_location[department_id]['name']}:\n{message}"
                 bubble_department_tab = MessageBubble(message=new_text_department_tab, mode='incoming')
                 bubble_common_tab = MessageBubble(message=new_text_common_tab, mode='incoming')
                 self.chat_tabs['common_chat'].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
