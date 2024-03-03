@@ -450,6 +450,7 @@ class ChatScreen(Screen):
         # Berechnen Sie die Position der Nachricht relativ zum ScrollView
         pos_in_scrollview = chat_tab.ids.scroll_view.to_widget(*bubble.to_window(*bubble.pos))
         # Überprüfen Sie, ob die Nachricht sichtbar ist
+        print(f'in scroll_to_message: .............. {pos_in_scrollview[1]=}, {chat_tab.ids.scroll_view.height=}')
         if pos_in_scrollview[1] < 0 or pos_in_scrollview[1] > chat_tab.ids.scroll_view.height:
             # Wenn die Nachricht nicht sichtbar ist, scrollen Sie zu ihr
             self.ids.scroll_view.scroll_to(bubble)
