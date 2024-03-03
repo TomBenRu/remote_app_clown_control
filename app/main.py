@@ -353,7 +353,7 @@ class ChatScreen(Screen):
                         chat_tab.ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
                         bubble = MessageBubble(message=send_confirmation, mode='outgoing')
                         chat_tab.ids.output.add_widget(bubble)
-                        Clock.schedule_once(lambda dt: self.scroll_to_bottom(chat_tab), 0.5)
+                        Clock.schedule_once(lambda dt: self.scroll_to_bottom(chat_tab), 0)
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
                                                   params={'team_of_actors_id': sender_id}, timeout=10)
@@ -364,7 +364,7 @@ class ChatScreen(Screen):
                         chat_tab.ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
                         bubble = MessageBubble(message=new_text, mode='outgoing')
                         chat_tab.ids.output.add_widget(bubble)
-                        Clock.schedule_once(lambda dt: self.scroll_to_bottom(chat_tab), 0.5)
+                        Clock.schedule_once(lambda dt: self.scroll_to_bottom(chat_tab), 0)
             else:
                 if sender_id == values.team_of_actors['id']:
                     new_text_receiver_tab = f"{send_confirmation}"
@@ -377,9 +377,9 @@ class ChatScreen(Screen):
                     self.chat_tabs['common_chat'].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
                     self.chat_tabs['common_chat'].ids.output.add_widget(bubble_common_tab)
                     Clock.schedule_once(
-                        lambda dt: self.scroll_to_bottom(self.chat_tabs[receiver_id]), 0.5)
+                        lambda dt: self.scroll_to_bottom(self.chat_tabs[receiver_id]), 0)
                     Clock.schedule_once(
-                        lambda dt: self.scroll_to_bottom(self.chat_tabs['common_chat']), 0.5)
+                        lambda dt: self.scroll_to_bottom(self.chat_tabs['common_chat']), 0)
 
                 else:
                     response = values.session.get(f'{values.backend_url}actors/team_of_actors',
@@ -396,9 +396,9 @@ class ChatScreen(Screen):
                     self.chat_tabs['common_chat'].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
                     self.chat_tabs['common_chat'].ids.output.add_widget(bubble_common_tab)
                     Clock.schedule_once(
-                        lambda dt: self.scroll_to_bottom(self.chat_tabs[receiver_id]), 0.5)
+                        lambda dt: self.scroll_to_bottom(self.chat_tabs[receiver_id]), 0)
                     Clock.schedule_once(
-                        lambda dt: self.scroll_to_bottom(self.chat_tabs['common_chat']), 0.5)
+                        lambda dt: self.scroll_to_bottom(self.chat_tabs['common_chat']), 0)
         elif message:
             if department_id:
                 new_text_department_tab = f"{message}"
@@ -410,9 +410,9 @@ class ChatScreen(Screen):
                 self.chat_tabs[department_id].ids.output.add_widget(MessageBubble(message=timestamp, mode='info'))
                 self.chat_tabs[department_id].ids.output.add_widget(bubble_department_tab)
                 Clock.schedule_once(
-                    lambda dt: self.scroll_to_bottom(self.chat_tabs[department_id]), 0.5)
+                    lambda dt: self.scroll_to_bottom(self.chat_tabs[department_id]), 0)
                 Clock.schedule_once(
-                    lambda dt: self.scroll_to_bottom(self.chat_tabs['common_chat']), 0.5)
+                    lambda dt: self.scroll_to_bottom(self.chat_tabs['common_chat']), 0)
             else:
                 ...
         elif joined:
@@ -427,7 +427,7 @@ class ChatScreen(Screen):
                 self.chat_tabs[department_id] = new_chat_tab
                 self.ids.chat_tabs.add_widget(new_chat_tab)
                 Clock.schedule_once(
-                    lambda dt: self.scroll_to_bottom(self.chat_tabs['common_chat']), 0.5)
+                    lambda dt: self.scroll_to_bottom(self.chat_tabs['common_chat']), 0)
             else:
                 ...
         elif left:
@@ -442,7 +442,7 @@ class ChatScreen(Screen):
                 self.ids.chat_tabs.remove_widget(self.ids.chat_tabs.get_tab_list()[self.chat_tabs[department_id].tab_pos])
                 del self.chat_tabs[department_id]
                 Clock.schedule_once(
-                    lambda dt: self.scroll_to_bottom(self.chat_tabs['common_chat']), 0.5)
+                    lambda dt: self.scroll_to_bottom(self.chat_tabs['common_chat']), 0)
             else:
                 ...
 
