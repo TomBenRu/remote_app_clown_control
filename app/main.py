@@ -496,11 +496,10 @@ class ChatScreen(Screen):
             self.dlg.open()
             return
 
-        response_all_messages = values.session.get(f'{values.backend_url}actors/session_messages',
-                                                   params={'team_of_actors_id': values.team_of_actors['id']})
-        print(f'................... {response_all_messages.json()=}')
         self.client.send_message(b'/close_connection',
                                  ['Wir verabschieden uns für heute. Danke für die Unterstützung! 👋'.encode('utf-8')])
+
+        values.store.put('team_of_actors', id=None)
 
         if platform == 'android' and values.service:
             values.service.stop(values.mActivity)
@@ -514,8 +513,6 @@ class ChatScreen(Screen):
         self.manager.transition = SlideTransition(direction="right")
         self.manager.current = 'login'
         print(f'{threading.active_count()=}')
-
-        values.store.put('team_of_actors', id=None)
         MDApp.get_running_app().stop()
 
 
