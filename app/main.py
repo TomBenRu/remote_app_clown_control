@@ -527,25 +527,25 @@ class ClownControlApp(MDApp):
         return sm
 
     def start_service(self):
-        from android import mActivity
-        context = mActivity.getApplicationContext()
-        service_name = f'{str(context.getPackageName())}.Service{SERVICE_NAME}'
-        print(f'SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS {service_name=}')
-        service = autoclass(service_name)
-        values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
-        argument = ''
-        service.start(values.mActivity, argument)
-        values.service = service
+        if platform == 'android':
+            from android import mActivity
+            context = mActivity.getApplicationContext()
+            service_name = f'{str(context.getPackageName())}.Service{SERVICE_NAME}'
+            service = autoclass(service_name)
+            values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+            argument = ''
+            service.start(values.mActivity, argument)
+            values.service = service
 
-    def start_notification_service(self):
-        from android import mActivity
-        context = mActivity.getApplicationContext()
-        service_name = f'{str(context.getPackageName())}.Service{NOTIFICATION_SERVICE_NAME}'
-        service = autoclass(service_name)
-        values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
-        argument = ''
-        service.start(values.mActivity, argument)
-        values.notification_service = service
+    # def start_notification_service(self):
+    #     from android import mActivity
+    #     context = mActivity.getApplicationContext()
+    #     service_name = f'{str(context.getPackageName())}.Service{NOTIFICATION_SERVICE_NAME}'
+    #     service = autoclass(service_name)
+    #     values.mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+    #     argument = ''
+    #     service.start(values.mActivity, argument)
+    #     values.notification_service = service
 
     def on_start(self):
         if platform == 'android':
