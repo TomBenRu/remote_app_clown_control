@@ -465,7 +465,6 @@ class ChatScreen(Screen):
     @mainthread
     def on_open(self, ws):
         print("Websocket connection opened")
-        # self.output.text += "Connection opened\n"
 
     def ask_for_logout(self):
         if not self.dialog_exit:
