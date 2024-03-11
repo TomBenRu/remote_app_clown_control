@@ -109,21 +109,21 @@
                 source: 'icons/clown_control_icon.png'
                 size_hint: None, None
                 size: '48dp', '48dp'
-                valign: 'middle'
+                valign: 'center'
             MDRoundFlatButton:
                 text: 'Open Chat'
                 font_size: 36
                 size_hint: 0.4, None
                 height: '48dp'
                 on_release: root.create_connection_service()
-                valign: 'middle'
+                valign: 'center'
             MDRoundFlatButton:
                 text: 'Logout'
                 font_size: 36
                 size_hint: 0.4, None
                 height: '48dp'
                 on_release: root.ask_for_logout()
-                valign: 'middle'
+                valign: 'center'
         MDTabs:
             id: chat_tabs
             anchor_y: "bottom"
