@@ -107,17 +107,20 @@
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             Image:
                 source: 'icons/clown_control_icon.png'
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                 size_hint: None, None
                 size: '48dp', '48dp'
             MDRoundFlatButton:
                 text: 'Open Chat'
                 font_size: 36
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                 size_hint: 0.4, None
                 height: '48dp'
                 on_release: root.create_connection_service()
             MDRoundFlatButton:
                 text: 'Logout'
                 font_size: 36
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
                 size_hint: 0.4, None
                 height: '48dp'
                 on_release: root.ask_for_logout()
