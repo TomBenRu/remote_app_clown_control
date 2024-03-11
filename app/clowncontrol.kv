@@ -99,19 +99,12 @@
         size_hint: 1, 1
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         GridLayout:
-            cols: 3
+            cols: 2
             padding: 20, 20, 20, 0
             spacing: 10
             size_hint: 1, None
             height: '48dp'
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-            # logo of the app
-            Image:
-                source: 'icons/clown_control_icon.png'
-                size_hint: 0.2, None
-                size: 30, 30
-                height: self.texture_size[1]
-            # button to open chat
             MDRoundFlatButton:
                 text: 'Open Chat'
                 font_size: 36
