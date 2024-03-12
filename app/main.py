@@ -314,13 +314,14 @@ class ChatScreen(Screen):
     def on_tab_switch(self, *args):
         print(args)
 
-    def create_connection_service(self, with_greeting=True):
+    def create_connection_service(self, with_greeting=True, *args):
         greeting = 'Hallo! Wir sind im Haus. 😊' if with_greeting else ''
         self.client.send_message(b'/connect',
                                  [greeting.encode('utf-8'), values.ws_url.encode('utf-8'),
                                         values.token.encode('utf-8'),
                                         values.team_of_actors['id'].encode('utf-8')])
         self.ids.open_chat_button.text = 'Logout'
+        self.ids.open_chat_button.unbind(on_release=self.create_connection_service)
         self.ids.open_chat_button.bind(on_release=self.ask_for_logout)
 
     @mainthread
