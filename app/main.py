@@ -320,6 +320,8 @@ class ChatScreen(Screen):
                                  [greeting.encode('utf-8'), values.ws_url.encode('utf-8'),
                                         values.token.encode('utf-8'),
                                         values.team_of_actors['id'].encode('utf-8')])
+        self.ids.open_chat_button.text = 'Logout'
+        self.ids.open_chat_button.on_release = self.ask_for_logout
 
     @mainthread
     def on_message(self, message):
