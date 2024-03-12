@@ -321,7 +321,7 @@ class ChatScreen(Screen):
                                         values.token.encode('utf-8'),
                                         values.team_of_actors['id'].encode('utf-8')])
         self.ids.open_chat_button.text = 'Logout'
-        self.ids.open_chat_button.on_release = lambda: self.ask_for_logout()
+        self.ids.open_chat_button.bind(on_release=self.ask_for_logout)
 
     @mainthread
     def on_message(self, message):
