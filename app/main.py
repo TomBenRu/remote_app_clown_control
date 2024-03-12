@@ -468,7 +468,7 @@ class ChatScreen(Screen):
     def on_open(self, ws):
         print("Websocket connection opened")
 
-    def ask_for_logout(self):
+    def ask_for_logout(self, *args):
         if not self.dialog_exit:
             self.dialog_exit = MDDialog(
                 title='Logout', text='Wollen Sie sich wirklich ausloggen\nund die Anwendung beenden?',
